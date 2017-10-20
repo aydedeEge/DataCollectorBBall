@@ -1,10 +1,50 @@
 import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import pymysql
+
+SQL_INSERT_COMMAND_BASE = "INSERT INTO `{table}` (`pid`, `first_name`, `last_name`) VALUES ('{pid}', '{f_name}', '{l_name}');"
 
 BASE_PLAYER_URL = "https://stats.nba.com/player/{player_id}/{stat_type}/?Season={date}&SeasonType={season_type}"
 BASE_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season={date}&SeasonType={season_type}"
 TEST_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season=2016-17&SeasonType=Regular%20Season"
+
+class PyMySQLConn:
+    def __init__(self, config):
+        self.host = config.get("host")
+        self.user = config.get("user")
+        self.pwd = config.get("pwd")
+        self.db = config.get("db")
+
+    def reset_config(self, config):
+        pass
+
+    def connect_db(self):
+        connection = pymysql.connect(
+            host=self.host,
+            user=self.user,
+            password=self.pwd,
+            db=self.db,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+
+        return connection
+
+    def execute_command(self, connection, command):
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(command)
+            
+        except Exception as e:
+            raise e
+
+    def commit_changes(self, connection):
+        connection.commit()
+
+    def close_connection(self, connection):
+        connection.close()
+
 
 class WebPage:
 
@@ -52,7 +92,7 @@ class AllPlayerPage(WebPage):
     #   Preseason: "Pre%20Season"
     # date format:
     #   2016 and 2017: "2016-17"
-    def get_all_player_ids(self, date, season_type):
+    def get_all_player_ids(self, date, season_type, all_date_player_ids):
         all_player_ids_dict = {}
 
         self.load_page(BASE_ALL_PLAYER_URL.format(date=date, season_type=season_type))
@@ -71,12 +111,35 @@ class AllPlayerPage(WebPage):
             player_name = player_id_tag.find("a").string
             player_id = player_id_tag.find("a")["href"].split("/")[2]
             try:
-                print(f'{player_name}: {player_id}')
-                all_player_ids_dict[player_name: player_id]
+                # print(f'{player_name}: {player_id}')
+                all_player_ids_dict[player_name] = player_id
+                if player_name not in all_date_player_ids:
+                    all_date_player_ids[player_name] = player_id
             except Exception as e:
                 pass
         
         return all_player_ids_dict
+
+
+    def get_player_ids_all_dates(self, season_type):
+        dates = []
+        all_player_ids = {}
+        first_date = 2017
+        second_date = 2018
+        while (first_date<2018):
+            dates.append(f'{first_date}-{str(second_date)[2]}{str(second_date)[3]}')
+            first_date+=1
+            second_date+=1
+        
+        for date in dates:
+            self.get_all_player_ids(
+                date=date,
+                season_type=season_type,
+                all_date_player_ids=all_player_ids
+            )
+        
+        return all_player_ids
+
 
     # Playoffs param not used
     def get_player_matchs(self, player_id, date, stat_type, season_type, playoff=False):
@@ -163,18 +226,56 @@ class PlayerPage(WebPage):
     def __init__(self):
         super().__init__()
 
+def single_quote_name(name):
+    sname = ""
+    if "'" in name:
+        sname = name.split("'")[0] + "''" + name.split("'")[1]
+        return sname
+    sname = name
+    return sname
+
 
 def main():
     wp = AllPlayerPage()
-    wp.get_player_matchs(
-        player_id="201566",
-        stat_type="boxscores-traditional",
-        date="2016-17",
-        season_type="Regular%20Season",    
-    )
-    # wp.get_all_player_ids(
+    # wp.get_player_matchs(
+    #     player_id="201566",
+    #     stat_type="boxscores-traditional",
+    #     date="2016-17",
+    #     season_type="Regular%20Season",    
+    # )
+    # dic = {}
+    # players = wp.get_all_player_ids(
     #     date="2016-17",
     #     season_type="Regular%20Season", 
+    #     all_date_player_ids=dic,
     # )
+    config = {
+        "host": "77.104.156.87",
+        "user": "d2matchb_sastren",
+        "pwd": "change_this_pwd",
+        "db": "d2matchb_bball",
+    }
+    # print(players)
+    
+    print(wp.get_player_ids_all_dates(
+        season_type="Regular%20Season",
+    ))
+    # sql = PyMySQLConn(config)
+    # connection = sql.connect_db()
+    # for k,v in players.items():
+    #     pid = v
+    #     f_name = single_quote_name(k.split(" ")[0])
+    #     try:
+    #         l_name = single_quote_name(k.split(" ")[1])
+    #     except IndexError as e:
+    #         lname = ""
+        # print(pid)
+        # print(f_name)
+        # print(l_name)
+        # print(SQL_INSERT_COMMAND_BASE.format(table='players', pid=pid, f_name=f'{f_name}', l_name=f'{l_name}'))
+    #     command = SQL_INSERT_COMMAND_BASE.format(table='players', pid=pid, f_name=f"{f_name}", l_name=f"{l_name}")
+    #     sql.execute_command(connection, command)
+    # sql.commit_changes(connection)
+    # sql.close_connection(connection)
 
 main()
