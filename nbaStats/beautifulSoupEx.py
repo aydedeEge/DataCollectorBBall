@@ -1,3 +1,4 @@
+#Need to pip install PyQt5 if you want to run
 import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QUrl
