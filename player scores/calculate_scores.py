@@ -3,6 +3,7 @@
 # -*- encoding: utf-8 -*-
 import MySQLdb
 
+# TODO: if it already exists, update the score instead of throwing dup key error
 FG_3_SCORE = 3
 FG_SCORE = 2
 FT_SCORE = 1
