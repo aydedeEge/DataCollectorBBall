@@ -11,6 +11,7 @@ AST_SCORE = 1.5
 BLOCK_SCORE = 3
 STEAL_SCORE = 3
 TURNOVER_SCORE = -1
+SEASON = 2017
 
 def calculate():
     """Calculate the scores"""
@@ -20,7 +21,7 @@ def calculate():
                                  db="d2matchb_bball")        # name of the data base
 
     # you must create a Cursor object. It will let
-    #  you execute all the queries you need
+    # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM player_projections")
     result_set = cursor.fetchall()
@@ -30,6 +31,9 @@ def calculate():
             row["TRB_36"] * REB_SCORE + row["AST_36"] * AST_SCORE + row["BLK_36"] * BLOCK_SCORE + \
             row["STL_36"] * STEAL_SCORE + row["TOV_36"] * TURNOVER_SCORE)
         player_id = row["player_id"]
+
+        cursor.execute("INSERT INTO `d2matchb_bball`.`scores` (`player_id`, `season`, `score`) VALUES (" 
+                        + player_id + "," + SEASON + "," + score + ");")
         
     # print all the first cell of all the rows
     connection.close()
