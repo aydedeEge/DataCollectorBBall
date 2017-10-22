@@ -27,14 +27,15 @@ def calculate():
     result_set = cursor.fetchall()
 
     for row in result_set:
-        score = (row["FG_36"] * FG_3_SCORE + row["3P_36"] * FG_3_SCORE + row["FT_36"] * FT_SCORE +\
+        score = (row["FG_36"] * FG_SCORE + row["3P_36"] * FG_3_SCORE + row["FT_36"] * FT_SCORE +\
                  row["TRB_36"] * RB_SCORE + row["AST_36"] * AST_SCORE + row["BLK_36"] * BLK_SCORE +\
                  row["STL_36"] * STEAL_SCORE + row["TOV_36"] * TURNOVER_SCORE)
         player_id = row["player_id"]
 
         cursor.execute("INSERT INTO `d2matchb_bball`.`scores` (`player_id`, `season`, `score`)" +\
-                       " VALUES (" + player_id + "," + SEASON + "," + score + ");")
+                       " VALUES (" + str(player_id) + "," + str(SEASON) + "," + str(score) + ");")
 
+    connection.commit()
     # print all the first cell of all the rows
     connection.close()
 
