@@ -1,6 +1,7 @@
 import os
 import pymysql
 import time
+import sys
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -8,6 +9,35 @@ from load_config import read_config, set_env_vars
 
 SQL_INSERT_COMMAND_BASE = "INSERT INTO `players` (`pid`, `first_name`, `last_name`) VALUES ('{pid}', '{f_name}', '{l_name}');"
 SQL_SELECT_COMMAND_BASE = "SELECT * FROM `{table}` LIMIT 5"
+SQL_INSERT_PLAYER_MATCHES_BASE = '''INSERT INTO `d2matchb_bball`.`player_matches` (
+`pid`,
+`minutes`,
+`points`,
+`FGM`,
+`FGA`,
+`FG%`,
+`3PM`,
+`3PA`,
+`3P%`,
+`FTM`,
+`FTA`,
+`FT%`,
+`ORB`,
+`DRB`,
+`REB`,
+`AST`,
+`STL`,
+`BLK`,
+`TOV`,
+`PF`,
+`mdate`,
+`pteam`,
+`oteam`,
+`home_away`,
+`winloss`,
+`plusminus`)
+VALUES ({pid}, {minutes}, {points}, {fgm}, {fga}, {fgper}, {tpm}, {tpa}, {tpper},
+{ftm}, {fta}, {ftper}, {orb}, {drb}, {reb}, {ast}, {stl}, {blk}, {tov}, {pf}, "{mdate}", "{pteam}", "{oteam}", "{home_away}", "{winloss}", {plusminus});'''
 
 BASE_PLAYER_URL = "https://stats.nba.com/player/{player_id}/{stat_type}/?Season={date}&SeasonType={season_type}"
 BASE_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season={date}&SeasonType={season_type}"
@@ -56,6 +86,43 @@ class PyMySQLConn:
             connection.commit()
         except Exception as e:
             raise e
+
+    def insert_player_match(self, connection, pid, minutes, points, fgm, fga, fgper, tpm, tpa, tpper, ftm, fta, ftper, orb, drb, reb, ast, stl, blk, tov, pf, mdate, pteam, oteam, home_away, winloss, plusminus):
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    SQL_INSERT_PLAYER_MATCHES_BASE.format(
+                        pid=pid,
+                        minutes=minutes,
+                        points=points,
+                        fgm=fgm,
+                        fga=fga,
+                        fgper=fgper,
+                        tpm=tpm,
+                        tpa=tpa,
+                        tpper=tpper,
+                        ftm=ftm,
+                        fta=fta,
+                        ftper=ftper,
+                        orb=orb,
+                        drb=drb,
+                        reb=reb,
+                        ast=ast,
+                        stl=stl,
+                        blk=blk,
+                        tov=tov,
+                        pf=pf,
+                        mdate=mdate,
+                        pteam=pteam,
+                        oteam=oteam,
+                        home_away=home_away,
+                        winloss=winloss,
+                        plusminus=plusminus
+                    )
+                )
+            connection.commit()
+        except Exception as e:
+            raise e
     
     def select_from_table_command(self, connection, table):
         try:
@@ -96,17 +163,25 @@ class WebPage:
     def dom_change_event_class(self, tag_attribute, tag_attribute_value, new_value):
         tag_attr_command = "getElementsByClassName"
 
-        try:
-            # Need to change the first line of execute_script; [0] hard coded
-            self.driver.execute_script(f'''
-                var el = document.{tag_attr_command}("{tag_attribute_value}")[0];
-                el.value = "{new_value}";
-                var event = document.createEvent("HTMLEvents");
-                event.initEvent("change", true, false);
-                el.dispatchEvent(event);
-            ''')
-        except Exception as e:
-            raise e
+        a = 0
+        while a < 11:
+            try:
+                # Need to change the first line of execute_script; [0] hard coded
+                self.driver.execute_script(f'''
+                    var el = document.{tag_attr_command}("{tag_attribute_value}")[0];
+                    el.value = "{new_value}";
+                    var event = document.createEvent("HTMLEvents");
+                    event.initEvent("change", true, false);
+                    el.dispatchEvent(event);
+                ''')
+                break
+                
+            except Exception as e:
+                time.sleep(1)
+                a+=1
+                print(f'Page not loaded, attempt number: {a}')
+                if a < 10:
+                    continue
 
 class AllPlayerPage(WebPage):
     def __init__(self):
@@ -122,7 +197,7 @@ class AllPlayerPage(WebPage):
         all_player_ids_dict = {}
 
         self.load_page(BASE_ALL_PLAYER_URL.format(date=date, season_type=season_type))
-        time.sleep(2)
+        # time.sleep(3)
         print(f'Gathering player ids for {date}')
 
         self.dom_change_event_class(
@@ -198,8 +273,8 @@ class PlayerPage(WebPage):
     def __init__(self):
         super().__init__()
 
-    def get_player_matchs(self, player_id, date, stat_type, season_type):
-        matches_dict = {}
+    def get_player_matches(self, player_id, date, stat_type, season_type):
+        matches_list = []
         self.load_page(
             BASE_PLAYER_URL.format(
                 player_id=player_id,
@@ -208,6 +283,7 @@ class PlayerPage(WebPage):
                 stat_type=stat_type
             )
         )
+        # time.sleep(3)
         self.dom_change_event_class(
             tag_attribute="class",
             tag_attribute_value="stats-table-pagination__select",
@@ -216,59 +292,161 @@ class PlayerPage(WebPage):
         html = self.get_page()
         soup = BeautifulSoup(html, "html.parser")
 
-        all_match_rows = soup.tbody.find_all("tr")
-        for tr in all_match_rows:
-            stat_row = tr.find_all("td")
-            match_up = self.get_embedded_text(stat_row[0])
-            win_loss = self.get_embedded_text(stat_row[1])
-            mins_played = self.get_embedded_text(stat_row[2])
-            pts = self.get_embedded_text(stat_row[3])
-            fgm = self.get_embedded_text(stat_row[4])
-            fga = self.get_embedded_text(stat_row[5])
-            fg_percent = self.get_embedded_text(stat_row[6])
-            three_pm = self.get_embedded_text(stat_row[7])
-            three_pa = self.get_embedded_text(stat_row[8])
-            three_percent = self.get_embedded_text(stat_row[9])
-            ftm = self.get_embedded_text(stat_row[10])
-            fta = self.get_embedded_text(stat_row[11])
-            ft_percent = self.get_embedded_text(stat_row[12])
-            oreb = self.get_embedded_text(stat_row[13])
-            dreb = self.get_embedded_text(stat_row[14])
-            reb = self.get_embedded_text(stat_row[15])
-            ast = self.get_embedded_text(stat_row[16])
-            stl = self.get_embedded_text(stat_row[17])
-            blk = self.get_embedded_text(stat_row[18])
-            tov = self.get_embedded_text(stat_row[19])
-            pf = self.get_embedded_text(stat_row[20])
-            plus_minus = self.get_embedded_text(stat_row[21])
+        try:
+            all_match_rows = soup.tbody.find_all("tr")
+        except AttributeError as e:
+            matches_list.append(
+                {
+                    "pid": player_id,
+                    "winloss": "Null",
+                    "minutes": 0,
+                    "points": 0,
+                    "FGM": 0,
+                    "FGA": 0,
+                    "FG%": 0,
+                    "3PM": 0,
+                    "3PA": 0,
+                    "3P%": 0,
+                    "FTM": 0,
+                    "FTA": 0,
+                    "FT%": 0,
+                    "ORB": 0,
+                    "DRB": 0,
+                    "REB": 0,
+                    "AST": 0,
+                    "STL": 0,
+                    "BLK": 0,
+                    "TOV": 0,
+                    "PF": 0,
+                    "plusminus": 0,
+                    "mdate": "0-1-1",
+                    "pteam": "NA",
+                    "oteam": "NA",
+                    "home_away": "NA"
+                }
+            )
+            return matches_list
+        
+        # Should probably remove this try catch
+        try:
+            for tr in all_match_rows:
+                stat_row = tr.find_all("td")
+                match_up = self.get_embedded_text(stat_row[0])
+                mdate = self.transform_date(match_up.split(" - ")[0])
+                pteam, oteam = self.get_teams_from_text(match_up.split(" - ")[1])
+                win_loss = self.get_embedded_text(stat_row[1])
+                mins_played = self.get_embedded_text(stat_row[2])
+                pts = self.get_embedded_text(stat_row[3])
+                fgm = self.get_embedded_text(stat_row[4])
+                fga = self.get_embedded_text(stat_row[5])
+                fg_percent = self.get_embedded_text(stat_row[6])
+                three_pm = self.get_embedded_text(stat_row[7])
+                three_pa = self.get_embedded_text(stat_row[8])
+                three_percent = self.get_embedded_text(stat_row[9])
+                ftm = self.get_embedded_text(stat_row[10])
+                fta = self.get_embedded_text(stat_row[11])
+                ft_percent = self.get_embedded_text(stat_row[12])
+                oreb = self.get_embedded_text(stat_row[13])
+                dreb = self.get_embedded_text(stat_row[14])
+                reb = self.get_embedded_text(stat_row[15])
+                ast = self.get_embedded_text(stat_row[16])
+                stl = self.get_embedded_text(stat_row[17])
+                blk = self.get_embedded_text(stat_row[18])
+                tov = self.get_embedded_text(stat_row[19])
+                pf = self.get_embedded_text(stat_row[20])
+                plus_minus = self.get_embedded_text(stat_row[21])
+                # NEED TO FIND A WAY TO FIND THIS
+                home_away = "H"
 
-            matches_dict[match_up] = {
-                "match_up": match_up,
-                "win_loss": win_loss,
-                "mins_played": mins_played,
-                "pts": pts,
-                "fgm": fgm,
-                "fga": fga,
-                "fg_percent": fg_percent,
-                "three_pm": three_pm,
-                "three_pa": three_pa,
-                "three_percent": three_percent,
-                "ftm": ftm,
-                "fta": fta,
-                "ft_percent": ft_percent,
-                "oreb": oreb,
-                "dreb": dreb,
-                "reb": reb,
-                "ast": ast,
-                "stl": stl,
-                "blk": blk,
-                "tov": tov,
-                "pf": pf,
-                "plus_minus": plus_minus,
-            }
+                matches_list.append(
+                    {
+                        "pid": player_id,
+                        "winloss": win_loss,
+                        "minutes": mins_played,
+                        "points": pts,
+                        "FGM": fgm,
+                        "FGA": fga,
+                        "FG%": fg_percent,
+                        "3PM": three_pm,
+                        "3PA": three_pa,
+                        "3P%": three_percent,
+                        "FTM": ftm,
+                        "FTA": fta,
+                        "FT%": ft_percent,
+                        "ORB": oreb,
+                        "DRB": dreb,
+                        "REB": reb,
+                        "AST": ast,
+                        "STL": stl,
+                        "BLK": blk,
+                        "TOV": tov,
+                        "PF": pf,
+                        "plusminus": plus_minus,
+                        "mdate": mdate,
+                        "pteam": pteam,
+                        "oteam": oteam,
+                        "home_away": home_away
+                    }
+                )
+        except Exception as e:
+            raise e
+        return matches_list
 
-        print(matches_dict)
-        return matches_dict
+    
+    def push_player_matches_to_db(self, matches):
+        config = {
+            "host": os.environ["host"],
+            "user": os.environ["user"],
+            "pwd": os.environ["pwd"],
+            "db": os.environ["db"],
+        }
+        sql = PyMySQLConn(config)
+        connection = sql.connect_db()
+
+        for item in matches:
+            sql.insert_player_match(
+                connection=connection,
+                pid=item["pid"],
+                minutes=item["minutes"],
+                points=item["points"],
+                fgm=item["FGM"],
+                fga=item["FGA"],
+                fgper=item["FG%"],
+                tpm=item["3PM"],
+                tpa=item["3PA"],
+                tpper=item["3P%"],
+                ftm=item["FTM"],
+                fta=item["FTA"],
+                ftper=item["FT%"],
+                orb=item["ORB"],
+                drb=item["DRB"],
+                reb=item["REB"],
+                ast=item["AST"],
+                stl=item["STL"],
+                blk=item["BLK"],
+                tov=item["TOV"],
+                pf=item["PF"],
+                plusminus=item["plusminus"],
+                home_away=item["home_away"],
+                mdate=item["mdate"],
+                pteam=item["pteam"],
+                oteam=item["oteam"],
+                winloss=item["winloss"]
+            )
+        sql.close_connection(connection=connection)
+
+    
+    def push_all_pmatches_to_db_by_date(self, date, season_type, stat_type, players):
+        all_matches = []
+        for key, value in players.items():
+            pmatches = self.get_player_matches(
+                player_id=value,
+                date=date,
+                season_type=season_type,
+                stat_type=stat_type
+            )
+            self.push_player_matches_to_db(pmatches)
+            print(f'* Records for {key} pushed to db')
 
 
     #Pretty hard-coded
@@ -276,6 +454,43 @@ class PlayerPage(WebPage):
         for child in tag.descendants:
             if child.string is not None:
                 return child.string
+
+
+    def get_teams_from_text(self, text):
+        if 'vs.' in text:
+            team1 = text.split('vs.')[0].replace(" ", "")
+            team2 = text.split('vs.')[1].replace(" ", "")
+        elif '@' in text:
+            team1 = text.split('@')[0].replace(" ", "")
+            team2 = text.split('@')[1].replace(" ", "")
+
+        return team1, team2
+
+
+    # Mar 08, 2017 unformatted
+    def transform_date(self, date):
+        months = {
+            "Jan": '01',
+            "Feb": '02',
+            "Mar": '03',
+            "Apr": '04',
+            "May": '05',
+            "Jun": '06',
+            "Jul": '07',
+            "Aug": '08',
+            "Sep": '09',
+            "Oct": '10',
+            "Nov": '11',
+            "Dec": '12',
+        }
+
+        first, second, third = date.split(" ")[0], date.split(" ")[1], date.split(" ")[2]
+        day = second.replace(",", "")
+        month = months[first]
+        year = third
+        formatted_date = f'{year}-{month}-{day}'
+        
+        return formatted_date
 
     
 def single_quote_name(name):
@@ -286,18 +501,85 @@ def single_quote_name(name):
     sname = name
     return sname
 
+def get_pids(args=None):
+    wp = AllPlayerPage()
+    try:
+        players = wp.get_all_player_ids(
+            date=args[2],
+            season_type="Regular%20Season",
+        )
+    except Exception as e:
+        raise e
+
+    try:
+        if args[3] == '-db':
+            wp.push_all_player_ids_to_db(players)
+            print("pushed to sql")
+        elif args[3] == '-print':
+            print(players)
+    except Exception as e:
+        print("Did you forget the -print modifier?")
+        raise e
+        
+def get_all_pids(args=None):
+    wp = AllPlayerPage()
+    # Add feature to read season_type with arg
+    try:
+        players = wp.get_all_player_ids_all_dates(
+            season_type="Regular%20Season",
+        )
+    except Exception as e:
+        raise e
+
+    try:
+        if args[2] == '-db':
+            wp.push_all_player_ids_to_db(players)
+            print("pushed to sql")
+
+        elif args[2] == '-print':
+            print(players)
+    except Exception as e:
+        print("Did you forget the -print modifier?")
+        raise e
+    
+# date, season_type, stat_type, players
+def get_pmatches(args=None):
+    wp = AllPlayerPage()
+    pwp = PlayerPage()
+    try:
+        players = wp.get_all_player_ids(
+            date=args[2],
+            season_type="Regular%20Season",
+        )
+        print("Finished gathering player_ids")
+
+        pwp.push_all_pmatches_to_db_by_date(
+            date=args[2],
+            season_type="Regular%20Season",
+            stat_type="boxscores-traditional",
+            players=players
+        )
+    except Exception as e:
+        raise e
 
 def main():
+    accepted_args = {
+        "pids": get_pids,
+        "pmatches": get_pmatches,
+        "all_pids" : get_all_pids,
+    }
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
 
-    wp = AllPlayerPage()
-    players = wp.get_all_player_ids(
-        date="2016-2017",
-        season_type="Regular%20Season",
-    )
-    wp.push_all_player_ids_to_db(players)
-    
+    try:
+        accepted_args[sys.argv[1]](sys.argv)
+    except Exception as e:
+        print("Invalid command or modifier")
+        raise e
+        return
+
+    return
+
 
 main()
