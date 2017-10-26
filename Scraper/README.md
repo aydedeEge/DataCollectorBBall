@@ -4,8 +4,7 @@
 
 Run the following commands before executing `beautifulSoupSelenium.py`
 
-1. `source devEnv/bin/activate`
-2. `pip install -r requirements.txt`
+1. `pip install -r requirements.txt`
 
 Now create create a config.json file in the nbaStats director with the following format:
 

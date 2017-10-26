@@ -1,4 +1,4 @@
-#!/Users/EgeAydede/Documents/McGill/U4S1/ECSE456/DataCollectorBBall/devEnv/bin/python
+#!/Users/EgeAydede/Documents/McGill/U4S1/ECSE456/DataCollectorBBall/Scraper/devEnv/bin/python
 
 import sys
 import getopt
