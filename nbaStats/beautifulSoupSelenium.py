@@ -150,7 +150,7 @@ class WebPage:
     }
 
     def __init__(self):
-        self.driver = webdriver.Chrome(f'{os.getcwd()}/chromedriver')
+        self.driver = webdriver.Chrome('{path}/chromedriver'.format(path=os.getcwd()))
 
     def load_page(self, url):
         self.url = url
@@ -167,19 +167,19 @@ class WebPage:
         while a < 11:
             try:
                 # Need to change the first line of execute_script; [0] hard coded
-                self.driver.execute_script(f'''
+                self.driver.execute_script('''
                     var el = document.{tag_attr_command}("{tag_attribute_value}")[0];
                     el.value = "{new_value}";
                     var event = document.createEvent("HTMLEvents");
                     event.initEvent("change", true, false);
                     el.dispatchEvent(event);
-                ''')
+                '''.format(tag_attr_command=tag_attr_command, tag_attribute_value=tag_attribute_value, new_value=new_value))
                 break
                 
             except Exception as e:
                 time.sleep(1)
                 a+=1
-                print(f'Page not loaded, attempt number: {a}')
+                print('Page not loaded, attempt number: {a}'.format(a=a))
                 if a < 10:
                     continue
 
@@ -198,7 +198,7 @@ class AllPlayerPage(WebPage):
 
         self.load_page(BASE_ALL_PLAYER_URL.format(date=date, season_type=season_type))
         # time.sleep(3)
-        print(f'Gathering player ids for {date}')
+        print('Gathering player ids for {date}'.format(date=date))
 
         self.dom_change_event_class(
             tag_attribute="class",
@@ -231,9 +231,10 @@ class AllPlayerPage(WebPage):
         second_date = first_date+1
 
         while (first_date<2018):
-            dates.append(f'{first_date}-{str(second_date)[2]}{str(second_date)[3]}')
+            dates.append('{first_date}-{first_digit}{second_digit}'.format(first_date=first_date, first_digit=str(second_date)[2], second_digit=str(second_date)[3]))
             first_date+=1
             second_date+=1
+            print(dates)
         
         for date in dates:
             self.get_all_player_ids(
@@ -446,7 +447,7 @@ class PlayerPage(WebPage):
                 stat_type=stat_type
             )
             self.push_player_matches_to_db(pmatches)
-            print(f'* Records for {key} pushed to db')
+            print('* Records for {key} pushed to db'.format(key=key))
 
 
     #Pretty hard-coded
@@ -488,7 +489,7 @@ class PlayerPage(WebPage):
         day = second.replace(",", "")
         month = months[first]
         year = third
-        formatted_date = f'{year}-{month}-{day}'
+        formatted_date = '{year}-{month}-{day}'.format(year=year, month=month, day=day)
         
         return formatted_date
 
