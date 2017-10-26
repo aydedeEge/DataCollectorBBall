@@ -1,0 +1,7 @@
+# Don't include these files in repo #
+#####################################
+config.json
+__pycache__
+devEnv
+*.pyc
+*.pyo
