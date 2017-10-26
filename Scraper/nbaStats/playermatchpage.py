@@ -181,8 +181,11 @@ class PlayerPage(WebPage):
     
     def push_all_pmatches_to_db_by_date(self, date, season_type, stat_type, players):
         all_matches = []
+        length = len(players)
+        iterator = 1
+
         for key, value in players.items():
-            print("* Gathering player matches for {key}".format(key=key))
+            print("* {iterator}/{length} - Gathering player matches for {key}".format(iterator=iterator, length=length, key=key))
             pmatches = self.get_player_matches(
                 player_id=value,
                 date=date,
@@ -190,7 +193,8 @@ class PlayerPage(WebPage):
                 stat_type=stat_type
             )
             self.push_player_matches_to_db(pmatches)
-            print('+ Records for {key} pushed to db'.format(key=key))
+            print('+ {iterator}/{length} - Records for {key} pushed to db'.format(iterator=iterator, length=length, key=key))
+            iterator+=1
 
 
     #Pretty hard-coded
