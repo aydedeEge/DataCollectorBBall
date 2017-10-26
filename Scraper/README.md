@@ -19,21 +19,21 @@ Now create create a config.json file in the nbaStats director with the following
 
 ## Running `beautifulSoupSelenium.py`:
 
-Desc: Get all pids and names of specified date
-Modifiers(Required):
+#### Desc: Get all pids and names of specified date
+#### Modifiers(Required):
 `-db`: push to remote sql db
 `-print`: print to terminal
 
 `python beautifulSoupSelenium.py pids <date> <modifier>`
 
-Desc: Get all pids and names
-Modifiers(Required):
+#### Desc: Get all pids and names
+#### Modifiers(Required):
 `-db`: push to remote sql db
 `-print`: print to terminal
 
 `python beautifulSoupSelenium.py all_pids <modifier>`
 
-Desc: Get all player matches
-UNDER CONSTRUCTION
+#### Desc: Get all player matches
+#### UNDER CONSTRUCTION
 
 `python beautifulSoupSelenium.py pmatches`
