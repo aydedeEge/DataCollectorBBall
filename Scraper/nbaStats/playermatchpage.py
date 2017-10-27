@@ -76,7 +76,7 @@ class PlayerPage(WebPage):
                 stat_row = tr.find_all("td")
                 match_up = self.get_embedded_text(stat_row[0])
                 mdate = self.transform_date(match_up.split(" - ")[0])
-                pteam, oteam = self.get_teams_from_text(match_up.split(" - ")[1])
+                pteam, oteam, home_away = self.get_teams_from_text(match_up.split(" - ")[1])
                 win_loss = self.get_embedded_text(stat_row[1])
                 mins_played = self.get_embedded_text(stat_row[2])
                 pts = self.get_embedded_text(stat_row[3])
@@ -98,8 +98,6 @@ class PlayerPage(WebPage):
                 tov = self.get_embedded_text(stat_row[19])
                 pf = self.get_embedded_text(stat_row[20])
                 plus_minus = self.get_embedded_text(stat_row[21])
-                # NEED TO FIND A WAY TO FIND THIS
-                home_away = "H"
 
                 matches_list.append(
                     {
@@ -208,11 +206,13 @@ class PlayerPage(WebPage):
         if 'vs.' in text:
             team1 = text.split('vs.')[0].replace(" ", "")
             team2 = text.split('vs.')[1].replace(" ", "")
+            home_away = "H"
         elif '@' in text:
             team1 = text.split('@')[0].replace(" ", "")
             team2 = text.split('@')[1].replace(" ", "")
+            home_away = "A"
 
-        return team1, team2
+        return team1, team2, home_away
 
 
     # Mar 08, 2017 unformatted
