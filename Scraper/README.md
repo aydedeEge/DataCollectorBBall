@@ -10,10 +10,10 @@ Now create create a config.json file in the nbaStats director with the following
 
 ```
 {
-    host: "<host_ip>",
-    user: "<username>",
-    pwd: "<super_secret_password>",
-    db: "<database_name>"
+    "host": "<host_ip>",
+    "user": "<username>",
+    "pwd": "<super_secret_password>",
+    "db": "<database_name>"
 }
 ```
 
