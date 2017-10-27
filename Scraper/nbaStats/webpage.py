@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from load_config import read_config, set_env_vars
 from pymysqlconnect import PyMySQLConn
+from sys import platform
 
 class WebPage:
 
@@ -15,7 +16,10 @@ class WebPage:
     }
 
     def __init__(self):
-        self.driver = webdriver.Chrome('{path}/chromedriver'.format(path=os.getcwd()))
+        if platform == "linux" or platform == "linux2":
+             self.driver = webdriver.Chrome('{path}/linux/chromedriver'.format(path=os.getcwd()))
+        elif platform == "darwin": #Mac is darwin for some reason
+           self.driver = webdriver.Chrome('{path}/chromedriver'.format(path=os.getcwd()))
 
     def load_page(self, url):
         self.url = url
