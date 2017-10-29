@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Calculate the scores"""
 # -*- encoding: utf-8 -*-
-import MySQLdb
 import os
+import MySQLdb
 
-from load_config import read_config, set_env_vars
+from . load_config.py import read_config, set_env_vars
 
 # TODO: if it already exists, update the score instead of throwing dup key error
 FG_3_SCORE = 3
@@ -27,7 +27,7 @@ def calculate():
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_projections")
+    cursor.execute("SELECT * FROM player_stats")
     result_set = cursor.fetchall()
 
     for row in result_set:
@@ -44,4 +44,8 @@ def calculate():
     connection.close()
 
 if __name__ == '__main__':
+    # Db config initialization
+    conf = read_config()
+    set_env_vars(conf)
+
     calculate()
