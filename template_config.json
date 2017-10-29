@@ -1,3 +1,6 @@
+//This file is a "template". You don't actually use it. It's useless. Add another file
+//in this directory called "config.json" and put what's below. That may seem stupid,
+//and it is.
 {
     "host": "",
     "user": "",
