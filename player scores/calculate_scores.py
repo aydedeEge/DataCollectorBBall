@@ -2,6 +2,9 @@
 """Calculate the scores"""
 # -*- encoding: utf-8 -*-
 import MySQLdb
+import os
+
+from load_config import read_config, set_env_vars
 
 # TODO: if it already exists, update the score instead of throwing dup key error
 FG_3_SCORE = 3
@@ -16,10 +19,10 @@ SEASON = 2017
 
 def calculate():
     """Calculate the scores"""
-    connection = MySQLdb.connect(host="77.104.156.87",    # your host, usually localhost
-                                 user="d2matchb_sastren",         # your username
-                                 passwd="change_this_pwd",  # your password
-                                 db="d2matchb_bball")        # name of the data base
+    connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
+                                 user = os.environ["user"],         # your username
+                                 passwd = os.environ["pwd"],  # your password
+                                 db = os.environ["db"])        # name of the data base
 
     # you must create a Cursor object. It will let
     # you execute all the queries you need

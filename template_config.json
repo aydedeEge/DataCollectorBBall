@@ -1,0 +1,7 @@
+// This is a template for our config.json file. Ask Ege for credentials.
+{
+    "host": "",
+    "user": "",
+    "pwd": "",
+    "db": ""
+}
