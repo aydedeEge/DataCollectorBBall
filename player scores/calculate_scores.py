@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Calculate the scores"""
 # -*- encoding: utf-8 -*-
-import os
+import os,sys,inspect
 import MySQLdb
 
-from . load_config.py import read_config, set_env_vars
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from load_config import read_config, set_env_vars
+
 
 # TODO: if it already exists, update the score instead of throwing dup key error
 FG_3_SCORE = 3
