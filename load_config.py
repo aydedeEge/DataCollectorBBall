@@ -2,7 +2,7 @@ import os
 import json
 
 def read_config():
-    with open('config.json') as data_file:    
+    with open('../config.json') as data_file:    
         data = json.load(data_file)
     return data
 

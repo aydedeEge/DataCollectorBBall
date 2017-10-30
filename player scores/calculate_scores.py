@@ -2,9 +2,14 @@
 """Calculate the scores"""
 # -*- encoding: utf-8 -*-
 import os
+import sys
+import inspect
 import MySQLdb
 
-from . load_config.py import read_config, set_env_vars
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+from load_config import read_config, set_env_vars
 
 # TODO: if it already exists, update the score instead of throwing dup key error
 FG_3_SCORE = 3
@@ -36,8 +41,8 @@ def calculate():
                  row["STL_36"] * STEAL_SCORE + row["TOV_36"] * TURNOVER_SCORE)
         player_id = row["player_id"]
 
-        cursor.execute("INSERT INTO `d2matchb_bball`.`scores` (`player_id`, `season`, `score`)" +\
-                       " VALUES (" + str(player_id) + "," + str(SEASON) + "," + str(score) + ");")
+        cursor.execute("UPDATE `d2matchb_bball`.`player_stats`" +\
+                       " SET score = " + score + "WHERE player_id = " + player_id + ";")
 
     connection.commit()
     # print all the first cell of all the rows
