@@ -42,7 +42,7 @@ def calculate():
         player_id = row["player_id"]
 
         cursor.execute("UPDATE `d2matchb_bball`.`player_stats`" +\
-                       " SET score = " + score + "WHERE player_id = " + player_id + ";")
+                       " SET score = " + str(score) + "WHERE player_id = " + str(player_id) + ";")
 
     connection.commit()
     # print all the first cell of all the rows
