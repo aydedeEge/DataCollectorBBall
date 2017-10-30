@@ -161,6 +161,7 @@ def main():
         "get_teams": get_teams,
         "get_all_teams": get_all_teams,
         "pmatches": get_pmatches,
+        "all_pids": get_all_pids,
     }
     # Db config initialization
     conf = read_config()

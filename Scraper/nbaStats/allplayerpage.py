@@ -13,6 +13,7 @@ BASE_PLAYER_URL = "https://stats.nba.com/player/{player_id}/{stat_type}/?Season=
 BASE_ALL_PLAYER_URL = "https://stats.nba.com/players/traditional/?sort=PTS&dir=-1&Season={date}&SeasonType={season_type}"
 
 
+
 class AllPlayerPage(WebPage):
     def __init__(self):
         super().__init__()
