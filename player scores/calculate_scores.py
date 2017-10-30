@@ -41,8 +41,8 @@ def calculate():
                  row["STL_36"] * STEAL_SCORE + row["TOV_36"] * TURNOVER_SCORE)
         player_id = row["player_id"]
 
-        cursor.execute("INSERT INTO `d2matchb_bball`.`scores` (`player_id`, `season`, `score`)" +\
-                       " VALUES (" + str(player_id) + "," + str(SEASON) + "," + str(score) + ");")
+        cursor.execute("UPDATE `d2matchb_bball`.`player_stats`" +\
+                       " SET score = " + str(score) + "WHERE player_id = " + str(player_id) + ";")
 
     connection.commit()
     # print all the first cell of all the rows
