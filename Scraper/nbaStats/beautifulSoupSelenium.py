@@ -16,7 +16,6 @@ BASE_PLAYER_URL = "https://stats.nba.com/player/{player_id}/{stat_type}/?Season=
 BASE_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season={date}&SeasonType={season_type}"
 TEST_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season=2016-17&SeasonType=Regular%20Season"
 
-
 def get_pids(args=None):
     wp = AllPlayerPage()
     try:
@@ -111,14 +110,41 @@ def get_all_matches(args):
     mp = MatchPage()
 
     try:
-        dates = mp.get_matches_all_dates(season_type="Regular%20Season")
-        for date, matches in dates.items():
-            if args[2] == '-db':
-                mp.push_matches_to_db(matches)
-            elif args[2] == '-print':
+        if args[2] == '-db':
+            mp.get_matches_all_dates(season_type="Regular%20Season",start_date=1979, end_date=2018, db=True)
+        elif args[2] == '-print':
+            dates = mp.get_matches_all_dates(season_type="Regular%20Season")
+            for date, matches in dates.items():
                 for match in matches:
                     print(match)
 
+    except Exception as e:
+        raise e
+
+def get_teams(args):
+    tp = TeamPage()
+
+    try:
+        teams = tp.get_all_team_ids(
+            date=args[2],
+            season_type="Regular%20Season",
+        )
+
+        print(teams)
+    except Exception as e:
+        raise e
+
+def get_all_teams(args):
+    tp = TeamPage()
+
+    try:
+        teams = tp.get_all_team_ids_all_dates(
+            season_type="Regular%20Season",
+        )
+        if args[2] == "-db":
+            tp.push_teams_to_db(teams)
+        elif args[2] == "-print":
+            print(teams)
     except Exception as e:
         raise e
 
@@ -129,6 +155,8 @@ def main():
         "all_pids": get_all_pids,
         "get_matches": get_matches,
         "get_all_matches": get_all_matches,
+        "get_teams": get_teams,
+        "get_all_teams": get_all_teams,
     }
     # Db config initialization
     conf = read_config()

@@ -33,6 +33,7 @@ VALUES ({pid}, {minutes}, {points}, {fgm}, {fga}, {fgper}, {tpm}, {tpa}, {tpper}
 {ftm}, {fta}, {ftper}, {orb}, {drb}, {reb}, {ast}, {stl}, {blk}, {tov}, {pf}, "{mdate}", "{pteam}", "{oteam}", "{home_away}", "{winloss}", {plusminus});'''
 
 SQL_INSERT_MATCHES_BASE = """INSERT INTO `d2matchb_bball`.`matches`(`hteam`,`ateam`,`winner`,`date`) VALUES ("{hteam}", "{ateam}", "{winner}", "{date}");"""
+SQL_INSERT_TEAM_BASE = """INSERT INTO `d2matchb_bball`.`teams` (`teamid`, `name`) VALUES ({teamid}, "{name}");"""
 
 
 class PyMySQLConn:
@@ -125,6 +126,19 @@ class PyMySQLConn:
                         ateam=ateam,
                         winner=winner,
                         date=date,
+                    )
+                )
+            connection.commit()
+        except Exception as e:
+            raise e
+
+    def insert_team(self, connection, teamid, name):
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    SQL_INSERT_TEAM_BASE.format(
+                        teamid=teamid,
+                        name=name,
                     )
                 )
             connection.commit()

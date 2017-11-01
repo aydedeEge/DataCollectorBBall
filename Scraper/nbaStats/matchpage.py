@@ -8,7 +8,7 @@ from load_config import read_config, set_env_vars
 from pymysqlconnect import PyMySQLConn
 from webpage import WebPage
 
-BASE_MATCH_ID_URL = "https://stats.nba.com/teams/traditional/?sort=W_PCT&dir=-1&Season={date}&SeasonType={season_type}"
+BASE_TEAM_ID_URL = "https://stats.nba.com/teams/traditional/?sort=W_PCT&dir=-1&Season={date}&SeasonType={season_type}"
 BASE_MATCH_URL = "https://stats.nba.com/team/{team_id}/boxscores/?Season={date}&SeasonType={season_type}"
 
 class Match():
@@ -26,6 +26,9 @@ class Match():
             winner=self.winner
         )
         return string
+
+    def __eq__(self, other):
+        return self.hteam == other.hteam and self.ateam == other.ateam and self.date == other.date
 
     def get_hteam(self):
         return self.hteam
@@ -46,7 +49,7 @@ class TeamPage(WebPage):
     def get_all_team_ids(self, date, season_type, all_date_team_ids={}):
         all_team_ids_dict = {}
 
-        self.load_page(BASE_MATCH_ID_URL.format(date=date, season_type=season_type))
+        self.load_page(BASE_TEAM_ID_URL.format(date=date, season_type=season_type))
         print("* Gathering team ids for {date}".format(date=date))
 
         self.dom_change_event_class(
@@ -75,13 +78,13 @@ class TeamPage(WebPage):
         return all_team_ids_dict
 
     # Add start_date and end_date args
-    def get_all_team_ids_all_dates(self, season_type):
+    def get_all_team_ids_all_dates(self, season_type, start_date=1996, end_date=2018):
         dates = []
         all_team_ids = {}
-        first_date = 2015
+        first_date = start_date
         second_date = first_date+1
 
-        while (first_date<2018):
+        while (first_date<end_date):
             dates.append('{first_date}-{first_digit}{second_digit}'.format(first_date=first_date, first_digit=str(second_date)[2], second_digit=str(second_date)[3]))
             first_date+=1
             second_date+=1
@@ -95,11 +98,34 @@ class TeamPage(WebPage):
 
         return all_team_ids
 
+    def push_teams_to_db(self, teams):
+        config = {
+            "host": os.environ["host"],
+            "user": os.environ["user"],
+            "pwd": os.environ["pwd"],
+            "db": os.environ["db"],
+        }
+
+        sql = PyMySQLConn(config)
+        connection = sql.connect_db()
+
+        length = len(teams)
+        iterator = 1
+
+        for name, teamid in teams.items():
+            sql.insert_team(
+                connection=connection,
+                teamid=teamid,
+                name=name,
+            )
+            print("+ {iterator}/{length} - Pushed {name} to db".format(iterator=iterator, length=length, name=name))
+            iterator+=1
+
 class MatchPage(WebPage):
     def __init__(self):
         super().__init__()
 
-    def get_matches(self, team_id, date, season_type, all_matches=[]):
+    def get_matches(self, team_id, date, season_type, all_matches=[], threshold=200):
         matches_list = []
         self.load_page(
             BASE_MATCH_URL.format(
@@ -148,11 +174,14 @@ class MatchPage(WebPage):
                 )
 
                 matches_list.append(match)
-                if match not in all_matches:
-                    all_matches.append(match)
         except Exception as e:
             raise e
-        print("* {tid} matches gathered".format(tid=team_id))
+        print("* {length} matches gathered for team {tid}".format(length=len(matches_list),tid=team_id))
+        if len(matches_list) < threshold:
+            for match in matches_list:
+                if match not in all_matches:
+                    all_matches.append(match)
+        print("*** {length} matches in all_matches".format(length=len(all_matches)))
         return matches_list
 
     #Pretty hard-coded
@@ -222,32 +251,35 @@ class MatchPage(WebPage):
 
         return all_matches
 
-    def get_matches_all_dates(self, season_type, db=False):
+    def get_matches_all_dates(self, season_type, start_date=1979, end_date=2018, db=False):
         
         tp = TeamPage()
-        all_teams = tp.get_all_team_ids_all_dates(
-            season_type=season_type
-        )
-
         dates = []
         all_date_matches = {}
-        first_date = 2016
+        first_date = start_date
         second_date = first_date+1
 
-        while (first_date<2017):
+        while (first_date<end_date):
             dates.append('{first_date}-{first_digit}{second_digit}'.format(first_date=first_date, first_digit=str(second_date)[2], second_digit=str(second_date)[3]))
             first_date+=1
             second_date+=1
 
         for date in dates:
+            teams = tp.get_all_team_ids(
+                date=date,
+                season_type=season_type,
+            )
+            print("** Gathering matches for {date}".format(date=date))
             matches = self.get_matches_all_teams(
                 date=date,
                 season_type="Regular%20Season",
-                all_teams=all_teams,
+                all_teams=teams,
             )
 
             if db:
+                print("** Pushing matches from {date} to db".format(date=date))
                 self.push_matches_to_db(matches)
+                continue
 
             all_date_matches[date] = matches
 
