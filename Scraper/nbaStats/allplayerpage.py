@@ -1,7 +1,7 @@
 import os
 import time
 import sys
-import MySQLdb
+#import MySQLdb
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
