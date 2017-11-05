@@ -120,7 +120,7 @@ class AllPlayerPage(WebPage):
     def get_all_playerStats_all_date(self, season_type):
         dates = []
         all_player_stats = []
-        first_date = 2016
+        first_date = 1979
         second_date = first_date + 1
 
         while (first_date < 2018):
@@ -174,10 +174,10 @@ class AllPlayerPage(WebPage):
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
         for player in playerStats:
             command = "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
-                "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
+                "`name`, `season`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
                 "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +\
                 "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID) +\
-                "," + str(player.Name) + "," + str(player.Season) + "," + str(player.Name) + "," + str(player.FieldGoalsMade) +\
+                ",\"" + str(player.Name) + "\"," + str(player.Season) + "," + str(player.FieldGoalsMade) +\
                 "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +\
                 "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +\
                 "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +\
