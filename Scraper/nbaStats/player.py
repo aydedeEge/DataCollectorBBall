@@ -6,13 +6,13 @@ class Player:
                  ThreeMade=None, ThreeAttempted=None, ThreePercentage=None,
                  FreeThrowsMade=None, FreeThrowsAttempted=None, FreeThrowsPercentage=None,
                  OffRebounds=None, DefRebounds=None, Rebounds=None,
-                 Assists=None, Steals=None, Block=None, Turnovers=None, Efficiency=None,PersonalFouls=None):
+                 Assists=None, Steals=None, Blocks=None, Turnovers=None, Efficiency=None,PersonalFouls=None):
         self.Name = Name
         self.Season = Season
         self.psID = Season + ID
         self.ID = ID
-        self.GamesPlayed = GamesPlayed
-        self.MinutesPlayed = MinutesPlayed
+        self.GamesPlayed = float(GamesPlayed)
+        self.MinutesPlayed = float(MinutesPlayed)
         self.Points = self.toThirtySix(Points)
         self.FieldGoalsMade = self.toThirtySix(FieldGoalsMade)
         self.FieldGoalsAttempted = self.toThirtySix(FieldGoalsAttempted)
@@ -25,17 +25,18 @@ class Player:
         self.FreeThrowsPercentage = self.toThirtySix(FreeThrowsPercentage)
         self.OffRebounds = self.toThirtySix(OffRebounds)
         self.DefRebounds = self.toThirtySix(DefRebounds)
-        self.TotalRebounds = self.toThirtySix(OffRebounds) + DefRebounds
+        self.TotalRebounds = self.toThirtySix(OffRebounds) + self.toThirtySix(DefRebounds)
         self.Rebounds = self.toThirtySix(Rebounds)
         self.Assists = self.toThirtySix(Assists)
         self.Steals = self.toThirtySix(Steals)
-        self.Block = self.toThirtySix(Block)
+        self.Blocks = self.toThirtySix(Blocks)
         self.Turnovers = self.toThirtySix(Turnovers)
         self.PersonalFouls = self.toThirtySix(PersonalFouls)
         self.Efficiency = Efficiency
 
     def toThirtySix(self, val48):
-        return (val48 * 36) / 48
+        if(val48 == None): return -1
+        return (float(val48) * 36) / 48
 
     def printPlayer(self):
         print(
@@ -58,7 +59,7 @@ class Player:
             "Rebounds ", self.Rebounds, ":",
             "Assists ", self.Assists, ":",
             "Steals ", self.Steals, ":",
-            "Block ", self.Block, ":",
+            "Blocks ", self.Blocks, ":",
             "Turnovers ", self.Turnovers, ":",
             "PersonalFouls ", self.PersonalFouls, ":",
             "Efficiency ", self.Efficiency

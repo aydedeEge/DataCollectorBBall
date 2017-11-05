@@ -70,10 +70,10 @@ def get_all_stats(args=None):
         raise e
 
     try:
-        if args[3] == '-db':
-            wp.push_all_player_stats_to_db(players.items)
+        if args[2] == '-db':
+            wp.push_all_player_stats_to_db(players)
             print("pushed to sql")
-        elif args[3] == '-print':
+        elif args[2] == '-print':
             print(players)
     except Exception as e:
         print("Did you forget the -print modifier?")

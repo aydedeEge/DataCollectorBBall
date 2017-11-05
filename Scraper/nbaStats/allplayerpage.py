@@ -1,7 +1,7 @@
 import os
 import time
 import sys
-#import MySQLdb
+import MySQLdb
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -62,8 +62,7 @@ class AllPlayerPage(WebPage):
             if child.string is not None:
                 return child.string
 
-    def get_all_player_stats(self, date, season_type, all_date_player_ids={}):
-        all_player_stats_dict = {}
+    def get_all_player_stats(self, date, season_type, all_date_player_stats=[]):
 
         self.load_page(BASE_ALL_PLAYER_URL.format(
             date=date, season_type=season_type))
@@ -112,18 +111,16 @@ class AllPlayerPage(WebPage):
                             ThreePerc, FTM, FTA, FTperc, OREB, DREB, REB, AST, STL, BLK, TOV, EFF)
             player.printPlayer()
             try:
-                all_player_stats_dict[player_id] = player
-                if player_id not in all_date_player_ids:
-                    all_date_player_ids[player_id] = player
+                if player_id not in all_date_player_stats:
+                    all_date_player_stats.append(player)
 
             except Exception as e:
                 pass
-        return all_player_stats_dict
 
     def get_all_playerStats_all_date(self, season_type):
         dates = []
-        all_player_stats = {}
-        first_date = 1979
+        all_player_stats = []
+        first_date = 2016
         second_date = first_date + 1
 
         while (first_date < 2018):
@@ -136,7 +133,7 @@ class AllPlayerPage(WebPage):
             self.get_all_player_stats(
                 date=date,
                 season_type=season_type,
-                all_date_player_ids=all_player_stats
+                all_date_player_stats=all_player_stats
             )
         return all_player_stats
 
@@ -176,8 +173,7 @@ class AllPlayerPage(WebPage):
         )
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
         for player in playerStats:
-            cursor.execute(
-                "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +
+            command = "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +
                 "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +
                 "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +
                 "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID) +
@@ -186,9 +182,9 @@ class AllPlayerPage(WebPage):
                 "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +
                 "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +
                 "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +
-                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowPercentage) +
+                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowsPercentage) +
                 "," + str(player.Efficiency) + ");"
-            )
+            cursor.execute(command)
         connection.commit()
         connection.close()
 
