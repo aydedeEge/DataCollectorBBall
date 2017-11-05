@@ -29,7 +29,8 @@ class AllPlayerPage(WebPage):
     def get_all_player_ids(self, date, season_type, all_date_player_ids={}):
         all_player_ids_dict = {}
 
-        self.load_page(BASE_ALL_PLAYER_URL.format(date=date, season_type=season_type))
+        self.load_page(BASE_ALL_PLAYER_URL.format(
+            date=date, season_type=season_type))
         # time.sleep(3)
         print('* Gathering player ids for {date}'.format(date=date))
 
@@ -55,7 +56,7 @@ class AllPlayerPage(WebPage):
                 pass
 
         return all_player_ids_dict
-  
+
     def get_embedded_text(self, tag):
         for child in tag.descendants:
             if child.string is not None:
@@ -66,7 +67,7 @@ class AllPlayerPage(WebPage):
 
         self.load_page(BASE_ALL_PLAYER_URL.format(
             date=date, season_type=season_type))
-       
+
         print('* Gathering player ids for {date}'.format(date=date))
 
         self.dom_change_event_class(
@@ -78,13 +79,15 @@ class AllPlayerPage(WebPage):
         soup = BeautifulSoup(html, "html.parser")
 
         all_player_rows = soup.tbody.find_all("tr")
-      
+        SEASON = date[:4]
+        print(SEASON)
         for tr in all_player_rows:
             stat_row = tr.find_all("td")
 
             player_id_tag = stat_row[1]
             player_name = player_id_tag.find("a").string
             player_id = player_id_tag.find("a")["href"].split("/")[2]
+
             GP = self.get_embedded_text(stat_row[2])
             MIN = self.get_embedded_text(stat_row[3])
             PTS = self.get_embedded_text(stat_row[4])
@@ -105,8 +108,8 @@ class AllPlayerPage(WebPage):
             BLK = self.get_embedded_text(stat_row[19])
             TOV = self.get_embedded_text(stat_row[20])
             EFF = self.get_embedded_text(stat_row[21])
-            player = Player(player_name, player_id,GP, MIN, PTS, FGM, FGA, FGperc, ThreePM, ThreePA,
-                          ThreePerc, FTM, FTA, FTperc, OREB, DREB, REB, AST, STL, BLK, TOV, EFF)
+            player = Player(player_name, SEASON, player_id, GP, MIN, PTS, FGM, FGA, FGperc, ThreePM, ThreePA,
+                            ThreePerc, FTM, FTA, FTperc, OREB, DREB, REB, AST, STL, BLK, TOV, EFF)
             player.printPlayer()
             try:
                 all_player_stats_dict[player_id] = player
@@ -114,7 +117,7 @@ class AllPlayerPage(WebPage):
                     all_date_player_ids[player_id] = player
 
             except Exception as e:
-                pass   
+                pass
         return all_player_stats_dict
 
     def get_all_playerStats_all_date(self, season_type):
@@ -163,27 +166,27 @@ class AllPlayerPage(WebPage):
         for child in tag.descendants:
             if child.string is not None:
                 return child.string
-            
+
     def push_all_player_stats_to_db(self, playerStats):
         connection = MySQLdb.connect(
-            host = os.environ["host"],    # your host, usually localhost
-            user = os.environ["user"],         # your username
-            passwd = os.environ["pwd"],  # your password
-            db = os.environ["db"]
+            host=os.environ["host"],    # your host, usually localhost
+            user=os.environ["user"],         # your username
+            passwd=os.environ["pwd"],  # your password
+            db=os.environ["db"]
         )
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
         for player in playerStats:
             cursor.execute(
-                "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
-                "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
-                "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`,"+\
-                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID)+\
-                "," + str(player.Name) + "," + str(player.Season) + "," + str(player.Name) + "," + str(player.FieldGoalsMade) +\
-                "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +\
-                "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +\
-                "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +\
-                "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +\
-                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowPercentage) +\
+                "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +
+                "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +
+                "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +
+                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID) +
+                "," + str(player.Name) + "," + str(player.Season) + "," + str(player.Name) + "," + str(player.FieldGoalsMade) +
+                "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +
+                "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +
+                "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +
+                "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +
+                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowPercentage) +
                 "," + str(player.Efficiency) + ");"
             )
         connection.commit()

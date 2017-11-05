@@ -1,12 +1,12 @@
 
 class Player:
 
-    def __init__(self, Season, Name, ID, GamesPlayed=None, MinutesPlayed=None, Points=None,
+    def __init__(self, Name, Season, ID, GamesPlayed=None, MinutesPlayed=None, Points=None,
                  FieldGoalsMade=None, FieldGoalsAttempted=None, FieldGoalPercentage=None,
                  ThreeMade=None, ThreeAttempted=None, ThreePercentage=None,
                  FreeThrowsMade=None, FreeThrowsAttempted=None, FreeThrowsPercentage=None,
                  OffRebounds=None, DefRebounds=None, Rebounds=None,
-                 Assists=None, Steals=None, Block=None, Turnovers=None, PersonalFouls=None, Efficiency=None):
+                 Assists=None, Steals=None, Block=None, Turnovers=None, Efficiency=None,PersonalFouls=None):
         self.Name = Name
         self.Season = Season
         self.psID = Season + ID
@@ -40,25 +40,26 @@ class Player:
     def printPlayer(self):
         print(
             self.Name, " ->",
-            self.Season, ":",
-            self.GamesPlayed, ":",
-            self.MinutesPlayed, ":",
-            self.Points, ":",
-            self.FieldGoalsMade, ":",
-            self.FieldGoalsAttempted, ":",
-            self.FieldGoalPercentage, ":",
-            self.ThreeAttempted, ":",
-            self.ThreeMade, ":",
-            self.ThreePercentage, ":",
-            self.FreeThrowsMade, ":",
-            self.FreeThrowsAttempted, ":",
-            self.FreeThrowsPercentage, ":",
-            self.OffRebounds, ":",
-            self.DefRebounds, ":",
-            self.Rebounds, ":",
-            self.Assists, ":",
-            self.Steals, ":",
-            self.Block, ":",
-            self.Turnovers, ":",
-            self.Efficiency
+            "Season ", self.Season, ":",
+            "GamesPlayed ", self.GamesPlayed, ":",
+            "MinutesPlayed ", self.MinutesPlayed, ":",
+            "Points ", self.Points, ":",
+            "FieldGoalsMade ", self.FieldGoalsMade, ":",
+            "FieldGoalsAttempted ", self.FieldGoalsAttempted, ":",
+            "FieldGoalPercentage ", self.FieldGoalPercentage, ":",
+            "ThreeAttempted ", self.ThreeAttempted, ":",
+            "ThreeMade ", self.ThreeMade, ":",
+            "ThreePercentage ", self.ThreePercentage, ":",
+            "FreeThrowsMade ", self.FreeThrowsMade, ":",
+            "FreeThrowsAttempted ", self.FreeThrowsAttempted, ":",
+            "FreeThrowsPercentage ", self.FreeThrowsPercentage, ":",
+            "OffRebounds ", self.OffRebounds, ":",
+            "DefRebounds ", self.DefRebounds, ":",
+            "Rebounds ", self.Rebounds, ":",
+            "Assists ", self.Assists, ":",
+            "Steals ", self.Steals, ":",
+            "Block ", self.Block, ":",
+            "Turnovers ", self.Turnovers, ":",
+            "PersonalFouls ", self.PersonalFouls, ":",
+            "Efficiency ", self.Efficiency
         )
