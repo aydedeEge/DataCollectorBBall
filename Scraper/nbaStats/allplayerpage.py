@@ -150,13 +150,20 @@ class AllPlayerPage(WebPage):
         )
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
         for r in playerStats:
-            cursor.execute("INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
+            cursor.execute(
+                "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
                 "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
                 "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`,"+\
-                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + r.ID + ", " + r.psID +, 'NAME', 2017," '51', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0', '1', '2', '3', '4', '5', '6', '7');"
-                " SET score = " + str(score) + "WHERE player_id = " + str(player_id) + ";")
+                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + r.ID + "," + r.psID +\
+                "," + r.Name + "," + r.Season + "," + r.Name + "," + r.FieldGoalsMade +\
+                "," + r.FieldGoalsAttempted + "," + r.ThreeMade + "," + r.ThreeAttempted +\
+                "," + r.FreeThrowsMade + "," + r.FreeThrowsAttempted + "," + r.OffRebounds +\
+                "," + r.TotalRebounds + "," + r.Assists + "," + r.Steals + "," + r.Blocks +\
+                "," + r.Turnovers + "," + r.PersonalFouls + "," + r.Points +\
+                "," + r.FieldGoalPercentage + "," + r.ThreePercentage + "," + r.FreeThrowPercentage +\
+                "," + r.Efficiency + ");"
+            )
         connection.commit()
-        # print all the first cell of all the rows
         connection.close()
 
     def push_all_player_ids_to_db(self, players):

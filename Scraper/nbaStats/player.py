@@ -6,9 +6,10 @@ class Player:
                  ThreeMade=None, ThreeAttempted=None, ThreePercentage=None,
                  FreeThrowsMade=None, FreeThrowsAttempted=None, FreeThrowsPercentage=None,
                  OffRebounds=None, DefRebounds=None, Rebounds=None,
-                 Assists=None, Steals=None, Block=None, Turnovers=None, Efficiency=None):
+                 Assists=None, Steals=None, Block=None, Turnovers=None, PersonalFouls=None, Efficiency=None):
         self.Name = Name
         self.Season = Season
+        self.psID = Season + ID
         self.ID = ID
         self.GamesPlayed = GamesPlayed
         self.MinutesPlayed = MinutesPlayed
@@ -24,11 +25,13 @@ class Player:
         self.FreeThrowsPercentage = FreeThrowsPercentage
         self.OffRebounds = OffRebounds
         self.DefRebounds = DefRebounds
+        self.TotalRebounds = OffRebounds + DefRebounds
         self.Rebounds = Rebounds
         self.Assists = Assists
         self.Steals = Steals
         self.Block = Block
         self.Turnovers = Turnovers
+        self.PersonalFouls = PersonalFouls
         self.Efficiency = Efficiency
 
     def printPlayer(self):
