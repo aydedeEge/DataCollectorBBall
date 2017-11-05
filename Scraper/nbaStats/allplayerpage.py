@@ -110,9 +110,32 @@ class AllPlayerPage(WebPage):
             player.printPlayer()
             try:
                 all_player_stats_dict[player_id] = player
+                if player_id not in all_date_player_ids:
+                    all_date_player_ids[player_id] = player
+
             except Exception as e:
                 pass   
         return all_player_stats_dict
+
+    def get_all_playerStats_all_date(self, season_type):
+        dates = []
+        all_player_stats = {}
+        first_date = 1979
+        second_date = first_date + 1
+
+        while (first_date < 2018):
+            dates.append('{first_date}-{first_digit}{second_digit}'.format(first_date=first_date,
+                                                                           first_digit=str(second_date)[2], second_digit=str(second_date)[3]))
+            first_date += 1
+            second_date += 1
+
+        for date in dates:
+            self.get_all_player_stats(
+                date=date,
+                season_type=season_type,
+                all_date_player_ids=all_player_stats
+            )
+        return all_player_stats
 
     def get_all_player_ids_all_dates(self, season_type):
         dates = []
