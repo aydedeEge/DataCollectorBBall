@@ -57,7 +57,7 @@ def get_all_pids(args=None):
         raise e
     
 # date, season_type, stat_type, players
-def get_pmatches(args=None):
+def get_player_matches(args=None):
     wp = AllPlayerPage()
     pwp = PlayerPage()
     try:
@@ -151,7 +151,7 @@ def get_all_teams(args):
 def main():
     accepted_args = {
         "pids": get_pids,
-        "pmatches": get_pmatches,
+        "player_matches": get_player_matches,
         "all_pids": get_all_pids,
         "get_matches": get_matches,
         "get_all_matches": get_all_matches,
