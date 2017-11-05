@@ -29,11 +29,11 @@ class WebPage:
         return self.driver.page_source
 
     # Must call load_page at least once before
-    def dom_change_event_class(self, tag_attribute, tag_attribute_value, new_value):
+    def dom_change_event_class(self, tag_attribute, tag_attribute_value, new_value, time_out=10):
         tag_attr_command = "getElementsByClassName"
 
         a = 0
-        while a < 11:
+        while a < time_out:
             try:
                 # Need to change the first line of execute_script; [0] hard coded
                 self.driver.execute_script('''
@@ -49,5 +49,3 @@ class WebPage:
                 time.sleep(1)
                 a+=1
                 print('Page not loaded, attempt number: {a}'.format(a=a))
-                if a < 10:
-                    continue
