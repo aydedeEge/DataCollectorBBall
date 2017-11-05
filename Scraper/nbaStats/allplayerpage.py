@@ -1,6 +1,7 @@
 import os
 import time
 import sys
+import MySQLdb
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -139,6 +140,24 @@ class AllPlayerPage(WebPage):
         for child in tag.descendants:
             if child.string is not None:
                 return child.string
+            
+    def push_all_player_stats_to_db(self, playerStats):
+        connection = MySQLdb.connect(
+            host = os.environ["host"],    # your host, usually localhost
+            user = os.environ["user"],         # your username
+            passwd = os.environ["pwd"],  # your password
+            db = os.environ["db"]
+        )
+        cursor = connection.cursor(MySQLdb.cursors.DictCursor)
+        for r in playerStats:
+            cursor.execute("INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
+                "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
+                "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`,"+\
+                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + r.ID + ", " + r.psID +, 'NAME', 2017," '51', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0', '1', '2', '3', '4', '5', '6', '7');"
+                " SET score = " + str(score) + "WHERE player_id = " + str(player_id) + ";")
+        connection.commit()
+        # print all the first cell of all the rows
+        connection.close()
 
     def push_all_player_ids_to_db(self, players):
         config = {
