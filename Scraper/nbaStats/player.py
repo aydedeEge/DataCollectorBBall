@@ -1,13 +1,14 @@
 
 class Player:
 
-    def __init__(self, Name, ID, GamesPlayed=None, MinutesPlayed=None, Points=None,
+    def __init__(self, Season, Name, ID, GamesPlayed=None, MinutesPlayed=None, Points=None,
                  FieldGoalsMade=None, FieldGoalsAttempted=None, FieldGoalPercentage=None,
                  ThreeMade=None, ThreeAttempted=None, ThreePercentage=None,
                  FreeThrowsMade=None, FreeThrowsAttempted=None, FreeThrowsPercentage=None,
                  OffRebounds=None, DefRebounds=None, Rebounds=None,
                  Assists=None, Steals=None, Block=None, Turnovers=None, Efficiency=None):
         self.Name = Name
+        self.Season = Season
         self.ID = ID
         self.GamesPlayed = GamesPlayed
         self.MinutesPlayed = MinutesPlayed
@@ -31,25 +32,27 @@ class Player:
         self.Efficiency = Efficiency
 
     def printPlayer(self):
-
-        print(self.Name, " ->",
-              self.GamesPlayed, ":",
-              self.MinutesPlayed, ":",
-              self.Points, ":",
-              self.FieldGoalsMade, ":",
-              self.FieldGoalsAttempted, ":",
-              self.FieldGoalPercentage, ":",
-              self.ThreeAttempted, ":",
-              self.ThreeMade, ":",
-              self.ThreePercentage, ":",
-              self.FreeThrowsMade, ":",
-              self.FreeThrowsAttempted, ":",
-              self.FreeThrowsPercentage, ":",
-              self.OffRebounds, ":",
-              self.DefRebounds, ":",
-              self.Rebounds, ":",
-              self.Assists, ":",
-              self.Steals, ":",
-              self.Block, ":",
-              self.Turnovers, ":",
-              self.Efficiency)
+        print(
+            self.Name, " ->",
+            self.Season, ":",
+            self.GamesPlayed, ":",
+            self.MinutesPlayed, ":",
+            self.Points, ":",
+            self.FieldGoalsMade, ":",
+            self.FieldGoalsAttempted, ":",
+            self.FieldGoalPercentage, ":",
+            self.ThreeAttempted, ":",
+            self.ThreeMade, ":",
+            self.ThreePercentage, ":",
+            self.FreeThrowsMade, ":",
+            self.FreeThrowsAttempted, ":",
+            self.FreeThrowsPercentage, ":",
+            self.OffRebounds, ":",
+            self.DefRebounds, ":",
+            self.Rebounds, ":",
+            self.Assists, ":",
+            self.Steals, ":",
+            self.Block, ":",
+            self.Turnovers, ":",
+            self.Efficiency
+        )
