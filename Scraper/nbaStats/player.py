@@ -36,6 +36,7 @@ class Player:
 
     def toThirtySix(self, val48):
         if(val48 == None): return -1
+        if(val48 == "-"): return 0
         return (float(val48) * 36) / 48
 
     def printPlayer(self):
