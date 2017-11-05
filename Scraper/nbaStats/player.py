@@ -34,6 +34,9 @@ class Player:
         self.PersonalFouls = PersonalFouls
         self.Efficiency = Efficiency
 
+    def toThirtySix(self, val48):
+        return (val48 * 36) / 48
+
     def printPlayer(self):
         print(
             self.Name, " ->",
