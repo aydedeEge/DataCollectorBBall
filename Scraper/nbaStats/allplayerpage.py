@@ -173,17 +173,18 @@ class AllPlayerPage(WebPage):
         )
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
         for player in playerStats:
-            command = "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +
-                "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +
-                "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +
-                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID) +
-                "," + str(player.Name) + "," + str(player.Season) + "," + str(player.Name) + "," + str(player.FieldGoalsMade) +
-                "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +
-                "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +
-                "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +
-                "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +
-                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowsPercentage) +
+            command = "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
+                "`name`, `season`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
+                "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +\
+                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID) +\
+                "," + str(player.Name) + "," + str(player.Season) + "," + str(player.Name) + "," + str(player.FieldGoalsMade) +\
+                "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +\
+                "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +\
+                "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +\
+                "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +\
+                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowsPercentage) +\
                 "," + str(player.Efficiency) + ");"
+            print(command)
             cursor.execute(command)
         connection.commit()
         connection.close()
