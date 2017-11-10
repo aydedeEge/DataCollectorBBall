@@ -32,7 +32,7 @@ def calculate():
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_matches")
+    cursor.execute("SELECT * FROM player_matches where score is null and mdate like '2017-01-%';")
     result_set = cursor.fetchall()
 
     for row in result_set:
@@ -40,7 +40,7 @@ def calculate():
                  row["REB"] * RB_SCORE + row["AST"] * AST_SCORE + row["BLK"] * BLK_SCORE +\
                  row["STL"] * STEAL_SCORE + row["TOV"] * TURNOVER_SCORE)
         player_id = row["player_match_id"]
-
+        print(score)
         cursor.execute("UPDATE `d2matchb_bball`.`player_matches`" +\
                        " SET score = " + str(score) + "WHERE player_match_id = " + str(player_id) + ";")
 
