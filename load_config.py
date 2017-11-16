@@ -1,4 +1,4 @@
-import os
+nimport os
 import json
 
 def read_config():
@@ -9,4 +9,3 @@ def read_config():
 def set_env_vars(data):
     for k,v in data.items():
         os.environ[k] = v
-    
