@@ -32,7 +32,7 @@ def calculate():
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_stats")
+    cursor.execute("SELECT * FROM player_stats;")
     result_set = cursor.fetchall()
 
     for row in result_set:
