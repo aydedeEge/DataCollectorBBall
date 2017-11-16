@@ -35,7 +35,8 @@ def get_pids(args=None):
     except Exception as e:
         print("Did you forget the -print modifier?")
         raise e
-        
+
+
 def get_all_pids(args=None):
     wp = AllPlayerPage()
     # Add feature to read season_type with arg
@@ -55,9 +56,11 @@ def get_all_pids(args=None):
     except Exception as e:
         print("Did you forget the -print modifier?")
         raise e
-    
+
 # date, season_type, stat_type, players
-def get_player_matches(args=None):
+
+
+def get_pmatches(args=None):
     wp = AllPlayerPage()
     pwp = PlayerPage()
     try:
@@ -157,6 +160,7 @@ def main():
         "get_all_matches": get_all_matches,
         "get_teams": get_teams,
         "get_all_teams": get_all_teams,
+        "pmatches": get_pmatches,
     }
     # Db config initialization
     conf = read_config()
