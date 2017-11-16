@@ -22,7 +22,7 @@ STEAL_SCORE = 3
 TURNOVER_SCORE = -1
 SEASON = 2017
 
-def calculate():
+def calculate(limit):
     """Calculate the scores"""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
@@ -32,25 +32,39 @@ def calculate():
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_matches where score is null and mdate like '2017-01-%';")
+    cursor.execute("SELECT * FROM player_matches where score is null and match_id is not null LIMIT " + str(limit) + ";")
     result_set = cursor.fetchall()
-
+    scores = {}
+    when_conditional = ""
+    when_list = ""
     for row in result_set:
-        score = (row["FGM"] * FG_SCORE + row["3PM"] * FG_3_SCORE + row["FTM"] * FT_SCORE +\
+        curr_score = (row["FGM"] * FG_SCORE + row["3PM"] * FG_3_SCORE + row["FTM"] * FT_SCORE +\
                  row["REB"] * RB_SCORE + row["AST"] * AST_SCORE + row["BLK"] * BLK_SCORE +\
                  row["STL"] * STEAL_SCORE + row["TOV"] * TURNOVER_SCORE)
-        player_id = row["player_match_id"]
-        print(score)
-        cursor.execute("UPDATE `d2matchb_bball`.`player_matches`" +\
-                       " SET score = " + str(score) + "WHERE player_match_id = " + str(player_id) + ";")
+        player_match_id = str(row["player_match_id"])
+        scores[player_match_id] = curr_score
+        when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_score) + "' "
+        when_list += "'" + str(player_match_id) + "',"
 
-    connection.commit()
-    # print all the first cell of all the rows
-    connection.close()
+    print("Total scores calculated = " + str(len(result_set)))
+    if(len(result_set) != 0):
+        command = "UPDATE `d2matchb_bball`.`player_matches` SET score = CASE player_match_id "
+        command += when_conditional + "ELSE score END WHERE player_match_id IN(" + when_list[:-1] + ");"
+        cursor.execute(command)
+        connection.commit()
+        # Close the connection
+        connection.close()
+        return 0
+    else:
+        connection.close()
+        return -1
+
 
 if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
 
-    calculate()
+    res = 0
+    while(res != -1):
+        res = calculate(250)
