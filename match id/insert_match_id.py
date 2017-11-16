@@ -3,6 +3,7 @@
 # -*- encoding: utf-8 -*-
 import os,sys,inspect
 import MySQLdb
+import time
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -98,9 +99,16 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-
-    for i in range(0,10):
-        find_and_insert(250)
+    max_range = 10
+    batch_size = 200
+    start_time = time.time()
+    if(len(sys.argv) > 1):
+        max_range = sys.argv[1]
+    if(len(sys.argv) > 2):
+        batch_size = sys.argv[2]
+    for i in range(0,int(max_range)):
+        find_and_insert(batch_size)
     res = 0
-    #while(res != -1):
-    #    res = find_and_insert(250)
+    total_time = time.time() - start_time
+    secs_per_item = total_time / (int(batch_size)*int(max_range))
+    print("It took " + str(1000*secs_per_item) + " milliseconds per item")
