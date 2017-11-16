@@ -97,9 +97,12 @@ def getPlayerScoresForMatches(match_ids):
             else:
                 game_results[match_id] = 0
         game_score = row["score"]
+        if(game_score is None):
+            print "Warning: game score was none for player_match_id = " + str(row["player_match_id"]) +\
+                ", consider running the player_match_scores.py for this id"
         # TODO fetch the position string once we get it
         position = ""
-        if(home_away == "H"):
+        if home_away == "H":
             team_id = 1
         else:
             team_id = 2
