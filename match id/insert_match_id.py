@@ -12,8 +12,7 @@ from load_config import read_config, set_env_vars
 
 
 # TODO: if it already exists, update the score instead of throwing dup key error
-
-def find_and_insert():
+def find_and_insert(limit):
     """Find and insert the match ID."""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
@@ -23,48 +22,85 @@ def find_and_insert():
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_matches where match_id is NULL and mdate like '2017-01-%';")
-    result_set = cursor.fetchall()
+    #three step process
+    #1. Get all of the desired player_matches rows and store the home, away, and date
+    #2. Go through all of the stored homes, aways, and dates, and find the match ID
+    #3. Go back through the player_matches rows and update the values as desired.
 
-    pmids = []
-    update_command_string = """UPDATE `d2matchb_bball`.`player_matches` SET match_id = CASE player_match_id """
-    
-    for row in result_set:
-        pmid = row["player_match_id"]
-        pmids.append(pmid)
-        if(row["home_away"] == "H"):
-            home = (row["pteam"])
-            away = (row["oteam"])
-        else:
-            home = (row["oteam"])
-            away = (row["pteam"])
-        date = str(row["mdate"]) + " 00:00:00"
+    #1.We get the desired. 
+    cursor.execute("SELECT * FROM player_matches where match_id is NULL LIMIT " + str(limit) + ";")
+    player_matches_result_set = cursor.fetchall()
+    player_match_ids = {}
+    pm_unique_keys = {}
+    homes = {}
+    aways = {}
+    dates = {}
+    if(len(player_matches_result_set) != 0):
+        for row in player_matches_result_set:
+            player_match_id = str(row["player_match_id"])
+            if(row["home_away"] == "H"):
+                home = (row["pteam"])
+                away = (row["oteam"])
+            else:
+                home = (row["oteam"])
+                away = (row["pteam"])
+            date = str(row["mdate"])
+            homes[player_match_id] = home
+            aways[player_match_id] = away
+            dates[player_match_id] = date + " 00:00:00"
+            un_key = str(home) + str(away) + str(date)
+            pm_unique_keys[player_match_id] = un_key
+            #we have a dictionary of player match IDs that uses the home, away, and date as the key.
+            player_match_ids[un_key] = player_match_id
+            
+        team_and_date_conditions = ""
+        #2. We find the match IDs in one call
+        for pm_id in homes:
+            team_and_date_conditions += "(hteam='" + homes[pm_id] + "' and ateam='" + aways[pm_id] + "' and date='" + dates[pm_id] + "') OR "
+        command = "SELECT * FROM matches where " + team_and_date_conditions[:-4] + ";"
+        cursor.execute(command)
+        matches_result_set = cursor.fetchall()
 
-        cursor.execute("SELECT * FROM matches where hteam = \"" + home + "\" and ateam =\"" + away + \
-        "\" and date =\"" + date + "\";")
-        new_results = cursor.fetchall()
-        if(new_results[0] is not None):
-            match_id = new_results[0]["idmatches"]
-            print(match_id)
-            update_command_string += "WHEN " + str(pmid) + " THEN " + str(match_id) + " "
-            #cursor.execute("UPDATE `d2matchb_bball`.`player_matches` SET `match_id`='" + str(match_id) +\
-            # "' WHERE `player_match_id`='" + str(pmid) + "';")
-    
-    update_command_string += "ELSE match_id END WHERE player_match_id IN ("
-    isEmpty = 1
-    for pmid in pmids:
-        update_command_string += str(pmid) + ","
-        isEmpty = 0
-    update_command_string = update_command_string[:-1] + ");"
-    if(isEmpty == 0):
-        cursor.execute(update_command_string)
-    connection.commit()
-    # print all the first cell of all the rows
-    connection.close()
+        matches = {}
+        for row in matches_result_set:
+            home = str(row["hteam"])
+            away = str(row["ateam"])
+            date = str(row["date"])[:-9]
+            matches[home + away + date] = row["idmatches"]
+        
+        #we now have match IDs for each unique key (where a key is home, away, and date
+        
+        # 3. now we can go through and create an update command
+        when_conditional = ""
+        when_list = ""
+        for row in player_matches_result_set:
+            player_match_id = str(row["player_match_id"])
+            unique_key = pm_unique_keys[player_match_id]
+            when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(matches[unique_key]) + "' "
+            when_list += "'" + str(player_match_id) + "',"
+
+        print("Total IDs to be inserted = " + str(len(player_matches_result_set)))
+
+        command = "UPDATE `d2matchb_bball`.`player_matches` SET match_id = CASE player_match_id "
+        command += when_conditional + "ELSE match_id END WHERE player_match_id IN(" + when_list[:-1] + ");"
+        cursor.execute(command)
+        connection.commit()
+        # Close the connection
+        connection.close()
+        return 0
+    else:
+        print("No Null match IDs found for those criteria")
+        connection.close()
+        return -1
+
 
 if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
 
-    find_and_insert()
+    for i in range(0,10):
+        find_and_insert(250)
+    res = 0
+    #while(res != -1):
+    #    res = find_and_insert(250)

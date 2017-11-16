@@ -22,7 +22,7 @@ STEAL_SCORE = 3
 TURNOVER_SCORE = -1
 SEASON = 2017
 
-def calculate():
+def calculate(limit):
     """Calculate the scores"""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
@@ -32,7 +32,7 @@ def calculate():
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_matches where score is null and match_id is not null;")
+    cursor.execute("SELECT * FROM player_matches where score is null and match_id is not null LIMIT " + str(limit) + ";")
     result_set = cursor.fetchall()
     scores = {}
     when_conditional = ""
@@ -52,8 +52,12 @@ def calculate():
         command += when_conditional + "ELSE score END WHERE player_match_id IN(" + when_list[:-1] + ");"
         cursor.execute(command)
         connection.commit()
-    # print all the first cell of all the rows
-    connection.close()
+        # Close the connection
+        connection.close()
+        return 0
+    else:
+        connection.close()
+        return -1
 
 
 if __name__ == '__main__':
@@ -61,4 +65,6 @@ if __name__ == '__main__':
     conf = read_config()
     set_env_vars(conf)
 
-    calculate()
+    res = 0
+    while(res != -1):
+        res = calculate(250)
