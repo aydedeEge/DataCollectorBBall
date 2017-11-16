@@ -34,7 +34,7 @@ def getmatchIDsValid():
 
 def getSeasonYearFromDate(date):
     items = str(date).split("-")
-    if(items[1] > 4):
+    if(int(items[1]) > 4):
         return items[0]
     else:
         return int(items[0]) - 1
@@ -98,8 +98,8 @@ def getPlayerScoresForMatches(match_ids):
                 game_results[match_id] = 0
         game_score = row["score"]
         if(game_score is None):
-            print "Warning: game score was none for player_match_id = " + str(row["player_match_id"]) +\
-                ", consider running the player_match_scores.py for this id"
+            print("Warning: game score was none for player_match_id = " + str(row["player_match_id"]) +\
+                ", consider running the player_match_scores.py for this id")
         # TODO fetch the position string once we get it
         position = ""
         if home_away == "H":
@@ -175,12 +175,12 @@ def getPlayerScores(match_id):
 
     return playerInputs, output
 
-# if __name__ == '__main__':
-#     # Db config initialization
-#     conf = read_config()
-#     set_env_vars(conf)
-#     #matchIDs = getmatchIDsValid()
-#     #for m in matchIDs:
-#     #    print(m)
-#     matches = ["46673", "46633", "46675"]
-#     getPlayerScoresForMatches(matches)
+if __name__ == '__main__':
+    # Db config initialization
+    conf = read_config()
+    set_env_vars(conf)
+    #matchIDs = getmatchIDsValid()
+    #for m in matchIDs:
+    #    print(m)
+    matches = ["46673", "46633", "46675"]
+    getPlayerScoresForMatches(matches)
