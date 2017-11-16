@@ -154,7 +154,7 @@ def get_all_teams(args):
 def main():
     accepted_args = {
         "pids": get_pids,
-        "player_matches": get_player_matches,
+        #"player_matches": get_player_matches,
         "all_pids": get_all_pids,
         "get_matches": get_matches,
         "get_all_matches": get_all_matches,
