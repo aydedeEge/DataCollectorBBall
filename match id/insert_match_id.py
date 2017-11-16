@@ -90,7 +90,6 @@ def find_and_insert(limit):
         connection.close()
         return 0
     else:
-        print("No Null match IDs found for those criteria")
         connection.close()
         return -1
 
@@ -100,15 +99,19 @@ if __name__ == '__main__':
     conf = read_config()
     set_env_vars(conf)
     max_range = 10
-    batch_size = 200
+    batch_size = 250
     start_time = time.time()
     if(len(sys.argv) > 1):
-        max_range = sys.argv[1]
-    if(len(sys.argv) > 2):
-        batch_size = sys.argv[2]
-    for i in range(0,int(max_range)):
-        find_and_insert(batch_size)
-    res = 0
-    total_time = time.time() - start_time
-    secs_per_item = total_time / (int(batch_size)*int(max_range))
-    print("It took " + str(1000*secs_per_item) + " milliseconds per item")
+        if(sys.argv[1] == "ALL"):
+            res = 0
+            while(res != -1):
+                res = find_and_insert(batch_size)
+        else:
+            max_range = sys.argv[1]
+            if(len(sys.argv) > 2):
+                batch_size = sys.argv[2]
+            for i in range(0,int(max_range)):
+                find_and_insert(batch_size)
+                total_time = time.time() - start_time
+                secs_per_item = total_time / (int(batch_size)*int(max_range))
+                print("It took " + str(1000*secs_per_item) + " milliseconds per item")
