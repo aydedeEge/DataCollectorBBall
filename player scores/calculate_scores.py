@@ -22,35 +22,49 @@ STEAL_SCORE = 3
 TURNOVER_SCORE = -1
 SEASON = 2017
 
-def calculate():
+def calculate(limit):
     """Calculate the scores"""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
                                  passwd = os.environ["pwd"],  # your password
                                  db = os.environ["db"])        # name of the data base
 
-    # you must create a Cursor object. It will let
-    # you execute all the queries you need
+    # get the player_stats items that don't have a score
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_stats;")
+    cursor.execute("SELECT * FROM player_stats where score is null limit " + str(limit) + ";")
     result_set = cursor.fetchall()
 
-    for row in result_set:
-        score = (row["FG_36"] * FG_SCORE + row["3P_36"] * FG_3_SCORE + row["FT_36"] * FT_SCORE +\
-                 row["TRB_36"] * RB_SCORE + row["AST_36"] * AST_SCORE + row["BLK_36"] * BLK_SCORE +\
-                 row["STL_36"] * STEAL_SCORE + row["TOV_36"] * TURNOVER_SCORE)
-        player_id = row["player_id"]
-
-        cursor.execute("UPDATE `d2matchb_bball`.`player_stats`" +\
-                       " SET score = " + str(score) + "WHERE player_id = " + str(player_id) + ";")
-
-    connection.commit()
-    # print all the first cell of all the rows
-    connection.close()
+    if(len(result_set) > 0):
+        when_conditional = ""
+        when_list = ""
+        # in our for loop, we append to a single SQL command to update all scores in this batch at once
+        for row in result_set:
+            score = (row["FG_36"] * FG_SCORE + row["3P_36"] * FG_3_SCORE + row["FT_36"] * FT_SCORE +\
+                    row["TRB_36"] * RB_SCORE + row["AST_36"] * AST_SCORE + row["BLK_36"] * BLK_SCORE +\
+                    row["STL_36"] * STEAL_SCORE + row["TOV_36"] * TURNOVER_SCORE)
+            player_stats_id = row["player_stats_id"]
+            when_conditional += "WHEN '" + str(player_stats_id) + "' THEN '" + str(score) + "' "
+            when_list += "'" + str(player_stats_id) + "',"
+        #make and execute that command.
+        command = "UPDATE `d2matchb_bball`.`player_stats` SET score = CASE player_stats_id "
+        command += when_conditional + "ELSE score END WHERE player_stats_id IN(" + when_list[:-1] + ");"
+        cursor.execute(command)
+        connection.commit()
+        connection.close()
+        return 0
+    else:
+        connection.close()
+        return -1
 
 if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
 
-    calculate()
+    res = 0
+    count = 0
+    # goes through until all scores are done.
+    while(res == 0):
+        res = calculate(100)
+        count = count + 1
+        print("done batch " + str(count))
