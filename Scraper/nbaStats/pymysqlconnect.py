@@ -34,6 +34,8 @@ VALUES ({pid}, {minutes}, {points}, {fgm}, {fga}, {fgper}, {tpm}, {tpa}, {tpper}
 
 SQL_INSERT_MATCHES_BASE = """INSERT INTO `d2matchb_bball`.`matches`(`hteam`,`ateam`,`winner`,`date`) VALUES ("{hteam}", "{ateam}", "{winner}", "{date}");"""
 SQL_INSERT_TEAM_BASE = """INSERT INTO `d2matchb_bball`.`teams` (`teamid`, `name`) VALUES ({teamid}, "{name}");"""
+SQL_SELECT_PLAYERS = """SELECT * FROM d2matchb_bball.players;"""
+SQL_SELECT_TEAMS = """SELECT * FROM d2matchb_bball.teams;"""
 
 
 class PyMySQLConn:
@@ -145,6 +147,24 @@ class PyMySQLConn:
         except Exception as e:
             raise e
 
+    def select_all_players_command(self, connection):
+        try:
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute(SQL_SELECT_PLAYERS)
+                result = cursor.fetchall()
+                return result
+        except Exception as e:
+            raise e
+
+    def select_all_teams_command(self, connection):
+        try:
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute(SQL_SELECT_TEAMS)
+                result = cursor.fetchall()
+                return result
+        except Exception as e:
+            raise e
+
     def select_from_table_command(self, connection, table):
         try:
             with connection.cursor() as cursor:
@@ -153,6 +173,7 @@ class PyMySQLConn:
                         table=table
                     )
                 )
+                return cursor.fetchall()
         except Exception as e:
             raise e
 
