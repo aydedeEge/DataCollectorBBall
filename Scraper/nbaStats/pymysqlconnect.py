@@ -82,11 +82,12 @@ class PyMySQLConn:
 
     def insert_player_matches(self, connection, matches):
         cursor = connection.cursor()
-        columns = "(`pid`,`minutes`,`points`,`FGM`,`FGA`,`FG%`,`3PM`,`3PA`,`3P%`,`FTM`,`FTA`,`FT%`,`ORB`,`DRB`,`REB`,`AST`,`STL`,`BLK`,`TOV`,`PF`,`mdate`,`pteam`,`oteam`,`home_away`,`winloss`,`plusminus`)"
+        columns = "(`player_match_id`, `pid`,`minutes`,`points`,`FGM`,`FGA`,`FG%`,`3PM`,`3PA`,`3P%`,`FTM`,`FTA`,`FT%`,`ORB`,`DRB`,`REB`,`AST`,`STL`,`BLK`,`TOV`,`PF`,`mdate`,`pteam`,`oteam`,`home_away`,`winloss`,`plusminus`)"
         command = "INSERT INTO `d2matchb_bball`.`player_matches` " + columns + " VALUES "
         value_strings = []
         for m in matches:
-            value_strings.append("('" + str(m["pid"]) + "','" + str(m["minutes"]) + "','" + str(m["points"]) + "','" + str(m["FGM"]) +\
+            pmid = str(m["mdate"].replace("-", "")) + str(m["pid"])
+            value_strings.append("('" + pmid + "','" + str(m["pid"]) + "','" + str(m["minutes"]) + "','" + str(m["points"]) + "','" + str(m["FGM"]) +\
             "','" + str(m["FGA"]) + "','" + str(m["FG%"]) + "','" + str(m["3PM"]) + "','" + str(m["3PA"]) + "','" + str(m["3P%"]) +\
             "','" + str(m["FTM"]) + "','" + str(m["FTA"]) + "','" + str(m["FT%"]) + "','" + str(m["ORB"]) +\
             "','" + str(m["DRB"]) + "','" + str(m["REB"]) + "','" + str(m["AST"]) + "','" + str(m["STL"]) + "','" + str(m["BLK"]) +\
@@ -98,7 +99,15 @@ class PyMySQLConn:
         value_string = value_string[:-1]
 
         command += value_string + ";"
-        cursor.execute(command)
+        try:
+            cursor.execute(command)
+        except pymysql.err.IntegrityError as e:
+            if(str(e.args[0]) == "1062"):
+                if(len(matches) > 0):
+                    print("Already had this player for this year in the database")
+            else:
+                raise e
+            
         connection.commit()
 
     def insert_player_match(self, connection, pid, minutes, points, fgm, fga, fgper, tpm, tpa, tpper, ftm, fta, ftper, orb, drb, reb, ast, stl, blk, tov, pf, mdate, pteam, oteam, home_away, winloss, plusminus):
