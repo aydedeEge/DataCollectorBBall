@@ -53,7 +53,7 @@ def getPlayerScoresForMatches(match_ids):
     #we want to fetch all match IDs together so we append with OR in between
     match_or_condition = "match_id = "
     for m_id in match_ids:
-        match_or_condition += m_id + ' OR match_id ='
+        match_or_condition += str(m_id) + ' OR match_id ='
     match_or_condition = match_or_condition[:-14]
 
     #make the command and execute
@@ -64,12 +64,13 @@ def getPlayerScoresForMatches(match_ids):
     #first we just get the player IDs so we can go get the career stats in bulk.
     player_ids = []
     for row in player_matches_result_set:
-        curr_player_id = getSeasonYearFromDate(row["mdate"]) + str(row["pid"])
+        curr_player_id = str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])
         if(curr_player_id not in player_ids):
             player_ids.append(curr_player_id)
 
     #now we can get the career stats in bulk, since we have all the player IDs
     player_career_stats = {}
+    player_career_pos = {}
     player_id_or_condition = "player_stats_id = "
     for player_id in player_ids:
         player_id_or_condition += player_id + " OR player_stats_id ="
@@ -83,6 +84,7 @@ def getPlayerScoresForMatches(match_ids):
     # for each row, we have a career stat
     for row in player_stats_result_set:
         player_career_stats[str(row["player_stats_id"])] = row["score"]
+        player_career_pos[str(row["player_stats_id"])] = row["position"]
 
 
     #now we can make the final player objects
@@ -106,7 +108,11 @@ def getPlayerScoresForMatches(match_ids):
             team_id = 1
         else:
             team_id = 2
-        career_score = player_career_stats[getSeasonYearFromDate(row["mdate"]) + str(row["pid"])]
+        career_score = player_career_stats[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
+        
+        position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
+        print(career_score)
+        print(position)
         player = PlayerInput()
         player.setValues(cScore=career_score, gScore=game_score,
                              pID=str(row["pid"]), tID=team_id, position=position)
@@ -156,7 +162,7 @@ def getPlayerScores(match_id):
         gScore = row["score"]
         pID = row["pid"]
         # TODO fetch the position string once we get it
-        position = ""
+        
         if(home_away == "H"):
             tID = 1
         else:
@@ -165,6 +171,8 @@ def getPlayerScores(match_id):
         cursor.execute(
             "SELECT * FROM player_stats where player_stats_id = " + pStatsID + ";")
         cScore = cursor.fetchall()[0]["score"]
+        position = cursor.fetchall()[0]["position"]
+        print(position)
         currPlayer = PlayerInput()
         currPlayer.setValues(cScore=cScore, gScore=gScore,
                              pID=pID, tID=tID, position=position)
