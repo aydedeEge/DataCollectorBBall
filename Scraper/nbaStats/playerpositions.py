@@ -38,39 +38,39 @@ class PlayerPositions(WebPage):
     def scrape_player_positions(self, team_id, date, threshold=5):
         player_positions = []
 
-        self.load_page(
-            BASE_URL_TEAM.format(
-                team_id=team_id,
-                date=date,
-            )
-        )
-        
-        html = self.get_page()
-        soup = BeautifulSoup(html, "html.parser")
-
-        all_player_rows = soup.tbody.find_all("tr")
-
-        print("* Getting player positions for team " + str(team_id))
-
         attempt = 0
-        try:
-            for tr in all_player_rows:
-                player_id_tag = tr.find_all("td")[0]
-                player_position = self.get_embedded_text(tr.find_all("td")[2])
-                player_id = player_id_tag.find("a")["href"].split("/")[2]
-
-                player_positions.append(
-                    {
-                        "player_id": player_id,
-                        "player_position": player_position
-                    }
+        while attempt < threshold:
+            self.load_page(
+                BASE_URL_TEAM.format(
+                    team_id=team_id,
+                    date=date,
                 )
-        except TypeError as e:
-            if attempt == threshold:
-                raise e
-            print("Page not loaded. Attempt: " +  str(attempt+1))
-            time.sleep(1)
-            attempt += 1
+            )
+            
+            html = self.get_page()
+            soup = BeautifulSoup(html, "html.parser")
+
+            all_player_rows = soup.tbody.find_all("tr")
+
+            print("* Getting player positions for team " + str(team_id))
+
+            try:
+                for tr in all_player_rows:
+                    player_id_tag = tr.find_all("td")[0]
+                    player_position = self.get_embedded_text(tr.find_all("td")[2])
+                    player_id = player_id_tag.find("a")["href"].split("/")[2]
+
+                    player_positions.append(
+                        {
+                            "player_id": player_id,
+                            "player_position": player_position
+                        }
+                    )
+                break
+            except TypeError as e:
+                print("Page not loaded. Attempt: " +  str(attempt+1))
+                time.sleep(1)
+                attempt += 1
             
 
         return player_positions
@@ -80,23 +80,33 @@ class PlayerPositions(WebPage):
         player_positions = []
         team_id_list = []
         teams = self.get_existing_teams_from_db()
+        print(teams)
 
         for team in teams:
             if team['teamid'] not in team_id_list:
                 team_id_list.append(team['teamid'])
 
         for team_id in team_id_list:
-            try:
-                player_positions = self.scrape_player_positions(
-                    team_id=team_id,
-                    date=date
-                )
+            player_positions = self.scrape_player_positions(
+                team_id=str(team_id),
+                date=date
+            )
 
-                player_positions_all_teams = player_positions + player_positions_all_teams
-            except Exception as e:
-                raise e
+            player_positions_all_teams = player_positions + player_positions_all_teams
 
         return player_positions_all_teams
+
+    def push_player_positions_to_db(self, date):
+        player_positions = self.get_player_positions_all_teams(date)
+        connection = self.sql.connect_db()
+
+        self.sql.update_player_stats_with_position_command(connection, player_positions)
+
+    def push_player_positions_to_db_all_dates(self, start_date=1979, end_date=2018):
+        dates = self.generate_dates(start_date=start_date, end_date=end_date)
+
+        for date in dates:
+            self.push_player_positions_to_db(date)
 
     def get_embedded_text(self, tag):
         for child in tag.descendants:
@@ -119,4 +129,6 @@ class PlayerPositions(WebPage):
 data = read_config()
 set_env_vars(data)
 pp = PlayerPositions()
-print(pp.get_player_positions_all_teams("2016-17"))
+
+pp.push_player_positions_to_db_all_dates(start_date=2017)
+# print(pp.scrape_player_positions(1610612762, "2016-17"))

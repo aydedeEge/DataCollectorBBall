@@ -36,6 +36,7 @@ SQL_INSERT_MATCHES_BASE = """INSERT INTO `d2matchb_bball`.`matches`(`hteam`,`ate
 SQL_INSERT_TEAM_BASE = """INSERT INTO `d2matchb_bball`.`teams` (`teamid`, `name`) VALUES ({teamid}, "{name}");"""
 SQL_SELECT_PLAYERS = """SELECT * FROM d2matchb_bball.players;"""
 SQL_SELECT_TEAMS = """SELECT * FROM d2matchb_bball.teams;"""
+SQL_UPDATE_CASE = """UPDATE `d2matchb_bball`.`player_stats` SET position = CASE player_id """
 
 
 class PyMySQLConn:
@@ -162,6 +163,29 @@ class PyMySQLConn:
                 cursor.execute(SQL_SELECT_TEAMS)
                 result = cursor.fetchall()
                 return result
+        except Exception as e:
+            raise e
+
+    def update_player_stats_with_position_command(self, connection, player_list):
+        when_conditional = ""
+        when_list = ""
+        print("** Generating sql statement")
+        length = len(player_list)
+        iterator = 1
+
+        for player in player_list:
+            when_conditional += "WHEN '" + str(player['player_id']) + "' THEN '" + str(player['player_position']) + "' "
+            when_list += "'" + str(player['player_id']) + "',"
+            print("{iterator}/{length} sql statement".format(iterator=iterator, length=length))
+            iterator += 1
+
+        command = SQL_UPDATE_CASE + when_conditional + "ELSE position END WHERE player_id IN(" + when_list[:-1] + ");"
+
+        print("+ Pushing to db")
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(command)
+            connection.commit()
         except Exception as e:
             raise e
 
