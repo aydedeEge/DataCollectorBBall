@@ -191,3 +191,21 @@ class PyMySQLConn:
 
     def close_connection(self, connection):
         connection.close()
+
+    def add_player_teams(self, connection, values):
+        try:
+            with connection.cursor() as cursor:
+                when_conditional = ""
+                when_list = ""
+
+                for player_id in values:
+                    team_name = values[player_id]
+                    when_conditional += "WHEN '" + str(player_id) + "' THEN '" + str(team_name) + "' "
+                    when_list += "'" + str(player_id) + "',"
+
+                command = "UPDATE `d2matchb_bball`.`player_matches` SET match_id = CASE player_match_id "
+                command += when_conditional + "ELSE match_id END WHERE player_match_id IN(" + when_list[:-1] + ");"
+                connection.execute(command)
+                connection.commit()
+        except Exception as e:
+            raise e
