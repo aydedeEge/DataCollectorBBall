@@ -24,7 +24,7 @@ class PlayerInput:
   
     def toString(self):
         return "Player " + str(self.playerID) + ", on team " + str(self.teamID) + ", with career score " +\
-        str(self.careerScore) + ", had game score " + str(self.gameScore) + "at the position" + self.position + " .Input order :" + str(self.inputOrder)
+        str(self.careerScore) + ", had game score " + str(self.gameScore) + "at the position " + self.position + "  .Input order :" + str(self.inputOrder)
     
 
     def __init__(self):

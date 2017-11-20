@@ -5,11 +5,11 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 import input.inputData as input
 
-RANDOM_SEED = 436
+RANDOM_SEED = 527
 tf.set_random_seed(RANDOM_SEED)
-NUMBER_OF_HIDDEN_NODES = 80
+NUMBER_OF_HIDDEN_NODES = 256
 LEARNING_RATE = 0.02
-TEST_SiZE_PERCENT= 0.3
+TEST_SIZE_PERCENT= 0.33
 
 def init_weights(shape):
     #randomo weight init
@@ -19,7 +19,9 @@ def init_weights(shape):
 
 def forwardprop(X, w_1, w_2):
     h = tf.nn.sigmoid(tf.matmul(X, w_1))  # The sigma function
+
     yhat = tf.matmul(h, w_2)  # The varphi function
+    
     return yhat
 
 
@@ -27,6 +29,8 @@ def get_data():
     #choose which type of data to get
     data, target = input.getDataPositionOrder()
     print("Data size : ",str(len(target)))
+    print("Input form : ", data[0])
+    print("Output form : ", target[0])
     # Add ones as x0 for bias = [1,score1,score2,....,scoren]
     N, M = data.shape
     all_X = np.ones((N, M + 1))
@@ -36,7 +40,7 @@ def get_data():
     num_labels = len(np.unique(target))
     all_Y = np.eye(num_labels)[target] 
 
-    return train_test_split(all_X, all_Y, test_size=TEST_SiZE_PERCENT, random_state=RANDOM_SEED)
+    return train_test_split(all_X, all_Y, test_size=TEST_SIZE_PERCENT, random_state=RANDOM_SEED)
 
 
 def main():
@@ -60,8 +64,7 @@ def main():
     predict = tf.argmax(yhat, axis=1)
 
     # Backward propagation
-    cost = tf.reduce_mean(
-        tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
     updates = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cost)
 
     # Run SGD
@@ -70,19 +73,19 @@ def main():
     sess.run(init)
 
     for epoch in range(100):
-        # Train with each example
+        
         for i in range(len(train_X)):
-            sess.run(updates, feed_dict={
-                     X: train_X[i: i + 1], y: train_y[i: i + 1]})
+            sess.run(updates, feed_dict={ X: train_X[i: i + 1], y: train_y[i: i + 1]})
 
-        train_accuracy = np.mean(np.argmax(train_y, axis=1) ==
-                                 sess.run(predict, feed_dict={X: train_X, y: train_y}))
-        test_accuracy = np.mean(np.argmax(test_y, axis=1) ==
-                                sess.run(predict, feed_dict={X: test_X, y: test_y}))
+        train_accuracy = np.mean(np.argmax(train_y, axis=1) ==  sess.run(predict, feed_dict={X: train_X, y: train_y}))
+       
+        test_accuracy = np.mean(np.argmax(test_y, axis=1) == sess.run(predict, feed_dict={X: test_X, y: test_y}))
 
         print("Epoch = %d, train accuracy = %.2f%%, test accuracy = %.2f%%"
               % (epoch + 1, 100. * train_accuracy, 100. * test_accuracy))
-
+    
+    
+   
     sess.close()
 
 

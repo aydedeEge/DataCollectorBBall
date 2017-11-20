@@ -172,7 +172,6 @@ def getPlayerScores(match_id):
             "SELECT * FROM player_stats where player_stats_id = " + pStatsID + ";")
         cScore = cursor.fetchall()[0]["score"]
         position = cursor.fetchall()[0]["position"]
-        print(position)
         currPlayer = PlayerInput()
         currPlayer.setValues(cScore=cScore, gScore=gScore,
                              pID=pID, tID=tID, position=position)

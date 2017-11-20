@@ -2,15 +2,19 @@ import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
-from input.dbRawInput import (dbInit, getmatchIDsValid, getPlayerScores,
-                              getPlayerScoresForMatches)
+from input.dbRawInput import (
+    dbInit, getmatchIDsValid, getPlayerScores, getPlayerScoresForMatches)
 from model.playerInput import PlayerInput
+from model.team import Team
+
 from pathlib import Path
 
 MAX_PLAYER_PER_TEAM = 5
 # Highest score found in db is 48.something
 NORMALIZING_SCORE_UPPER_BOUND = 50.0
 # transform an array of players
+
+# create a score (float) array, usable by a neural net, from an array of players
 
 
 def getInputArrayFromPlayers(playersArray):
@@ -33,58 +37,26 @@ def normalizeInputArray(inputArray):
     return normalizedInput
 
 
-def get_first(predicate, seq):
-    for i in seq:
-        if predicate(i):
-            return i
-    return None
-
-
 def getNormalizedTeamsPos(playerArray):
 
     team1 = filter(lambda player: player.teamID == 1, playerArray)
     team2 = filter(lambda player: player.teamID == 2, playerArray)
-   
+
     # sort in order of importance, will cut the last ones in the list
     team1 = sorted(team1, key=lambda player: player.careerScore, reverse=True)
     team2 = sorted(team2, key=lambda player: player.careerScore, reverse=True)
-    print("team1")
+    print("team 1")
     for player in team1:
         print(player.toString())
-    print("team2")
+    print("team 2")
     for player in team2:
         print(player.toString())
-    team1Pos = []
-    team2Pos = []
-    #this is awfull
-    for player in team1:
-        print(str(player.inputOrder), str(player.inputOrder == 0), str(len(team1Pos)))
-        if(player.inputOrder == 0 and len(team1Pos) < 1):
-            team1Pos.append(player)
-        elif(player.inputOrder == 1 and len(team1Pos) < 2):
-            team1Pos.append(player)
-        elif(player.inputOrder == 2 and len(team1Pos) < 3):
-            team1Pos.append(player)
-        elif(player.inputOrder == 1 and len(team1Pos) < 4):
-            team1Pos.append(player)
-        elif(player.inputOrder == 2 and len(team1Pos) < 5):
-            team1Pos.append(player)
-        elif(len(team1Pos) > 3):
-            break
-
-
-    for player in team2:
-        if(player.inputOrder == 0 and len(team2Pos) < 1):
-            team2Pos.append(player)
-        elif(player.inputOrder == 1 and len(team2Pos) < 2):
-            team2Pos.append(player)
-        elif(player.inputOrder == 2 and len(team2Pos) < 3):
-            team2Pos.append(player)
-        elif(len(team2Pos) > 3):
-            break
-    print(team1Pos)
-    print(team2Pos)
-    return team1Pos, team2Pos
+    
+    a = Team()
+    a.setValues(team1)
+    b = Team()
+    b.setValues(team2)
+    return a.positionArray, b.positionArray
 
 
 def getNormalizedTeams(playerArray, lambdaPlayerSorting):
@@ -162,7 +134,6 @@ def storeDataFormatted(sortingPlayers):
     i = 0
     a = getPlayerScoresForMatches(validMatchId)
 
-    # Very slow, only to try, would need to be improve for real training
     for matchID in validMatchId:
         # try:
         result = a[1][str(matchID)]
@@ -190,7 +161,6 @@ def storeDataFormatted(sortingPlayers):
 def storeDataFormattedPosition():
     dbInit()
     validMatchId = getmatchIDsValid()
-
     numberOfInputs = len(validMatchId)
     print(numberOfInputs)
     matchesArrayScores = []
@@ -198,7 +168,6 @@ def storeDataFormattedPosition():
     i = 0
     a = getPlayerScoresForMatches(validMatchId)
 
-    # Very slow, only to try, would need to be improve for real training
     for matchID in validMatchId:
         try:
             result = a[1][str(matchID)]
@@ -227,7 +196,7 @@ def getDataFormatted(sortingPlayers):
     my_file = Path('XScores.npy')
     if not my_file.is_file():
         storeDataFormatted(sortingPlayers)
-    
+
     X = np.load('XScores.npy')
     y = np.load('yMatches.npy')
     print(X)
@@ -236,17 +205,17 @@ def getDataFormatted(sortingPlayers):
 
 
 def getAverageAndDistribution():
-     my_file = Path('XScoresAverage.npy')
+    my_file = Path('XScoresAverage.npy')
     if not my_file.is_file():
         storeDataFormattedAverage()
-   
+
     X = np.load('XScoresAverage.npy')
     y = np.load('yMatchesAverage.npy')
     return X, y.flatten()
 
 
 def getDataPositionOrder():
-    
+
     my_file = Path('XScoresPosition.npy')
     if not my_file.is_file():
         storeDataFormattedPosition()
