@@ -143,57 +143,24 @@ class PlayerPage(WebPage):
         }
         sql = PyMySQLConn(config)
         connection = sql.connect_db()
-
-        for item in matches:
-            sql.insert_player_match(
-                connection=connection,
-                pid=item["pid"],
-                minutes=item["minutes"],
-                points=item["points"],
-                fgm=item["FGM"],
-                fga=item["FGA"],
-                fgper=item["FG%"],
-                tpm=item["3PM"],
-                tpa=item["3PA"],
-                tpper=item["3P%"],
-                ftm=item["FTM"],
-                fta=item["FTA"],
-                ftper=item["FT%"],
-                orb=item["ORB"],
-                drb=item["DRB"],
-                reb=item["REB"],
-                ast=item["AST"],
-                stl=item["STL"],
-                blk=item["BLK"],
-                tov=item["TOV"],
-                pf=item["PF"],
-                plusminus=item["plusminus"],
-                home_away=item["home_away"],
-                mdate=item["mdate"],
-                pteam=item["pteam"],
-                oteam=item["oteam"],
-                winloss=item["winloss"]
-            )
+        sql.insert_player_matches(connection=connection, matches=matches)
         sql.close_connection(connection=connection)
-
     
     def push_all_pmatches_to_db_by_date(self, date, season_type, stat_type, players):
-        all_matches = []
         length = len(players)
         iterator = 1
-
+        
         for key, value in players.items():
-            print("* {iterator}/{length} - Gathering player matches for {key}".format(iterator=iterator, length=length, key=key))
+            print("* {iterator}/{length} - Gathering player matches for {key}...".format(iterator=iterator, length=length, key=key))
             pmatches = self.get_player_matches(
                 player_id=value,
                 date=date,
                 season_type=season_type,
                 stat_type=stat_type
             )
+            print('+ {iterator}/{length} - Pushing records for {key} to db...'.format(iterator=iterator, length=length, key=key))
             self.push_player_matches_to_db(pmatches)
-            print('+ {iterator}/{length} - Records for {key} pushed to db'.format(iterator=iterator, length=length, key=key))
             iterator+=1
-
 
     #Pretty hard-coded
     def get_embedded_text(self, tag):
