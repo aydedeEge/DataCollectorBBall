@@ -14,7 +14,6 @@ BASE_PLAYER_URL = "https://stats.nba.com/player/{player_id}/{stat_type}/?Season=
 BASE_ALL_PLAYER_URL = "https://stats.nba.com/players/traditional/?sort=PTS&dir=-1&Season={date}&SeasonType={season_type}"
 
 
-
 class AllPlayerPage(WebPage):
     def __init__(self):
         super().__init__()
@@ -65,7 +64,7 @@ class AllPlayerPage(WebPage):
     def get_all_player_stats(self, date, season_type, all_date_player_stats=[]):
 
         self.load_page(BASE_ALL_PLAYER_URL.format(
-            date=date, season_type=season_type))
+            date=date, season_type=season_type) + "&PerMode=Per36")
 
         print('* Gathering player ids for {date}'.format(date=date))
 
@@ -86,41 +85,50 @@ class AllPlayerPage(WebPage):
             player_id_tag = stat_row[1]
             player_name = player_id_tag.find("a").string
             player_id = player_id_tag.find("a")["href"].split("/")[2]
+            TEAM = self.get_embedded_text(stat_row[2])
+            AGE = self.get_embedded_text(stat_row[3])
+            GP = self.get_embedded_text(stat_row[4])
+            WINS = self.get_embedded_text(stat_row[5])
+            LOSSES = self.get_embedded_text(stat_row[6])
+            TOTAL_MINUTES = self.get_embedded_text(stat_row[7])
+            PTS = self.get_embedded_text(stat_row[8])
+            FGM = self.get_embedded_text(stat_row[9])
+            FGA = self.get_embedded_text(stat_row[10])
+            FGperc = self.get_embedded_text(stat_row[11])
+            ThreePM = self.get_embedded_text(stat_row[12])
+            ThreePA = self.get_embedded_text(stat_row[13])
+            ThreePerc = self.get_embedded_text(stat_row[14])
+            FTM = self.get_embedded_text(stat_row[15])
+            FTA = self.get_embedded_text(stat_row[16])
+            FTperc = self.get_embedded_text(stat_row[17])
+            OREB = self.get_embedded_text(stat_row[18])
+            DREB = self.get_embedded_text(stat_row[19])
+            REB = self.get_embedded_text(stat_row[20])
+            AST = self.get_embedded_text(stat_row[21])
+            TOV = self.get_embedded_text(stat_row[22])
+            STL = self.get_embedded_text(stat_row[23])
+            BLK = self.get_embedded_text(stat_row[24])
+            PF = self.get_embedded_text(stat_row[25])
+            PM = self.get_embedded_text(stat_row[29])
 
-            GP = self.get_embedded_text(stat_row[2])
-            MIN = self.get_embedded_text(stat_row[3])
-            PTS = self.get_embedded_text(stat_row[4])
-            FGM = self.get_embedded_text(stat_row[5])
-            FGA = self.get_embedded_text(stat_row[6])
-            FGperc = self.get_embedded_text(stat_row[7])
-            ThreePM = self.get_embedded_text(stat_row[8])
-            ThreePA = self.get_embedded_text(stat_row[9])
-            ThreePerc = self.get_embedded_text(stat_row[10])
-            FTM = self.get_embedded_text(stat_row[11])
-            FTA = self.get_embedded_text(stat_row[12])
-            FTperc = self.get_embedded_text(stat_row[13])
-            OREB = self.get_embedded_text(stat_row[14])
-            DREB = self.get_embedded_text(stat_row[15])
-            REB = self.get_embedded_text(stat_row[16])
-            AST = self.get_embedded_text(stat_row[17])
-            STL = self.get_embedded_text(stat_row[18])
-            BLK = self.get_embedded_text(stat_row[19])
-            TOV = self.get_embedded_text(stat_row[20])
-            EFF = self.get_embedded_text(stat_row[21])
-            player = Player(player_name, SEASON, player_id, GP, MIN, PTS, FGM, FGA, FGperc, ThreePM, ThreePA,
-                            ThreePerc, FTM, FTA, FTperc, OREB, DREB, REB, AST, STL, BLK, TOV, EFF)
-            player.printPlayer()
+            player = Player(Name=player_name,Season=SEASON, Team=TEAM, Age=AGE, Wins=WINS, Losses=LOSSES,
+                ID=player_id,GamesPlayed=GP,MinutesPlayed=TOTAL_MINUTES,
+                Points=PTS,FieldGoalsMade=FGM,FieldGoalsAttempted=FGA,FieldGoalPercentage=FGperc, 
+                ThreeMade=ThreePM, ThreeAttempted=ThreePA,ThreePercentage=ThreePerc,FreeThrowsMade=FTM,
+                FreeThrowsAttempted=FTA, FreeThrowPercentage=FTperc,OffRebounds=OREB,DefRebounds=DREB,
+                Rebounds=REB,Assists=AST,Steals=STL,Blocks=BLK,Turnovers=TOV, PersonalFouls=PF, PlusMinus = PM)
             try:
                 if player_id not in all_date_player_stats:
                     all_date_player_stats.append(player)
 
             except Exception as e:
                 pass
+        return all_date_player_stats
 
     def get_all_playerStats_all_date(self, season_type):
         dates = []
         all_player_stats = []
-        first_date = 1979
+        first_date = 1996
         second_date = first_date + 1
 
         while (first_date < 2018):
@@ -173,19 +181,21 @@ class AllPlayerPage(WebPage):
         )
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
         for player in playerStats:
-            command = "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
-                "`name`, `season`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
-                "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +\
-                "`PTS_36`, `FG%`, `3P%`, `FT%`, `WS/48`) VALUES (" + str(player.ID) + "," + str(player.psID) +\
-                ",\"" + str(player.Name) + "\"," + str(player.Season) + "," + str(player.FieldGoalsMade) +\
-                "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +\
-                "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +\
-                "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +\
-                "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +\
-                "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowsPercentage) +\
-                "," + str(player.Efficiency) + ");"
-            print(command)
-            cursor.execute(command)
+            if(player.Name != None):
+                command = "INSERT INTO `d2matchb_bball`.`player_stats` (`player_id`, `player_stats_id`," +\
+                    "`name`, `season`, `team`, `age`, `FG_36`, `FGA_36`, `3P_36`, `3PA_36`, `FT_36`," +\
+                    "`FTA_36`, `ORB_36`, `TRB_36`, `AST_36`, `STL_36`, `BLK_36`, `TOV_36`, `PF_36`," +\
+                    "`PTS_36`, `FG%`, `3P%`, `FT%`, `score`, `W`, `L`, `Total_Minutes`, `PM_36`) VALUES (" + str(player.ID) + "," + str(player.psID) +\
+                    ",\"" + str(player.Name) + "\"," + str(player.Season) + ",'" + str(player.Team) +\
+                    "'," + str(player.Age) + "," + str(player.FieldGoalsMade) + "," + str(player.FieldGoalsAttempted) + "," + str(player.ThreeMade) + "," + str(player.ThreeAttempted) +\
+                    "," + str(player.FreeThrowsMade) + "," + str(player.FreeThrowsAttempted) + "," + str(player.OffRebounds) +\
+                    "," + str(player.TotalRebounds) + "," + str(player.Assists) + "," + str(player.Steals) + "," + str(player.Blocks) +\
+                    "," + str(player.Turnovers) + "," + str(player.PersonalFouls) + "," + str(player.Points) +\
+                    "," + str(player.FieldGoalPercentage) + "," + str(player.ThreePercentage) + "," + str(player.FreeThrowPercentage) +\
+                    "," + str(player.Score) + "," + str(player.Wins) + "," + str(player.Losses) + "," + str(player.MinutesPlayed) +\
+                    "," + str(player.PlusMinus) + ");"
+                print(command)
+                cursor.execute(command)
         connection.commit()
         connection.close()
 
