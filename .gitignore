@@ -2,3 +2,7 @@ config.json
 *.pyo
 *.pyc
 *.npy
+*.pdf
+*.toc
+*.lof
+*.out
