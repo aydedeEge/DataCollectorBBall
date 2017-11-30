@@ -6,7 +6,10 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+topdir = os.path.abspath(os.path.join(parentdir, os.pardir))
+
+sys.path.insert(0, topdir)
+
 from model.playerInput import PlayerInput
 from load_config import read_config, set_env_vars
 
@@ -16,13 +19,15 @@ def dbInit():
     conf = read_config()
     set_env_vars(conf)
 
-
-def getmatchIDsValid():
-    connection = MySQLdb.connect(host=os.environ["host"],    # your host, usually localhost
+def getConnection():
+    return MySQLdb.connect(host=os.environ["host"],    # your host, usually localhost
                                  # your username
                                  user=os.environ["user"],
                                  passwd=os.environ["pwd"],  # your password
                                  db=os.environ["db"])        # name of the data base
+
+def getmatchIDsValid():
+    connection = getConnection()
 
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT  distinct match_id FROM d2matchb_bball.player_matches where match_id is not null and score is not null;")
@@ -39,14 +44,37 @@ def getSeasonYearFromDate(date):
     else:
         return int(items[0]) - 1
 
+def getMatchScores(match_ids):
+    connection = getConnection()
+
+    cursor = connection.cursor(MySQLdb.cursors.DictCursor)
+    #we want to fetch all match IDs together so we append with OR in between
+    match_or_condition = "idmatches = "
+    for m_id in match_ids:
+        match_or_condition += str(m_id) + ' OR idmatches ='
+    match_or_condition = match_or_condition[:-14]
+
+
+    #make the command and execute
+    command = "SELECT * FROM d2matchb_bball.matches where " + match_or_condition + ";"
+    cursor.execute(command)
+    matches_result_set = cursor.fetchall()
+    game_results = {} # all of the results of the game (W or L)
+
+    for row in matches_result_set:
+        idmatch = str(row["idmatches"])
+        home = row["hteam_points"]
+        away = row["ateam_points"]
+        game_results[idmatch] = [home, away]
+
+    return game_results
+
+
 #this method takes in a bunch of match IDs and returns the following:
 # a dictionary of LISTS of playerInputs where the key to each list is the match ID
 # a dictionary of VALUES of outputs (W or L) where the key to each value is the match ID
 def getPlayerScoresForMatches(match_ids):
-    connection = MySQLdb.connect(host=os.environ["host"],
-                                 user=os.environ["user"],
-                                 passwd=os.environ["pwd"],
-                                 db=os.environ["db"])
+    connection = getConnection()
     #cursor for our connection
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
 
@@ -131,12 +159,7 @@ def getPlayerScoresForMatches(match_ids):
 
 def getPlayerScores(match_id):
 
-    connection = MySQLdb.connect(host=os.environ["host"],    # your host, usually localhost
-                                 # your username
-                                 user=os.environ["user"],
-                                 passwd=os.environ["pwd"],  # your password
-                                 db=os.environ["db"])        # name of the data base
-
+    connection = getConnection()
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
