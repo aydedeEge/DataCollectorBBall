@@ -73,16 +73,26 @@ def getOrderedPlayersInput(playerArray):
         playerArray, key=lambda player: player.inputOrder)
     return sortedPlayerArray
 
+
 def sigmoid(x):
-  return 1 / (1 + math.exp(-x))
+    return 1 / (1 + math.exp(-x))
+
 
 def normalizeResult(pointsHome, pointsAway):
-    diff = float(pointsHome - pointsAway) / 10.0
-    diffScaled = sigmoid(diff)
-    pHome = diffScaled
-    pAway = 1 - diffScaled
-    
+    # diff = float(pointsHome - pointsAway) / 10.0
+    # diffScaled = sigmoid(diff)
+    # pHome = diffScaled
+    # pAway = 1 - diffScaled
+    pHome
+    pAway
+    if pointsHome>pointsAway:
+        pHome = 1
+        pAway = 0
+    else:
+        pHome = 0
+        pAway = 1
     return pHome, pAway
+
 
 def storeDataFormattedAverage():
     dbInit()
@@ -131,7 +141,7 @@ def storeDataFormattedAverage():
     np.save('yMatchesAverage', y)
 
 
-def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun,x_path, y_path):
+def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     dbInit()
     validMatchId = getmatchIDsValid()
     # test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30]]
@@ -202,8 +212,19 @@ def getSortedOrder():
     y_path = 'yMatches.npy'
     my_file = Path(x_path)
     if not my_file.is_file():
-        storeDataFormatted(MAX_PLAYER_PER_TEAM, getNormalizedTeams, x_path, y_path)
+        storeDataFormatted(MAX_PLAYER_PER_TEAM,
+                           getNormalizedTeams, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
     print(y)
     return X, y
+
+
+def getStat():
+    dbInit()
+    validMatchId = getmatchIDsValid()
+    # validMatchId = [validMatchId[8],validMatchId[7],validMatchId[4],validMatchId[5]]
+    numberOfInputs = len(validMatchId)
+    results = getMatchScores(validMatchId)
+    matchesTeams = getPlayerScoresForMatches(validMatchId)
+    return matchesTeams, validMatchId, results

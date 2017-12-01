@@ -6,10 +6,10 @@ from sklearn.model_selection import train_test_split
 
 from input.inputData import getSortedOrder, getAverageAndDistribution, getDataPositionOrder
 
-RANDOM_SEED = 527
+RANDOM_SEED = 588
 tf.set_random_seed(RANDOM_SEED)
 NUMBER_OF_HIDDEN_NODES = 128
-LEARNING_RATE = 0.02
+LEARNING_RATE = 0.05
 TEST_SIZE_PERCENT = 0.33
 ACTIVATION_FUNCTION = tf.nn.sigmoid
 
@@ -39,7 +39,7 @@ def categorize(output):
 
 def get_data():
     # choose which type of data to get
-    data, target = getSortedOrder()
+    data, target = getDataPositionOrder()
     print("Data size : ", str(len(target)))
     print("Input form : ", data[0])
     print("Output form : ", target[0])
@@ -55,15 +55,17 @@ def get_data():
     all_Y = target
     return train_test_split(all_X, all_Y, test_size=TEST_SIZE_PERCENT, random_state=RANDOM_SEED)
 
-def thresholdToTest(x,y):
+
+def thresholdToTest(x, y):
     thresholdX = []
     thresholdY = []
     for i in range(len(y)):
-        diff = y[i][0]-y[i][1]
-        if diff< -0.5 or diff > 0.5:
+        diff = y[i][0] - y[i][1]
+        if diff < -0.5 or diff > 0.5:
             thresholdX.append(x[i])
             thresholdY.append(y[i])
-    return thresholdX ,thresholdY 
+    return thresholdX, thresholdY
+
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
@@ -90,7 +92,8 @@ def main():
 
     # ackward propagation
     # cost = tf.reduce_sum(tf.square(yhat - y)) / 4
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
+    cost = tf.reduce_mean(
+        tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
     updates = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cost)
 
     # Run SGD
@@ -102,17 +105,28 @@ def main():
 
         for i in range(len(train_X)):
             # print(train_y[i: i + 1])
-            sess.run(updates, feed_dict={X: train_X[i: i + 1], y: train_y[i: i + 1]})
+            sess.run(updates, feed_dict={
+                     X: train_X[i: i + 1], y: train_y[i: i + 1]})
 
         currentCost = sess.run(cost, feed_dict={X: train_X, y: train_y})
-       
-        train_accuracy = np.mean(np.argmax(aboveTrain_X, axis=1) ==  sess.run(predict, feed_dict={X: aboveTrain_X, y: aboveTrain_y}))
-       
-        test_accuracy = np.mean(np.argmax(aboveTest_X, axis=1) == sess.run(predict, feed_dict={X: aboveTest_X, y: aboveTest_y}))
+
+        train_accuracy = np.mean(np.argmax(train_X, axis=1) == sess.run(
+            predict, feed_dict={X: train_X, y: train_y}))
+
+        test_accuracy = np.mean(np.argmax(test_X, axis=1) == sess.run(
+            predict, feed_dict={X: test_X, y: test_y}))
+
         print("Epoch = %d, cost = %.5f train accuracy = %.2f%%, test accuracy = %.2f%%"
               % (epoch + 1, currentCost, 100. * train_accuracy, 100. * test_accuracy))
-
-    sess.close()
+    val = sess.run(yhat, feed_dict={
+                   X: [[1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]]})
+    print(val)
+    orhval = sess.run(yhat, feed_dict={
+                   X: [[1, 0.91699, 1.071600,0.776, 0.73680, 0.85839, 0.91559, 1.06599,1.14519, 0.8291,1.05580]]})
+    print(orhval)
+    #CFGGF
+    wash = sess.run(yhat, feed_dict={
+                   X: [[1, 0.61720, 0.94639,0.92199, 0.8405, 0.7718000,1.15620,0.771800,0.79900,0.685400,0.75900]]})
 
 
 if __name__ == '__main__':
