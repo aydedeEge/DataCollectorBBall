@@ -130,5 +130,5 @@ data = read_config()
 set_env_vars(data)
 pp = PlayerPositions()
 
-pp.push_player_positions_to_db_all_dates(start_date=2017)
+pp.push_player_positions_to_db_all_dates(start_date=1996)
 # print(pp.scrape_player_positions(1610612762, "2016-17"))

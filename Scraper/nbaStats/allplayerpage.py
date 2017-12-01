@@ -9,7 +9,8 @@ from pymysqlconnect import PyMySQLConn
 from webpage import WebPage
 
 BASE_PLAYER_URL = "https://stats.nba.com/player/{player_id}/{stat_type}/?Season={date}&SeasonType={season_type}"
-BASE_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season={date}&SeasonType={season_type}"
+# BASE_ALL_PLAYER_URL = "https://stats.nba.com/leaders/?Season={date}&SeasonType={season_type}"
+BASE_ALL_PLAYER_URL = "https://stats.nba.com/players/traditional/?sort=PTS&dir=-1&Season={date}&SeasonType={season_type}&PerMode=Per36"
 
 class AllPlayerPage(WebPage):
     def __init__(self):
@@ -41,13 +42,14 @@ class AllPlayerPage(WebPage):
         for tr in all_player_rows:
             player_id_tag = tr.find_all("td")[1]
             player_name = player_id_tag.find("a").string
-            player_id = player_id_tag.find("a")["href"].split("/")[2]
-            try:
-                all_player_ids_dict[player_name] = player_id
-                if player_name not in all_date_player_ids:
-                    all_date_player_ids[player_name] = player_id
-            except Exception as e:
-                pass
+            if player_name is not None:
+                player_id = player_id_tag.find("a")["href"].split("/")[2]
+                try:
+                    all_player_ids_dict[player_name] = player_id
+                    if player_name not in all_date_player_ids:
+                        all_date_player_ids[player_name] = player_id
+                except Exception as e:
+                    pass
         
         return all_player_ids_dict
 
@@ -55,7 +57,7 @@ class AllPlayerPage(WebPage):
     def get_all_player_ids_all_dates(self, season_type):
         dates = []
         all_player_ids = {}
-        first_date = 1979
+        first_date = 1996
         second_date = first_date+1
 
         while (first_date<2018):
