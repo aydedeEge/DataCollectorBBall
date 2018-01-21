@@ -110,10 +110,10 @@ def main():
 
         currentCost = sess.run(cost, feed_dict={X: train_X, y: train_y})
 
-        train_accuracy = np.mean(np.argmax(train_X, axis=1) == sess.run(
+        train_accuracy = np.mean(np.argmax(train_y, axis=1) == sess.run(
             predict, feed_dict={X: train_X, y: train_y}))
 
-        test_accuracy = np.mean(np.argmax(test_X, axis=1) == sess.run(
+        test_accuracy = np.mean(np.argmax(test_y, axis=1) == sess.run(
             predict, feed_dict={X: test_X, y: test_y}))
 
         print("Epoch = %d, cost = %.5f train accuracy = %.2f%%, test accuracy = %.2f%%"
