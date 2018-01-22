@@ -19,9 +19,11 @@ NORMALIZING_SCORE_UPPER_BOUND = 50.0
 
 def getInputArrayFromPlayers(playersArray):
     inputArray = []
+    outputArray = []
     for player in playersArray:
         inputArray.append(player.careerScore)
-    return inputArray
+        outputArray.append(player.gameScore)
+    return inputArray, outputArray
 
 
 def getAverageAndDistributionVar(inputArray):
@@ -83,13 +85,11 @@ def normalizeResult(pointsHome, pointsAway):
     # diffScaled = sigmoid(diff)
     # pHome = diffScaled
     # pAway = 1 - diffScaled
-    pHome
-    pAway
+    pHome = 0
+    pAway = 0
     if pointsHome>pointsAway:
         pHome = 1
-        pAway = 0
     else:
-        pHome = 0
         pAway = 1
     return pHome, pAway
 
@@ -110,8 +110,8 @@ def storeDataFormattedAverage():
     # Very slow, only to try, would need to be improve for real training
     for matchID in validMatchId:
         try:
-            result = normalizeResult(
-                results[str(matchID)][0], results[str(matchID)][1])
+            result = normalizeResult(results[str(matchID)][0], results[str(matchID)][1])
+            
             print(result)
             teams = getNormalizedTeams(
                 a[0][str(matchID)], lambda player: player.inputOrder)
@@ -144,28 +144,25 @@ def storeDataFormattedAverage():
 def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     dbInit()
     validMatchId = getmatchIDsValid()
-    # test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30]]
-    # validMatchId = test
+    #test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30]]
+    #validMatchId = test
     inputSize = numInputPerTeam * 2
     numberOfInputs = len(validMatchId)
     print(numberOfInputs)
 
     matchesArrayScores = []
     arrayOuput = []
-    results = getMatchScores(validMatchId)
-    print(results)
+    #results getMatchScores(validMatchId)
+    #print(results)
     matchesTeams = getPlayerScoresForMatches(validMatchId)
 
     for matchID in validMatchId:
         try:
-            result = normalizeResult(
-                results[str(matchID)][0], results[str(matchID)][1])
-            print(result)
-
             teams = getNormalizeTeamsFun(
                 matchesTeams[0][str(matchID)])
-            matchArrayScores = normalizeInputArray(
-                getInputArrayFromPlayers(teams[0] + teams[1]))
+            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+
+            matchArrayScores = normalizeInputArray(inputArray)
 
             if(len(matchArrayScores) == inputSize):
                 matchesArrayScores.append(matchArrayScores)
@@ -175,7 +172,7 @@ def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
                     matchArrayScores), "in match ", matchID)
 
         except Exception as e:
-            print("no")
+            print(e)
 
     X = np.array(matchesArrayScores)
     y = np.array(arrayOuput)

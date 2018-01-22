@@ -9,7 +9,7 @@ from input.inputData import getSortedOrder, getAverageAndDistribution, getDataPo
 RANDOM_SEED = 588
 tf.set_random_seed(RANDOM_SEED)
 NUMBER_OF_HIDDEN_NODES = 128
-LEARNING_RATE = 0.05
+LEARNING_RATE = 0.01
 TEST_SIZE_PERCENT = 0.33
 ACTIVATION_FUNCTION = tf.nn.sigmoid
 
@@ -91,9 +91,7 @@ def main():
     predict = tf.argmax(yhat, axis=1)
 
     # ackward propagation
-    # cost = tf.reduce_sum(tf.square(yhat - y)) / 4
-    cost = tf.reduce_mean(
-        tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
+    cost = tf.reduce_sum(tf.square(yhat - y)) / 4
     updates = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cost)
 
     # Run SGD
@@ -116,8 +114,8 @@ def main():
         test_accuracy = np.mean(np.argmax(test_y, axis=1) == sess.run(
             predict, feed_dict={X: test_X, y: test_y}))
 
-        print("Epoch = %d, cost = %.5f train accuracy = %.2f%%, test accuracy = %.2f%%"
-              % (epoch + 1, currentCost, 100. * train_accuracy, 100. * test_accuracy))
+        print("Epoch = %d, cost = %.5f "
+              % (epoch + 1, currentCost))
     val = sess.run(yhat, feed_dict={
                    X: [[1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]]})
     print(val)
