@@ -1,8 +1,9 @@
 import os
 import json
+import sys
 
 def read_config():
-    with open('config.json') as data_file:    
+    with open(sys.path[0]+'/config.json') as data_file:    
         data = json.load(data_file)
     return data
 

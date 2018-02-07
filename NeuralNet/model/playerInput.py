@@ -15,9 +15,9 @@ class PlayerInput:
     def positionToIndex(self,position):
         if((position == "C") or (position == "C-F")):
             return 0
-        elif((position == "F") or (position == "F-C") or position == "F-G"):
+        elif((position == "F") or position == "F-C" or position == "F-G" or position == "G-F"):
             return 1
-        elif(position == "G"or position == "G-F"):#G
+        elif(position == "G"):
             return 2
         else :
             return 3
