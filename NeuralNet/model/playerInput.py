@@ -1,7 +1,7 @@
 class PlayerInput:
     
 
-    def setValues(self, cScore, gScore, pID, tID, position, eScore=None):
+    def setValues(self, cScore, gScore, pID, tID, position, eScore=None, sal=1000):
         self.careerScore = cScore
         self.gameScore = gScore
         self.expectedScore = eScore
@@ -9,6 +9,7 @@ class PlayerInput:
         self.teamID = tID
         self.position = position
         self.inputOrder = self.positionToIndex(self.position)
+        self.salary = sal
     
     #return the index of the player in the match array [ powerforwardTeam1 , smallForwardTeam1, ..., powerForwardTeam2, ...]
     #For example, the smallForward of team 1 will return 1
