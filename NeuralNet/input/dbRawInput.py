@@ -9,7 +9,7 @@ parentdir = os.path.dirname(currentdir)
 topdir = os.path.abspath(os.path.join(parentdir, os.pardir))
 
 sys.path.insert(0, topdir)
-
+sys.path.insert(0, parentdir)
 from model.playerInput import PlayerInput
 from load_config import read_config, set_env_vars
 
@@ -70,6 +70,19 @@ def getMatchScores(match_ids):
     return game_results
 
 
+#this method will get all of the match_ids on a given day
+#format of day should be YYYY-MM-DD
+def getMatchesOnDay(day):
+    connection = getConnection()
+    #cursor for our connection
+    cursor = connection.cursor(MySQLdb.cursors.DictCursor)
+    command = "SELECT * FROM d2matchb_bball.matches where date like \"" + day + "%\";"
+    cursor.execute(command)
+    matches_result_set = cursor.fetchall()
+    match_ids= []
+    for row in matches_result_set:
+        match_ids.append(row["idmatches"])
+    return match_ids
 #this method takes in a bunch of match IDs and returns the following:
 # a dictionary of LISTS of playerInputs where the key to each list is the match ID
 # a dictionary of VALUES of outputs (W or L) where the key to each value is the match ID
@@ -139,8 +152,8 @@ def getPlayerScoresForMatches(match_ids):
         career_score = player_career_stats[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
         
         position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
-        print(career_score)
-        print(position)
+        #print(career_score)
+        #print(position)
         player = PlayerInput()
         player.setValues(cScore=career_score, gScore=game_score,
                              pID=str(row["pid"]), tID=team_id, position=position)
@@ -212,5 +225,9 @@ if __name__ == '__main__':
     #matchIDs = getmatchIDsValid()
     #for m in matchIDs:
     #    print(m)
-    matches = ["46673", "46633", "46675"]
-    getPlayerScoresForMatches(matches)
+    #matches = ["46673", "46633", "46675"]
+    day = "2017-03-20"
+    matches = getMatchesOnDay(day)
+    p_inputs, g_results = getPlayerScoresForMatches(matches)
+    print(p_inputs)
+    print(g_results)
