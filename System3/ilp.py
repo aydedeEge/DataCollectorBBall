@@ -53,20 +53,21 @@ def ilp(expectedScores, playerCosts, playerPositions, numberOfPlayers, globalBud
         my_lp_problem.constraints["Constraint_6"] += playerCosts[i] * decisionVariables["x" + str(i)]
     
     # Print out objective function, constraints, and all variables with their corresponding ranges.
-    print(my_lp_problem)
+    # print(my_lp_problem)
 
     # Solve ILP problem.
     my_lp_problem.solve()
 
     # Print status of solved problem (i.e. Not Solved, Optimal, Infeasible, Unbounded, or Undefined).
-    print(pulp.LpStatus[my_lp_problem.status])
+    print("\n" + "Status: " + pulp.LpStatus[my_lp_problem.status] + "\n")
 
     # Print out values of all decision variables.
+    print("Decision Variables: ")
     for variable in my_lp_problem.variables():
         print("{} = {}".format(variable.name, variable.varValue))
 
     # Print final maximised value of the objective function.
-    print(pulp.value(my_lp_problem.objective))
+    print("\nFinal Maximised Value of Objective Function: " + str(pulp.value(my_lp_problem.objective)) + "\n")
 
 def main():
     expectedScores = [150,120,300,500,90,80,170,40,200,150]
