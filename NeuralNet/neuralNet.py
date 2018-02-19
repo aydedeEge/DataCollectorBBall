@@ -1,131 +1,124 @@
-
+#used for saving stuff https://github.com/lazyprogrammer/machine_learning_examples/blob/master/ann_class2/tf_with_save.py
 import tensorflow as tf
 import numpy as np
+import json
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
-from input.inputData import getSortedOrder, getAverageAndDistribution, getDataPositionOrder
-
 RANDOM_SEED = 588
-tf.set_random_seed(RANDOM_SEED)
-NUMBER_OF_HIDDEN_NODES = 128
-LEARNING_RATE = 0.01
-TEST_SIZE_PERCENT = 0.33
-ACTIVATION_FUNCTION = tf.nn.sigmoid
 
 
-def init_weights(shape):
-    # randomo weight init
-    weights = tf.random_normal(shape, stddev=0.1)
-    return tf.Variable(weights)
+class NeuralNet:
+    def __init__(self,
+                 savefile,
+                 hidden_nodes=None,
+                 learning_rate=None,
+                 x_size=None,
+                 y_size=None):
+        self.savefile = savefile
+        tf.set_random_seed(RANDOM_SEED)
+        if hidden_nodes and learning_rate and x_size and y_size:
+            self.hidden_nodes = hidden_nodes
+            self.learning_rate = learning_rate
+            self.build(x_size, y_size)
 
+    def forwardprop(self):
+        inputToFirstLayer = tf.matmul(self.X, self.W1)
+        outputFirstLayer = tf.nn.sigmoid(inputToFirstLayer)
+        yhat = tf.matmul(outputFirstLayer, self.W2)  # The varphi function
+        return yhat
 
-def forwardprop(X, w_1, w_2):
-    inputToFirstLayer = tf.matmul(X, w_1)
-    outputFirstLayer = ACTIVATION_FUNCTION(inputToFirstLayer)
-    yhat = tf.matmul(outputFirstLayer, w_2)  # The varphi function
+    def predict(self, X):
+        with tf.Session() as session:
+            # restore the model
+            self.saver.restore(session, self.savefile)
+            P = session.run(self.predict_op, feed_dict={self.X: X})
 
-    return yhat
+        return P
 
+    def build(self, x_size, y_size):
+        self.x_size = x_size
+        self.y_size = y_size
+        # define variables and expressions
+        self.X = tf.placeholder(tf.float32, shape=(None, x_size), name='X')
+        self.y = tf.placeholder(tf.float32, shape=(None, y_size), name='y')
 
-def categorize(output):
-    for y in output:
-        if y[0] < 0:
-            y[0] = -1
-        elif y[0] > 0:
-            y[0] = 1
-    return output
+        self.W1 = tf.Variable(
+            tf.random_normal((x_size, self.hidden_nodes), stddev=0.1),
+            name='W1')
+        self.W2 = tf.Variable(
+            tf.random_normal((self.hidden_nodes, y_size), stddev=0.1),
+            name='W2')
 
+        self.saver = tf.train.Saver({'W1': self.W1, 'W2': self.W2})
 
-def get_data():
-    # choose which type of data to get
-    data, target = getDataPositionOrder()
-    print("Data size : ", str(len(target)))
-    print("Input form : ", data[0])
-    print("Output form : ", target[0])
+        # Forward propagation
+        yhat = self.forwardprop()
+        self.predict_op = yhat
 
-    N, M = data.shape
-    # Add ones as x0 for bias = [1,score1,score2,....,scoren]
-    all_X = np.ones((N, M + 1))
-    all_X[:, 1:] = data
+        # ackward propagation
+        cost = tf.reduce_sum(tf.square(yhat - self.y)) / 4
+        return cost
 
-    # Only to get output labels, not use for analog
-    # num_labels = len(np.unique(target.flatten()))
-    # all_Y = np.eye(num_labels)[target.flatten()]
-    all_Y = target
-    return train_test_split(all_X, all_Y, test_size=TEST_SIZE_PERCENT, random_state=RANDOM_SEED)
+    def score(self, X, Y):
+        #TODO, stuff that will get accuracy of model, right now only returns expected result
+        y_predicted = self.predict(X)
+        return y_predicted
 
+    def save(self, filename):
+        j = {
+            'HD': self.hidden_nodes,
+            'LR': self.learning_rate,
+            'X_M': self.x_size,
+            'Y_M': self.y_size,
+            'model': self.savefile
+        }
+        with open(filename, 'w') as f:
+            json.dump(j, f)
 
-def thresholdToTest(x, y):
-    thresholdX = []
-    thresholdY = []
-    for i in range(len(y)):
-        diff = y[i][0] - y[i][1]
-        if diff < -0.5 or diff > 0.5:
-            thresholdX.append(x[i])
-            thresholdY.append(y[i])
-    return thresholdX, thresholdY
+    @staticmethod
+    def load(filename):
+        with open(filename) as f:
+            j = json.load(f)
+            return NeuralNet(j['model'], j['HD'], j['LR'], j['X_M'], j['Y_M'])
 
+    def train_and_test(self, train_X, test_X, train_y, test_y, hidden_nodes,
+                       learning_rate):
 
-def main():
-    train_X, test_X, train_y, test_y = get_data()
-    aboveTrain_X, aboveTrain_y = thresholdToTest(train_X, train_y)
-    aboveTest_X, aboveTest_y = thresholdToTest(test_X, test_y)
-    print(len(aboveTrain_X))
-    print(len(aboveTest_X))
-    # Layer's sizes
-    x_size = train_X.shape[1]
-    h_size = NUMBER_OF_HIDDEN_NODES
-    y_size = train_y.shape[1]
+        self.hidden_nodes = hidden_nodes
+        self.learning_rate = learning_rate
+        cost = self.build(train_X.shape[1], train_y.shape[1])
+        updates = tf.train.GradientDescentOptimizer(
+            self.learning_rate).minimize(cost)
 
-    # thing that will be fed to the neural net
-    X = tf.placeholder("float", shape=[None, x_size])
-    y = tf.placeholder("float", shape=[None, y_size])
+        init = tf.global_variables_initializer()
 
-    # Weight initializations
-    w_1 = init_weights((x_size, h_size))
-    w_2 = init_weights((h_size, y_size))
+        with tf.Session() as sess:
+            sess.run(init)
+            for epoch in range(10):
 
-    # Forward propagation
-    yhat = forwardprop(X, w_1, w_2)
-    predict = tf.argmax(yhat, axis=1)
+                for i in range(len(train_X)):
+                    # print(train_y[i: i + 1])
+                    sess.run(
+                        updates,
+                        feed_dict={
+                            self.X: train_X[i:i + 1],
+                            self.y: train_y[i:i + 1]
+                        })
 
-    # ackward propagation
-    cost = tf.reduce_sum(tf.square(yhat - y)) / 4
-    updates = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cost)
+                currentCost = sess.run(
+                    cost, feed_dict={
+                        self.X: train_X,
+                        self.y: train_y
+                    })
 
-    # Run SGD
-    sess = tf.Session()
-    init = tf.global_variables_initializer()
-    sess.run(init)
+                # train_accuracy = np.mean(np.argmax(train_y, axis=1) == sess.run(
+                #     predict, feed_dict={X: train_X, y: train_y}))
 
-    for epoch in range(500):
+                # test_accuracy = np.mean(np.argmax(test_y, axis=1) == sess.run(
+                #     predict, feed_dict={X: test_X, y: test_y}))
 
-        for i in range(len(train_X)):
-            # print(train_y[i: i + 1])
-            sess.run(updates, feed_dict={
-                     X: train_X[i: i + 1], y: train_y[i: i + 1]})
+                print("Epoch = %d, cost = %.5f " % (epoch + 1, currentCost))
+                # save the model
 
-        currentCost = sess.run(cost, feed_dict={X: train_X, y: train_y})
-
-        train_accuracy = np.mean(np.argmax(train_y, axis=1) == sess.run(
-            predict, feed_dict={X: train_X, y: train_y}))
-
-        test_accuracy = np.mean(np.argmax(test_y, axis=1) == sess.run(
-            predict, feed_dict={X: test_X, y: test_y}))
-
-        print("Epoch = %d, cost = %.5f "
-              % (epoch + 1, currentCost))
-    val = sess.run(yhat, feed_dict={
-                   X: [[1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]]})
-    print(val)
-    orhval = sess.run(yhat, feed_dict={
-                   X: [[1, 0.91699, 1.071600,0.776, 0.73680, 0.85839, 0.91559, 1.06599,1.14519, 0.8291,1.05580]]})
-    print(orhval)
-    #CFGGF
-    wash = sess.run(yhat, feed_dict={
-                   X: [[1, 0.61720, 0.94639,0.92199, 0.8405, 0.7718000,1.15620,0.771800,0.79900,0.685400,0.75900]]})
-
-
-if __name__ == '__main__':
-    main()
+            self.saver.save(sess, self.savefile)
