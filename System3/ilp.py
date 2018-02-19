@@ -1,5 +1,14 @@
 import pulp
 
+def getIndecesOfPlayersAtPosition(positionOfInterest, playerPositions):
+    indexArray = []
+    for i in range(0, len(playerPositions)):
+        if(playerPositions[i] == positionOfInterest):
+            indexArray.append(i)
+    
+    return indexArray
+    
+
 def ilp(expectedScores, playerCosts, playerPositions, numberOfPlayers, globalBudget):
     # Set up problem as a Linear Programming Maximisation problem.
     my_lp_problem = pulp.LpProblem("My LP Problem", pulp.LpMaximize)
@@ -8,29 +17,55 @@ def ilp(expectedScores, playerCosts, playerPositions, numberOfPlayers, globalBud
     decisionVariables={}
 
     # Create decision variables for variables x0 to xn and put in dictionary.
-    for playerNum in range(0, numberOfPlayers):
+    for i in range(0, numberOfPlayers):
         x = "x" 
-        x += str(playerNum)
-        decisionVariables[x] = pulp.LpVariable(x, lowBound=0, upBound=1, cat='Integer')
+        x += str(i)
+        decisionVariables[x] = pulp.LpVariable(x, cat='Binary')
 
-    # for key in decisionVariables:
-    #     print(key)
+    # Create objective function using the decision variables and the expected scores.
+    my_lp_problem += expectedScores[0] * decisionVariables["x" + str(0)], "Z"
+    for i in range(1, numberOfPlayers):
+        my_lp_problem += my_lp_problem.objective + expectedScores[i] * decisionVariables["x" + str(i)]
+
+    # Constraints:
+    # We will have 6 constraints:
+    # 1. Number of players in position 1 = 2.
+    # 2. Number of players in position 2 = 2.
+    # 3. Number of players in position 3 = 2.
+    # 4. Number of players in position 4 = 2.
+    # 5. Number of players in position 5 = 2.
+    # 6. The sum of the cost of each player * corresponding x value <= global budget.
+
+    # Constraints 1 to 5:
+    for i in range(1, 6):
+        indecesOfPosition = getIndecesOfPlayersAtPosition(i, playerPositions)
+        isFirstIteration = True
+        for index in indecesOfPosition:
+            if(isFirstIteration):
+                my_lp_problem += decisionVariables["x" + str(index)] == 1, "Constraint_" + str(i)
+                isFirstIteration = False
+            else:
+                my_lp_problem.constraints["Constraint_" + str(i)] += decisionVariables["x" + str(index)]
+
+    # Constraint 6:
+    my_lp_problem += playerCosts[0] * decisionVariables["x" + str(0)] <= globalBudget, "Constraint_6"
+    for i in range(1, numberOfPlayers):
+        my_lp_problem.constraints["Constraint_6"] += playerCosts[i] * decisionVariables["x" + str(i)]
     
-    my_lp_problem += 4 * decisionVariables['x'] + 3 * decisionVariables['y'], "Z"
-    
-    # my_lp_problem += 2 * decisionVariables['y'] <= 25 - decisionVariables['x']
-    # my_lp_problem += 4 * decisionVariables['y'] >= 2 * decisionVariables['x'] - 8
-    # my_lp_problem += decisionVariables['y'] <= 2 * decisionVariables['x'] - 5
-    
-    my_lp_problem
+    # Print out objective function, constraints, and all variables with their corresponding ranges.
+    print(my_lp_problem)
+
+    # Solve ILP problem.
     my_lp_problem.solve()
 
-
+    # Print status of solved problem (i.e. Not Solved, Optimal, Infeasible, Unbounded, or Undefined).
     print(pulp.LpStatus[my_lp_problem.status])
 
+    # Print out values of all decision variables.
     for variable in my_lp_problem.variables():
         print("{} = {}".format(variable.name, variable.varValue))
 
+    # Print final maximised value of the objective function.
     print(pulp.value(my_lp_problem.objective))
 
 def main():
