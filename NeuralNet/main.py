@@ -22,21 +22,29 @@ def get_data():
     # Add ones as x0 for bias = [1,score1,score2,....,scoren]
     all_X = np.ones((N, M + 1))
     all_X[:, 1:] = data
-    # Only to get output labels, not use for analog
-    # num_labels = len(np.unique(target.flatten()))
-    # all_Y = np.eye(num_labels)[target.flatten()]
+    
     all_Y = target
-    return train_test_split(
-        all_X, all_Y, test_size=TEST_SIZE_PERCENT, random_state=RANDOM_SEED)
+    grouped_X = []
+    grouped_y = []
+    t = np.arange(0,len(all_X),4)
+   
+    for i in t:
+      
+        grouped_X.append(all_X[i:i+4,:])
+        grouped_y.append(all_Y[i:i+4,:])
+   
+    return train_test_split(np.array(grouped_X), np.array(grouped_y), test_size=TEST_SIZE_PERCENT, random_state=RANDOM_SEED)
 
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-
+    train_x_flat = np.array([item for items in train_X for item in items])
+    train_y_flat = np.array([item for items in train_y for item in items])
+  
+   
     model = NeuralNet("trainedModels/tf.model.test_hn" +
                       str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
-    model.train_and_test(train_X, test_X, train_y, test_y,
-                         NUMBER_OF_HIDDEN_NODES, LEARNING_RATE)
+    model.train_and_test(train_x_flat, train_y_flat,NUMBER_OF_HIDDEN_NODES, LEARNING_RATE)
 
     print("final train accuracy:", model.score(train_X, train_y))
     print("final test accuracy:", model.score(test_X, test_y))
