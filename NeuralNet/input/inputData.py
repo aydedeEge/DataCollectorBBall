@@ -96,8 +96,8 @@ def normalizeResult(pointsHome, pointsAway):
 def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     dbInit()
     validMatchId = getmatchIDsValid()
-    test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30], 48652, 48353]
-    validMatchId = test
+    # test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30], 48652, 48353]
+    # validMatchId = test
     inputSize = numInputPerTeam * 2
     numberOfInputs = len(validMatchId)
     print(numberOfInputs)
@@ -134,14 +134,10 @@ def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
 
     X = np.array(matchesArrayScores)
     y = np.array(arrayOuput)
-    print(X)
-    print(y)
-    print(X.shape)
-    print(y.shape)
     # # USE THIS TO SAVE DATA
     np.save(x_path, X)
     np.save(y_path, y)
-
+    #TODO: check out bcolz to save or load 
 
 def getDataPositionOrder():
     x_path = 'XScoresPos.npy'
@@ -151,10 +147,6 @@ def getDataPositionOrder():
         storeDataFormatted(5, getNormalizedTeamsPos, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
-    print(X)
-    print(y)
-    print(X.shape)
-    print(y.shape)
     return X, y
 
 
