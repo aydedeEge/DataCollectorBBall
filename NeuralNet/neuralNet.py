@@ -2,6 +2,7 @@
 import tensorflow as tf
 import numpy as np
 import json
+from accuracy import compute_accuracy
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
@@ -33,7 +34,6 @@ class NeuralNet:
             # restore the model
             self.saver.restore(session, self.savefile)
             P = session.run(self.predict_op, feed_dict={self.X: X})
-
         return P
 
     def build(self, x_size, y_size):
@@ -61,9 +61,11 @@ class NeuralNet:
         return cost
 
     def score(self, X, Y):
-        #TODO, stuff that will get accuracy of model, right now only returns expected result
-        y_predicted = self.predict(X)
-        return y_predicted
+        score = []
+        for i in range(len(X)):
+            y_predicted = self.predict(X[i])
+            score.append(compute_accuracy(y_predicted,Y[i]))
+        return np.average(score)
 
     def save(self, filename):
         j = {
@@ -82,7 +84,7 @@ class NeuralNet:
             j = json.load(f)
             return NeuralNet(j['model'], j['HD'], j['LR'], j['X_M'], j['Y_M'])
 
-    def train_and_test(self, train_X, test_X, train_y, test_y, hidden_nodes,
+    def train_and_test(self, train_X, train_y, hidden_nodes,
                        learning_rate):
 
         self.hidden_nodes = hidden_nodes
@@ -95,7 +97,7 @@ class NeuralNet:
 
         with tf.Session() as sess:
             sess.run(init)
-            for epoch in range(10):
+            for epoch in range(1000):
 
                 for i in range(len(train_X)):
                     # print(train_y[i: i + 1])
@@ -111,12 +113,6 @@ class NeuralNet:
                         self.X: train_X,
                         self.y: train_y
                     })
-
-                # train_accuracy = np.mean(np.argmax(train_y, axis=1) == sess.run(
-                #     predict, feed_dict={X: train_X, y: train_y}))
-
-                # test_accuracy = np.mean(np.argmax(test_y, axis=1) == sess.run(
-                #     predict, feed_dict={X: test_X, y: test_y}))
 
                 print("Epoch = %d, cost = %.5f " % (epoch + 1, currentCost))
                 # save the model
