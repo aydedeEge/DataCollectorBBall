@@ -93,59 +93,11 @@ def normalizeResult(pointsHome, pointsAway):
         pAway = 1
     return pHome, pAway
 
-
-def storeDataFormattedAverage():
-    dbInit()
-    validMatchId = getmatchIDsValid()
-    inputSize = MAX_PLAYER_PER_TEAM * 2
-
-    numberOfInputs = len(validMatchId)
-    matchesArrayScores = []
-    arrayOuput = []
-    i = 0
-    results = getMatchScores(validMatchId)
-
-    a = getPlayerScoresForMatches(validMatchId)
-
-    # Very slow, only to try, would need to be improve for real training
-    for matchID in validMatchId:
-        try:
-            result = normalizeResult(results[str(matchID)][0], results[str(matchID)][1])
-            
-            print(result)
-            teams = getNormalizedTeams(
-                a[0][str(matchID)], lambda player: player.inputOrder)
-
-            scoresTeam1Average, scoresTeam1Var = getAverageAndDistributionVar(
-                normalizeInputArray(getInputArrayFromPlayers(teams[0])))
-
-            scoresTeam2Average, scoresTeam2Var = getAverageAndDistributionVar(
-                normalizeInputArray(getInputArrayFromPlayers(teams[1])))
-
-            matchArrayScores = [scoresTeam1Average,
-                                scoresTeam1Var, scoresTeam2Average, scoresTeam2Var]
-            print(matchArrayScores)
-
-            matchesArrayScores.append(matchArrayScores)
-            arrayOuput.append(result)
-        except Exception as e:
-            print("nope")
-
-        print("fetch match num", i)
-        i = i + 1
-
-    X = np.array(matchesArrayScores)
-    y = np.array(arrayOuput)
-    # # USE THIS TO SAVE DATA
-    np.save('XScoresAverage', X)
-    np.save('yMatchesAverage', y)
-
-
 def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     dbInit()
     validMatchId = getmatchIDsValid()
-    #test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30]]
-    #validMatchId = test
+    test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30], 48652, 48353]
+    validMatchId = test
     inputSize = numInputPerTeam * 2
     numberOfInputs = len(validMatchId)
     print(numberOfInputs)
@@ -154,43 +106,41 @@ def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     arrayOuput = []
     #results getMatchScores(validMatchId)
     #print(results)
-    matchesTeams = getPlayerScoresForMatches(validMatchId)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+    day_index = -1
 
-    for matchID in validMatchId:
-        try:
-            teams = getNormalizeTeamsFun(
-                matchesTeams[0][str(matchID)])
-            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+    for day in matches_on_day:
+        match_ids = matches_on_day[day]
+        matchesArrayScores.append([])
+        arrayOuput.append([])
+        day_index+=1
+        for matchID in match_ids:
+            try:
+                teams = getNormalizeTeamsFun(
+                    player_inputs[str(matchID)])
+                inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
 
-            matchArrayScores = normalizeInputArray(inputArray)
+                matchArrayScores = normalizeInputArray(inputArray)
 
-            if(len(matchArrayScores) == inputSize):
-                matchesArrayScores.append(matchArrayScores)
-                arrayOuput.append(result)
-            else:
-                print("not enough player : ", len(
-                    matchArrayScores), "in match ", matchID)
+                if(len(matchArrayScores) == inputSize):
+                    matchesArrayScores[day_index].append(matchArrayScores)
+                    arrayOuput[day_index].append(result)
+                else:
+                    print("not enough player : ", len(
+                        matchArrayScores), "in match ", matchID)
 
-        except Exception as e:
-            print(e)
+            except Exception as e:
+                print(e)
 
     X = np.array(matchesArrayScores)
     y = np.array(arrayOuput)
+    print(X)
+    print(y)
+    print(X.shape)
+    print(y.shape)
     # # USE THIS TO SAVE DATA
     np.save(x_path, X)
     np.save(y_path, y)
-
-
-def getAverageAndDistribution():
-    my_file = Path('XScoresAverage.npy')
-    if not my_file.is_file():
-        storeDataFormattedAverage()
-
-    X = np.load('XScoresAverage.npy')
-    y = np.load('yMatchesAverage.npy')
-
-    print(y)
-    return X, y
 
 
 def getDataPositionOrder():
@@ -201,6 +151,10 @@ def getDataPositionOrder():
         storeDataFormatted(5, getNormalizedTeamsPos, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
+    print(X)
+    print(y)
+    print(X.shape)
+    print(y.shape)
     return X, y
 
 

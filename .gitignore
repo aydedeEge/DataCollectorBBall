@@ -1,4 +1,5 @@
 config.json
+settings.json
 *.pyo
 *.pyc
 *.npy
@@ -6,3 +7,4 @@ config.json
 *.toc
 *.lof
 *.out
+

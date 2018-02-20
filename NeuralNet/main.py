@@ -1,4 +1,4 @@
-from input.inputData import getSortedOrder, getAverageAndDistribution, getDataPositionOrder
+from input.inputData import getSortedOrder, getDataPositionOrder
 import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
@@ -62,4 +62,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    #getAverageAndDistribution()
+    getDataPositionOrder()
