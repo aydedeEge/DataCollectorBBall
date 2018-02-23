@@ -7,7 +7,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 RANDOM_SEED = 588
-
+EPOCH_COUNT = 10
 
 class NeuralNet:
     def __init__(self,
@@ -97,7 +97,7 @@ class NeuralNet:
 
         with tf.Session() as sess:
             sess.run(init)
-            for epoch in range(1000):
+            for epoch in range(EPOCH_COUNT):
 
                 for i in range(len(train_X)):
                     # print(train_y[i: i + 1])

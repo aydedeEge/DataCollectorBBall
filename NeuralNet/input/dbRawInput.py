@@ -98,10 +98,11 @@ def getPlayerScoresForMatches(match_ids):
     match_or_condition = match_or_condition[:-14]
 
     #make the command and execute
-    command = "SELECT * FROM d2matchb_bball.player_matches where " + match_or_condition + ";"
+    command = "SELECT * FROM d2matchb_bball.player_matches where " + match_or_condition + " order by mdate;"
     cursor.execute(command)
     player_matches_result_set = cursor.fetchall()
 
+    # a list of how many players were on each day (in order)
     #first we just get the player IDs so we can go get the career stats in bulk.
     player_ids = []
     for row in player_matches_result_set:
@@ -131,9 +132,16 @@ def getPlayerScoresForMatches(match_ids):
     #now we can make the final player objects
     game_results = {} # all of the results of the game (W or L)
     player_inputs = {} # all of the player inputs (dictionary of lists)
+    matches_on_days = {}
     for row in player_matches_result_set:
         home_away = row["home_away"]
         match_id = str(row["match_id"])
+        match_date = str(row["mdate"])
+        if(match_date not in matches_on_days):
+            matches_on_days[match_date] = []
+        else:
+            if(match_id not in matches_on_days[match_date]):
+                matches_on_days[match_date].append(match_id)
         if(match_id not in game_results): #if we haven't updated this output
             if((row["winloss"] == "W" and home_away == "H") or (row["winloss"] == "L" and home_away == "A")):
                 game_results[match_id] = 1
@@ -143,8 +151,6 @@ def getPlayerScoresForMatches(match_ids):
         if(game_score is None):
             print("Warning: game score was none for player_match_id = " + str(row["player_match_id"]) +\
                 ", consider running the player_match_scores.py for this id")
-        # TODO fetch the position string once we get it
-        position = ""
         if home_away == "H":
             team_id = 1
         else:
@@ -165,7 +171,7 @@ def getPlayerScoresForMatches(match_ids):
     #    for pi in player_inputs[mi]:
     #        print(pi.toString())
 
-    return player_inputs, game_results
+    return player_inputs, matches_on_days
 
 # returns [0] = array of players ofbooth team for this match
 #        [1] = team winner, 1 if home team won, 0 if lost
@@ -225,9 +231,9 @@ if __name__ == '__main__':
     #matchIDs = getmatchIDsValid()
     #for m in matchIDs:
     #    print(m)
-    #matches = ["46673", "46633", "46675"]
-    day = "2017-03-20"
-    matches = getMatchesOnDay(day)
-    p_inputs, g_results = getPlayerScoresForMatches(matches)
+    matches = ["46673", "46633", "46675"]
+    #day = "2017-03-20"
+    #matches = getMatchesOnDay(day)
+    p_inputs, m_on_day = getPlayerScoresForMatches(matches)
     print(p_inputs)
-    print(g_results)
+    print(m_on_day)
