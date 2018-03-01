@@ -5,7 +5,7 @@ GLOBAL_BUDGET = 60000
 COST = 4000
 
 
-def compute_accuracy(games_predicted, games_actual):
+def compute_accuracy(games_predicted, games_actual, returnLineup):
     predictedScores = [item for items in games_predicted for item in items]
     actualScores = [item for items in games_actual for item in items]
     position_array = []
@@ -21,5 +21,6 @@ def compute_accuracy(games_predicted, games_actual):
 
     actual_score = sum([actualScores[i] for i in index_players_actual])
     gotten_score = sum([actualScores[i] for i in index_players_predicted])
-
+    if returnLineup:
+        return gotten_score / actual_score * 100, index_players_actual, index_players_predicted
     return gotten_score / actual_score * 100

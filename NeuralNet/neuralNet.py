@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 
 RANDOM_SEED = 588
 
+
 class NeuralNet:
     def __init__(self,
                  savefile,
@@ -62,9 +63,12 @@ class NeuralNet:
     def score(self, X, Y):
         score = []
         for i in range(len(X)):
-            y_predicted = self.predict(X[i])
-            score.append(compute_accuracy(y_predicted,Y[i]))
+            score.append(self.scoreDay(X[i], Y[i]))
         return np.average(score)
+
+    def scoreDay(self, X_day, Y_day, returnLineup=False):
+        y_predicted = self.predict(X_day)
+        return compute_accuracy(y_predicted, Y_day, returnLineup)
 
     def save(self, filename):
         j = {
@@ -83,8 +87,8 @@ class NeuralNet:
             j = json.load(f)
             return NeuralNet(j['model'], j['HD'], j['LR'], j['X_M'], j['Y_M'])
 
-    def train_and_test(self, train_X, train_y, hidden_nodes,
-                       learning_rate,epoch):
+    def train_and_test(self, train_X, train_y, hidden_nodes, learning_rate,
+                       epoch):
 
         self.hidden_nodes = hidden_nodes
         self.learning_rate = learning_rate
