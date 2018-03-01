@@ -6,10 +6,10 @@ from neuralNet import NeuralNet
 import json
 
 RANDOM_SEED = 588
-TEST_SIZE_PERCENT = 0.33
-NUMBER_OF_HIDDEN_NODES = 128
+TEST_SIZE_PERCENT = 0.3
+NUMBER_OF_HIDDEN_NODES = 64
 LEARNING_RATE = 0.01
-EPOCH_COUNT = 10
+EPOCH_COUNT = 1000
 
 
 def get_data():
@@ -23,9 +23,9 @@ def get_data():
         target = np.array(all_targets[i])
 
         if (len(data) != 0):
-            print("Data size : ", str(len(target)))
-            print("Input form : ", data[0])
-            print("Output form : ", target[0])
+            # print("Data size : ", str(len(target)))
+            # print("Input form : ", data[0])
+            # print("Output form : ", target[0])
 
             N, M = data.shape
             # Add ones as x0 for bias = [1,score1,score2,....,scoren]
@@ -48,7 +48,7 @@ def get_data():
 def train(train_X, train_y):
     train_x_flat = np.array([item for items in train_X for item in items])
     train_y_flat = np.array([item for items in train_y for item in items])
-
+    print(len(train_y_flat))
     model = NeuralNet("trainedModels/tf.model.test_hn" +
                       str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
     model.train_and_test(train_x_flat, train_y_flat, NUMBER_OF_HIDDEN_NODES,
@@ -90,10 +90,11 @@ def run(day):
 
 
 def main():
-    # train_X, test_X, train_y, test_y = get_data()
-    # test(train_X, test_X, train_y, test_y)
+    train_X, test_X, train_y, test_y = get_data()
+    train(train_X, train_y)
+    test(train_X, test_X, train_y, test_y)
 
-    run('2017-03-20')
+    #run('2017-03-20')
 
 
 if __name__ == '__main__':
