@@ -3,7 +3,7 @@ class Team:
     def setValues(self, players):
         self.players = players
         for player in players:
-            print(player.toString())
+            #print(player.toString())
             self.positionDict[str(player.inputOrder)].append(player)
 
         playerC = self.positionDict['0'][0]

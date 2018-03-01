@@ -72,24 +72,28 @@ def test(train_X, test_X, train_y, test_y):
 
 #format of day should be YYYY-MM-DD
 def run(day):
-    day_x, day_y = getSortedOrderForDay(day)
+    day_x, day_y, Gamesplayers = getSortedOrderForDay(day)
+    playersList = [item.playerID for items in Gamesplayers for item in items]
+
     N, M = day_x.shape
     day_X = np.ones((N, M + 1))
     day_X[:, 1:] = day_x
     model = NeuralNet.load("trainedModels/nn_model_hn" + str(
         NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE) + ".json")
-    score, realLineup, predictedLineup = model.scoreDay(day_X, day_y, True)
+    score, realLineupIndex, predictedLineupIndex = model.scoreDay(
+        day_X, day_y, True)
+    realLineup = [playersList[i] for i in realLineupIndex]
+    predictedLineup = [playersList[i] for i in predictedLineupIndex]
     print("test accuracy for day:", score)
-    print("good players:", realLineup)
-    print("player selected:", predictedLineup)
-    #Todo return names of player
+    print("good players ids:", realLineup)
+    print("players selected ids :", predictedLineup)
 
 
 def main():
-    train_X, test_X, train_y, test_y = get_data()
-    test(train_X, test_X, train_y, test_y)
+    # train_X, test_X, train_y, test_y = get_data()
+    # test(train_X, test_X, train_y, test_y)
 
-    #run('2017-03-20')
+    run('2017-03-20')
 
 
 if __name__ == '__main__':
