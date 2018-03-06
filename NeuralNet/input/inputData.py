@@ -22,6 +22,7 @@ def getInputArrayFromPlayers(playersArray):
     outputArray = []
     for player in playersArray:
         inputArray.append(player.careerScore)
+        inputArray.append(player.shortScore)
         outputArray.append(player.gameScore)
     return inputArray, outputArray
 
@@ -144,7 +145,7 @@ def getDataPositionOrder():
     y_path = 'yMatchesPos.npy'
     my_file = Path(x_path)
     if not my_file.is_file():
-        storeDataFormatted(5, getNormalizedTeamsPos, x_path, y_path)
+        storeDataFormatted(10, getNormalizedTeamsPos, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
     return X, y
@@ -155,7 +156,7 @@ def getSortedOrder():
     y_path = 'yMatches.npy'
     my_file = Path(x_path)
     if not my_file.is_file():
-        storeDataFormatted(MAX_PLAYER_PER_TEAM,
+        storeDataFormatted(MAX_PLAYER_PER_TEAM*2,
                            getNormalizedTeams, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
