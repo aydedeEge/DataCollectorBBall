@@ -7,7 +7,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 RANDOM_SEED = 588
-EPOCH_COUNT = 10
+EPOCH_COUNT = 500
 
 class NeuralNet:
     def __init__(self,
