@@ -45,7 +45,7 @@ def main():
     train_X, test_X, train_y, test_y = get_data()
     train_x_flat = np.array([item for items in train_X for item in items])
     train_y_flat = np.array([item for items in train_y for item in items])
-  
+    print("Total x trained on" + str(len(train_x_flat)))
    
     model = NeuralNet("trainedModels/tf.model.test_hn" +
                       str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
@@ -58,12 +58,12 @@ def main():
     model.save("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) + "_lr" +
                str(LEARNING_RATE) + ".json")
 
-    # load and score again
-    model = NeuralNet.load("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) +
-                           "_lr" + str(LEARNING_RATE) + ".json")
-    print("final train accuracy (after reload):", model.score(
-        train_X, train_y))
-    print("final test accuracy (after reload):", model.score(test_X, test_y))
+    # # load and score again
+    # model = NeuralNet.load("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) +
+    #                        "_lr" + str(LEARNING_RATE) + ".json")
+    # print("final train accuracy (after reload):", model.score(
+    #     train_X, train_y))
+    # print("final test accuracy (after reload):", model.score(test_X, test_y))
 
 
 if __name__ == '__main__':
