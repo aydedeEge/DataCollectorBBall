@@ -2,7 +2,7 @@
 import tensorflow as tf
 import numpy as np
 import json
-from accuracy import compute_accuracy
+from accuracy import compute_accuracy, predict_lineup
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
@@ -69,6 +69,15 @@ class NeuralNet:
     def scoreDay(self, X_day, Y_day, returnLineup=False):
         y_predicted = self.predict(X_day)
         return compute_accuracy(y_predicted, Y_day, returnLineup)
+
+    def getPrediction(self, X_day, players):
+        y_predicted = self.predict(X_day)
+        player_expectedScore = [
+            item for items in y_predicted for item in items
+        ]
+        for i in range(len(players)):
+            players[i].expectedScore = player_expectedScore[i]
+        return predict_lineup(players)
 
     def save(self, filename):
         j = {

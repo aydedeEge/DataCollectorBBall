@@ -1,4 +1,4 @@
-from input.inputData import getSortedOrder, getDataPositionOrder, getSortedOrderForDay
+from input.inputData import getSortedOrder, getDataPositionOrder, getSortedOrderForDay, getInputForDay
 import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
@@ -90,11 +90,27 @@ def run(day):
     #Todo return names of player
 
 
-def main():
-    train_X, test_X, train_y, test_y = get_data()
-    test(train_X, test_X, train_y, test_y)
+def predict(day):
+    day_x, playerList = getInputForDay(day)
 
-    #run('2017-03-25')
+    N, M = day_x.shape
+    day_X = np.ones((N, M + 1))
+    day_X[:, 1:] = day_x
+    model = NeuralNet.load("trainedModels/nn_model_hn" + str(
+        NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE) + ".json")
+
+    score, predictedLineup = model.getPrediction(day_X, playerList)
+
+    print("player selected:")
+    for player in predictedLineup:
+        print(player.toString())
+
+
+def main():
+    # train_X, test_X, train_y, test_y = get_data()
+    # test(train_X, test_X, train_y, test_y)
+
+    predict('2017-03-25')
 
 
 if __name__ == '__main__':
