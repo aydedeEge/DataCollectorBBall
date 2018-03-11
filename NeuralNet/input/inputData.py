@@ -3,7 +3,8 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 from input.dbRawInput import (dbInit, getmatchIDsValid, getPlayerScores,
-                              getPlayerScoresForMatches, getMatchScores)
+                              getPlayerScoresForMatches, getMatchScores,
+                              getMatchesOnDay)
 from model.playerInput import PlayerInput
 from model.team import Team
 import math
@@ -166,6 +167,38 @@ def getSortedOrder():
     X = np.load(x_path)
     y = np.load(y_path)
     print(y)
+    return X, y
+
+
+def getSortedOrderForDay(day):
+    dbInit()
+    inputSize = MAX_PLAYER_PER_TEAM * 4
+    matchesArrayScores = []
+    arrayOuput = []
+    validMatchId = getMatchesOnDay(day)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+
+    for matchID in validMatchId:
+        try:
+            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+
+            matchArrayScores = normalizeInputArray(inputArray)
+
+            if (len(matchArrayScores) == inputSize):
+
+                matchesArrayScores.append(matchArrayScores)
+                arrayOuput.append(result)
+            else:
+                print(len(matchArrayScores))
+                print("not enough player : ", len(matchArrayScores),
+                      "in match ", matchID)
+
+        except Exception as e:
+            print("matchID:", matchID, " failed")
+
+    X = np.array(matchesArrayScores)
+    y = np.array(arrayOuput)
     return X, y
 
 
