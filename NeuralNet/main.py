@@ -10,6 +10,7 @@ TEST_SIZE_PERCENT = 0.33
 NUMBER_OF_HIDDEN_NODES = 128
 LEARNING_RATE = 0.01
 EPOCH_COUNT = 10
+MIN_GAMES_PER_DAY = 7
 
 
 def get_data():
@@ -18,11 +19,15 @@ def get_data():
     grouped_X = []
     grouped_y = []
     day_count = len(all_data)
+    smaller_day_X = []
+    smaller_day_y = []
+    days = 0
     for i in range(0, day_count):
         data = np.array(all_data[i])
         target = np.array(all_targets[i])
 
-        if (len(data) != 0):
+        if (len(data) > MIN_GAMES_PER_DAY):
+            days += 1
             print("Data size : ", str(len(target)))
             print("Input form : ", data[0])
             print("Output form : ", target[0])
@@ -35,9 +40,9 @@ def get_data():
 
             grouped_X.append(day_X)
             grouped_y.append(day_Y)
-        else:
-            print("No data on this day " + str(i))
-
+        elif (len(data) == 0):
+            print("Not data on this day " + str(i))
+    print("Test on " + str(days) + " days over " + str(day_count))
     return train_test_split(
         np.array(grouped_X),
         np.array(grouped_y),
@@ -86,10 +91,10 @@ def run(day):
 
 
 def main():
-    # train_X, test_X, train_y, test_y = get_data()
-    # test(train_X, test_X, train_y, test_y)
+    train_X, test_X, train_y, test_y = get_data()
+    test(train_X, test_X, train_y, test_y)
 
-    run('2017-03-20')
+    #run('2017-03-25')
 
 
 if __name__ == '__main__':
