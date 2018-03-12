@@ -7,7 +7,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 RANDOM_SEED = 588
-
+BETA = 0.00001
 
 class NeuralNet:
     def __init__(self,
@@ -55,9 +55,16 @@ class NeuralNet:
         # Forward propagation
         yhat = self.forwardprop()
         self.predict_op = yhat
-
-        # ackward propagation
+        #regularization
+        #TODO used as hyperparam
+        regularizerW1 = tf.nn.l2_loss(self.W1)
+        regularizerW2 = tf.nn.l2_loss(self.W2)
+        
+        # backward propagation
         cost = tf.reduce_sum(tf.square(yhat - self.y)) / 4
+
+        cost = tf.reduce_mean(
+            cost + BETA * regularizerW1 + BETA * regularizerW2)
         return cost
 
     def score(self, X, Y):

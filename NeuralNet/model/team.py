@@ -12,6 +12,7 @@ class Team:
         self.findForwardsAndGuards()
 
         for player in players:
+
             if player.inputOrder is not None:
                 #     print(player.toString())
                 self.positionDict[str(player.inputOrder)].append(player)

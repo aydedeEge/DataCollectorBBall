@@ -165,7 +165,7 @@ def getSortedOrder():
                            y_path)
     X = np.load(x_path)
     y = np.load(y_path)
-    print(y)
+   
     return X, y
 
 def getSortedOrderForDay(day):
@@ -175,12 +175,14 @@ def getSortedOrderForDay(day):
     arrayOuput = []
     validMatchId = getMatchesOnDay(day)
     player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
-    
+    gamesPlayer = []
     for matchID in validMatchId:
         try:
             teams = getNormalizedTeamsPos(
                 player_inputs[str(matchID)])
-            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+            gamePlayers = teams[0] + teams[1]
+            gamesPlayer.append(gamePlayers)
+            inputArray, result = getInputArrayFromPlayers(gamePlayers)
 
             matchArrayScores = normalizeInputArray(inputArray)
            
@@ -196,7 +198,7 @@ def getSortedOrderForDay(day):
    
     X = np.array(matchesArrayScores)
     y = np.array(arrayOuput)
-    return X,y
+    return X,y,gamesPlayer
 
 
 def getSortedOrderForDay(day):
