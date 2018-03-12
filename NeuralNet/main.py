@@ -10,7 +10,7 @@ TEST_SIZE_PERCENT = 0.3
 NUMBER_OF_HIDDEN_NODES = 64
 LEARNING_RATE = 0.01
 MIN_GAMES_PER_DAY = 7
-EPOCH_COUNT = 100
+EPOCH_COUNT = 500
 
 
 def get_data():
@@ -112,7 +112,7 @@ def predict(day):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    train(train_X, train_y)
+    #train(train_X, train_y)
     test(train_X, test_X, train_y, test_y)
 
     predict('2017-03-25')
