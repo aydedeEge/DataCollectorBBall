@@ -1,4 +1,4 @@
-from input.inputData import getSortedOrder, getDataPositionOrder, getSortedOrderForDay
+from input.inputData import getSortedOrder, getDataPositionOrder, getSortedOrderForDay, getInputForDay
 import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
@@ -9,6 +9,7 @@ RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
 NUMBER_OF_HIDDEN_NODES = 64
 LEARNING_RATE = 0.01
+MIN_GAMES_PER_DAY = 7
 EPOCH_COUNT = 1000
 
 
@@ -18,14 +19,18 @@ def get_data():
     grouped_X = []
     grouped_y = []
     day_count = len(all_data)
+    smaller_day_X = []
+    smaller_day_y = []
+    days = 0
     for i in range(0, day_count):
         data = np.array(all_data[i])
         target = np.array(all_targets[i])
+        if (len(data) > MIN_GAMES_PER_DAY):
+            days += 1
+            print("Data size : ", str(len(target)))
+            print("Input form : ", data[0])
+            print("Output form : ", target[0])
 
-        if (len(data) != 0):
-            # print("Data size : ", str(len(target)))
-            # print("Input form : ", data[0])
-            # print("Output form : ", target[0])
 
             N, M = data.shape
             # Add ones as x0 for bias = [1,score1,score2,....,scoren]
@@ -35,9 +40,9 @@ def get_data():
 
             grouped_X.append(day_X)
             grouped_y.append(day_Y)
-        else:
-            print("No data on this day " + str(i))
-
+        elif (len(data) == 0):
+            print("Not data on this day " + str(i))
+    print("Test on " + str(days) + " days over " + str(day_count))
     return train_test_split(
         np.array(grouped_X),
         np.array(grouped_y),
@@ -89,12 +94,28 @@ def run(day):
     print("players selected ids :", predictedLineup)
 
 
+def predict(day):
+    day_x, playerList = getInputForDay(day)
+
+    N, M = day_x.shape
+    day_X = np.ones((N, M + 1))
+    day_X[:, 1:] = day_x
+    model = NeuralNet.load("trainedModels/nn_model_hn" + str(
+        NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE) + ".json")
+
+    score, predictedLineup = model.getPrediction(day_X, playerList)
+
+    print("player selected:")
+    for player in predictedLineup:
+        print(player.toString())
+
+
 def main():
     train_X, test_X, train_y, test_y = get_data()
     train(train_X, train_y)
     test(train_X, test_X, train_y, test_y)
 
-    run('2017-03-20')
+    predict('2017-03-25')
 
 if __name__ == '__main__':
     main()

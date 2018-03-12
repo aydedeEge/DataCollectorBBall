@@ -233,6 +233,36 @@ def getSortedOrderForDay(day):
     return X, y
 
 
+def getInputForDay(day):
+    dbInit()
+    inputSize = MAX_PLAYER_PER_TEAM * 4
+    matchesArrayScores = []
+    validMatchId = getMatchesOnDay(day)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+    playerList = []
+    for matchID in validMatchId:
+        try:
+            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+            playerList = playerList + teams[0] + teams[1]
+            matchArrayScores = normalizeInputArray(inputArray)
+
+            if (len(matchArrayScores) == inputSize):
+
+                matchesArrayScores.append(matchArrayScores)
+            else:
+                print(len(matchArrayScores))
+                print("not enough player : ", len(matchArrayScores),
+                      "in match ", matchID)
+
+        except Exception as e:
+            print("matchID:", matchID, " failed")
+
+    X = np.array(matchesArrayScores)
+
+    return X, playerList
+
+
 def getStat():
     dbInit()
     validMatchId = getmatchIDsValid()
