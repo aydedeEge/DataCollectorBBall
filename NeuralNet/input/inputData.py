@@ -2,8 +2,9 @@ import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
-from input.dbRawInput import (
-    dbInit, getmatchIDsValid, getPlayerScores, getPlayerScoresForMatches, getMatchScores,getMatchesOnDay)
+from input.dbRawInput import (dbInit, getmatchIDsValid, getPlayerScores,
+                              getPlayerScoresForMatches, getMatchScores,
+                              getMatchesOnDay)
 from model.playerInput import PlayerInput
 from model.team import Team
 import math
@@ -21,6 +22,7 @@ def getInputArrayFromPlayers(playersArray):
     outputArray = []
     for player in playersArray:
         inputArray.append(player.careerScore)
+        inputArray.append(player.shortScore)
         outputArray.append(player.gameScore)
     return inputArray, outputArray
 
@@ -86,17 +88,21 @@ def normalizeResult(pointsHome, pointsAway):
     # pAway = 1 - diffScaled
     pHome = 0
     pAway = 0
-    if pointsHome>pointsAway:
+    if pointsHome > pointsAway:
         pHome = 1
     else:
         pAway = 1
     return pHome, pAway
 
+
 def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     dbInit()
     validMatchId = getmatchIDsValid()
-    # test = [validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30], 48652, 48353]
-    # validMatchId = test
+    # test = [
+    #     validMatchId[0], validMatchId[10], validMatchId[20], validMatchId[30],
+    #     48652, 48353
+    # ]
+    #validMatchId = test
     inputSize = numInputPerTeam * 2
     numberOfInputs = len(validMatchId)
     print(numberOfInputs)
@@ -112,21 +118,21 @@ def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
         match_ids = matches_on_day[day]
         matchesArrayScores.append([])
         arrayOuput.append([])
-        day_index+=1
+        day_index += 1
         for matchID in match_ids:
             try:
-                teams = getNormalizeTeamsFun(
-                    player_inputs[str(matchID)])
-                inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+                teams = getNormalizeTeamsFun(player_inputs[str(matchID)])
+                inputArray, result = getInputArrayFromPlayers(
+                    teams[0] + teams[1])
 
                 matchArrayScores = normalizeInputArray(inputArray)
 
-                if(len(matchArrayScores) == inputSize):
+                if (len(matchArrayScores) == inputSize):
                     matchesArrayScores[day_index].append(matchArrayScores)
                     arrayOuput[day_index].append(result)
                 else:
-                    print("not enough player : ", len(
-                        matchArrayScores), "in match ", matchID)
+                    print("not enough player : ", len(matchArrayScores),
+                          "in match ", matchID)
 
             except Exception as e:
                 print(e)
@@ -136,14 +142,15 @@ def storeDataFormatted(numInputPerTeam, getNormalizeTeamsFun, x_path, y_path):
     # # USE THIS TO SAVE DATA
     np.save(x_path, X)
     np.save(y_path, y)
-    #TODO: check out bcolz to save or load 
+    #TODO: check out bcolz to save or load
+
 
 def getDataPositionOrder():
     x_path = 'XScoresPos.npy'
     y_path = 'yMatchesPos.npy'
     my_file = Path(x_path)
     if not my_file.is_file():
-        storeDataFormatted(MAX_PLAYER_PER_POS_TEAM, getNormalizedTeamsPos, x_path, y_path)
+        storeDataFormatted(14, getNormalizedTeamsPos, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
     return X, y
@@ -154,8 +161,8 @@ def getSortedOrder():
     y_path = 'yMatches.npy'
     my_file = Path(x_path)
     if not my_file.is_file():
-        storeDataFormatted(MAX_PLAYER_PER_TEAM,
-                           getNormalizedTeams, x_path, y_path)
+        storeDataFormatted(MAX_PLAYER_PER_TEAM * 2, getNormalizedTeams, x_path,
+                           y_path)
     X = np.load(x_path)
     y = np.load(y_path)
    
@@ -192,6 +199,38 @@ def getSortedOrderForDay(day):
     X = np.array(matchesArrayScores)
     y = np.array(arrayOuput)
     return X,y,gamesPlayer
+
+
+def getSortedOrderForDay(day):
+    dbInit()
+    inputSize = MAX_PLAYER_PER_TEAM * 4
+    matchesArrayScores = []
+    arrayOuput = []
+    validMatchId = getMatchesOnDay(day)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+
+    for matchID in validMatchId:
+        try:
+            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+
+            matchArrayScores = normalizeInputArray(inputArray)
+
+            if (len(matchArrayScores) == inputSize):
+
+                matchesArrayScores.append(matchArrayScores)
+                arrayOuput.append(result)
+            else:
+                print(len(matchArrayScores))
+                print("not enough player : ", len(matchArrayScores),
+                      "in match ", matchID)
+
+        except Exception as e:
+            print("matchID:", matchID, " failed")
+
+    X = np.array(matchesArrayScores)
+    y = np.array(arrayOuput)
+    return X, y
 
 
 def getStat():
