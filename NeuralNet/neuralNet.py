@@ -7,7 +7,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 RANDOM_SEED = 588
-BETA = 0.00001
+BETA = 0
 
 class NeuralNet:
     def __init__(self,
