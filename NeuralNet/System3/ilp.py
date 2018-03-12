@@ -34,7 +34,7 @@ def ilp(expectedScores, playerCosts, playerPositions, globalBudget):
     # 2. Number of players in position 2 = 2.
     # 3. Number of players in position 3 = 2.
     # 4. Number of players in position 4 = 2.
-    # 5. Number of players in position 5 = 2.
+    # 5. Number of players in position 5 = 1.
     # 6. The sum of the cost of each player * corresponding x value <= global budget.
 
     # Constraints 1 to 5:
@@ -43,7 +43,12 @@ def ilp(expectedScores, playerCosts, playerPositions, globalBudget):
         isFirstIteration = True
         for index in indecesOfPosition:
             if(isFirstIteration):
-                my_lp_problem += decisionVariables["x" + str(index)] == 2, "Constraint_" + str(i)
+                # If we are looking at the "center" position, we want to only choose 1 instead of 2.
+                if(i == 1):
+                    my_lp_problem += decisionVariables["x" + str(index)] == 1, "Constraint_" + str(i)
+                else:
+                    my_lp_problem += decisionVariables["x" + str(index)] == 2, "Constraint_" + str(i)
+
                 isFirstIteration = False
             else:
                 my_lp_problem.constraints["Constraint_" + str(i)] += decisionVariables["x" + str(index)]
@@ -54,25 +59,25 @@ def ilp(expectedScores, playerCosts, playerPositions, globalBudget):
         my_lp_problem.constraints["Constraint_6"] += playerCosts[i] * decisionVariables["x" + str(i)]
     
     # Print out objective function, constraints, and all variables with their corresponding ranges.
-    # print(my_lp_problem)
+    print(my_lp_problem)
 
     # Solve ILP problem.
     my_lp_problem.solve()
 
     # Print status of solved problem (i.e. Not Solved, Optimal, Infeasible, Unbounded, or Undefined).
-    # print("\n" + "Status: " + pulp.LpStatus[my_lp_problem.status] + "\n")
+    print("\n" + "Status: " + pulp.LpStatus[my_lp_problem.status] + "\n")
 
     # Print out values of all decision variables.
-    # print("Decision Variables: ")
+    print("Decision Variables: ")
     result = []
 
     for variable in my_lp_problem.variables():
-        # print("{} = {}".format(variable.name, variable.varValue))
+        print("{} = {}".format(variable.name, variable.varValue))
         if(variable.varValue == 1):
             result.append(noo[variable.name])
         
     # Print final maximised value of the objective function.
-    # print("\nFinal Maximised Value of Objective Function: " + str(pulp.value(my_lp_problem.objective)) + "\n")
+    print("\nFinal Maximised Value of Objective Function: " + str(pulp.value(my_lp_problem.objective)) + "\n")
 
     return result
 
@@ -80,10 +85,9 @@ def main():
     expectedScores = [150,120,300,500,90,80,170,40,200,150]
     playerCosts = [70,65,90,85,90,55,70,20,100,90]
     playerPositions = [1,2,3,4,5,1,2,3,4,5]
-    numberOfPlayers = len(expectedScores)
-    globalBudget = 500
+    globalBudget = 1000
 
-    ilp(expectedScores, playerCosts, playerPositions, numberOfPlayers, globalBudget)
+    ilp(expectedScores, playerCosts, playerPositions, globalBudget)
 
 if __name__ == '__main__':
     main()

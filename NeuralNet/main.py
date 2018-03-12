@@ -89,8 +89,7 @@ def main():
     train_X, test_X, train_y, test_y = get_data()
     test(train_X, test_X, train_y, test_y)
 
-    #run('2017-03-20')
-
+    run('2017-03-20')
 
 if __name__ == '__main__':
     main()

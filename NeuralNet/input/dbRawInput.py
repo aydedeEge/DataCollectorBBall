@@ -156,12 +156,13 @@ def getPlayerScoresForMatches(match_ids):
         else:
             team_id = 2
         career_score = player_career_stats[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
-        
+        short_score = row["short_score"]
+
         position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
         #print(career_score)
         #print(position)
         player = PlayerInput()
-        player.setValues(cScore=career_score, gScore=game_score,
+        player.setValues(cScore=career_score, sScore = short_score, gScore=game_score,
                              pID=str(row["pid"]), tID=team_id, position=position)
         if(match_id not in player_inputs):
             player_inputs[match_id] = []
