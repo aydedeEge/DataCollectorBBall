@@ -46,7 +46,7 @@ def calculate(player_id):
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_matches where pid = " + str(player_id) + " and score is not null and short_score is null order by mdate;")
+    cursor.execute("SELECT * FROM player_matches where pid = " + str(player_id) + " order by mdate;")
     result_set = cursor.fetchall()
     short_scores = {}
     game_scores = []
@@ -90,11 +90,27 @@ def get_player_ids(limit):
     connection.close()
     return result
 
+
+def get_player_ids_to_append(limit):
+    connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
+                                 user = os.environ["user"],         # your username
+                                 passwd = os.environ["pwd"],  # your password
+                                 db = os.environ["db"])        # name of the data base
+    cursor = connection.cursor(MySQLdb.cursors.DictCursor)
+    command = "SELECT distinct(pid) FROM player_matches WHERE pid IN (SELECT pid FROM player_matches WHERE short_score is null) limit " + str(limit) + ";"
+    cursor.execute(command)
+    result_set = cursor.fetchall()
+    result = []
+    for row in result_set:
+        result.append(row["pid"])    
+    connection.close()
+    return result
+
 if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    ids_to_update = get_player_ids(300)
+    ids_to_update = get_player_ids_to_append(300)
     count = 0
     for pid in ids_to_update:
         res = calculate(pid)

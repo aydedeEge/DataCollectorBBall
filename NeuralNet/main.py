@@ -115,7 +115,7 @@ def main():
     #train(train_X, train_y)
     test(train_X, test_X, train_y, test_y)
 
-    predict('2017-03-25')
+    predict('2018-03-13')
 
 if __name__ == '__main__':
     main()

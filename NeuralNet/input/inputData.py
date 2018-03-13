@@ -253,7 +253,7 @@ def getInputForDay(day):
             else:
                 print(len(matchArrayScores))
                 print("not enough player : ", len(matchArrayScores),
-                      "in match ", matchID)
+                        "in match ", matchID)
 
         except Exception as e:
             print("matchID:", matchID, " failed")
