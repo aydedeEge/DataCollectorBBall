@@ -48,7 +48,7 @@ def get_match_id(match_date, team1, team2):
     connection.close()
     return result
 
-def insert_future_player_matches(season, match_date, fd_data):
+def insert_future_player_matches(season, match_date, match_ids, fd_data):
     """Insert the future matches"""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
@@ -66,40 +66,41 @@ def insert_future_player_matches(season, match_date, fd_data):
 
     or_conditional = ""
     for i in range(len(first_names)):
-        or_conditional += "(first_name = " + first_names[i] + " and last_name = " + last_names[i] + ") OR"
+        or_conditional += " (first_name = \"" + first_names[i] + "\" and last_name = \"" + fix_name(last_names[i]) + "\") OR"
 
-    command = "SELECT * from players where " + or_conditional[:-3] + ";"
-    for row in fd_data:
-
-    
-    
-    
-    
-    
+    command = "SELECT * from players where" + or_conditional[:-3] + ";"
+    #print(command)
+    cursor.execute(command)
+    cursor_result = cursor.fetchall()
+    for row in cursor_result:
+        player_ids[row["first_name"] + row["last_name"]] = row["pid"]
     
     value_command = "VALUES "
     match_date_no_hyphens = match_date.replace("-", "")
-    
-
-
-
-
-        pid = row["player_id"] 
-        player_match_id = match_date_no_hyphens + str(pid)
-        mdate = match_date
-        if(team1 == row["team"]):
-            pteam = team1
-            oteam = team2
-            home_away = "H"
+    used_pids = []
+    #now we have player ids, go through the data
+    for index, row in fd_data.iterrows():
+        first_name = str(row["First Name"])
+        last_name = fix_name(str(row["Last Name"]))
+        key_name = first_name + last_name
+        if key_name in player_ids:
+            pid = player_ids[first_name + last_name]
+            player_match_id = match_date_no_hyphens + str(pid)
+            mdate = match_date
+            pteam = fix_team(row["Team"])
+            oteam = fix_team(row["Opponent"])
+            match_id = match_ids[row["Game"]]
+            salary = row["Salary"]
+            if(str(row["Team"]) + "@" + str(row["Opponent"]) == row["Game"]):
+                home_away = "A"
+            else:
+                home_away = "H"
+            value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "'),"
         else:
-            pteam = team2
-            oteam = team1
-            home_away = "A"
-        value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + match_id + "', '" + mdate + "', '" + pteam + "', '" + oteam + "', '" + home_away + "'),"
-
+            print("Not in db: " + key_name)
     value_command = value_command[:-1] + ";"
     command = "INSERT INTO `d2matchb_bball`.`player_matches` "
-    command += "(`player_match_id`, `pid`, `match_id`, `mdate`, `pteam`, `oteam`, `home_away`) "
+    command += "(`player_match_id`, `pid`, `match_id`, `mdate`, `pteam`, `oteam`, `home_away`, `salary`) "
     command += value_command
 
     cursor.execute(command)
@@ -123,6 +124,10 @@ def insert_future_matches(games, game_date):
             hteams[g] = hteam
             insert_future_match(game_date, hteam, ateam)
     return added_matches, hteams, ateams
+
+def fix_name(name):
+    return name.replace(" Jr.", "").replace(" III", "").replace(" II", "")
+
 def fix_team(team):
     if(len(team) == 3):
         return team
@@ -153,6 +158,4 @@ if __name__ == '__main__':
         match_ids[m] = get_match_id(game_date, hteams[m], ateams[m])
     
     #now we have the match IDs, we go through them and add the player matches
-    for m in matches:
-        mid = match_ids[m]
-        insert_future_player_matches(season, game_date, fd_data)
+    insert_future_player_matches(season, game_date, match_ids, fd_data)
