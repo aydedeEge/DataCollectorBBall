@@ -6,8 +6,8 @@ class PlayerInput:
                   pID,
                   tID,
                   position,
-                  eScore=None,
-                  sal=1000):
+                  sal,
+                  eScore=None):
         self.careerScore = cScore
         self.shortScore = sScore
         self.gameScore = gScore
@@ -24,19 +24,6 @@ class PlayerInput:
                   str(inputPosition))
 
         self.inputOrder = inputPosition
-
-    # #return the index of the player in the match array [ powerforwardTeam1 , smallForwardTeam1, ..., powerForwardTeam2, ...]
-    # #For example, the smallForward of team 1 will return 1
-    # #To be improve
-    # def positionToIndex(self,position):
-    #     if((position == "C") or (position == "C-F")):
-    #         return 0
-    #     elif((position == "F") or position == "F-C" or position == "F-G" or position == "G-F"):
-    #         return 1
-    #     elif(position == "G"):
-    #         return 2
-    #     else :
-    #         return 3
 
     def toString(self):
         # return "Player " + str(self.playerID) + ", on team " + str(self.teamID) + ", with career score " +\

@@ -3,20 +3,20 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 from input.dbRawInput import (dbInit, getmatchIDsValid, getPlayerScores,
-                              getPlayerScoresForMatches, getMatchScores)
+                              getPlayerScoresForMatches, getMatchScores,
+                              getMatchesOnDay)
 from model.playerInput import PlayerInput
 from model.team import Team
 import math
 from pathlib import Path
 
 MAX_PLAYER_PER_TEAM = 7
+MAX_PLAYER_PER_POS_TEAM = 5
 # Highest score found in db is 48.something
 NORMALIZING_SCORE_UPPER_BOUND = 50.0
 
 # transform an array of players
 # create a score (float) array, usable by a neural net, from an array of players
-
-
 def getInputArrayFromPlayers(playersArray):
     inputArray = []
     outputArray = []
@@ -165,8 +165,102 @@ def getSortedOrder():
                            y_path)
     X = np.load(x_path)
     y = np.load(y_path)
-    print(y)
+   
     return X, y
+
+def getSortedOrderForDay(day):
+    dbInit()
+    inputSize = MAX_PLAYER_PER_POS_TEAM * 2
+    matchesArrayScores = []
+    arrayOuput = []
+    validMatchId = getMatchesOnDay(day)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+    gamesPlayer = []
+    for matchID in validMatchId:
+        try:
+            teams = getNormalizedTeamsPos(
+                player_inputs[str(matchID)])
+            gamePlayers = teams[0] + teams[1]
+            gamesPlayer.append(gamePlayers)
+            inputArray, result = getInputArrayFromPlayers(gamePlayers)
+
+            matchArrayScores = normalizeInputArray(inputArray)
+           
+            if(len(matchArrayScores) == inputSize):
+                matchesArrayScores.append(matchArrayScores)
+                arrayOuput.append(result)
+            else:
+                print("not enough player : ", len(
+                    matchArrayScores), "in match ", matchID)
+
+        except Exception as e:
+            print("matchID:",matchID ," failed")
+   
+    X = np.array(matchesArrayScores)
+    y = np.array(arrayOuput)
+    return X,y,gamesPlayer
+
+
+def getSortedOrderForDay(day):
+    dbInit()
+    inputSize = MAX_PLAYER_PER_TEAM * 4
+    matchesArrayScores = []
+    arrayOuput = []
+    validMatchId = getMatchesOnDay(day)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+
+    for matchID in validMatchId:
+        try:
+            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+
+            matchArrayScores = normalizeInputArray(inputArray)
+
+            if (len(matchArrayScores) == inputSize):
+
+                matchesArrayScores.append(matchArrayScores)
+                arrayOuput.append(result)
+            else:
+                print(len(matchArrayScores))
+                print("not enough player : ", len(matchArrayScores),
+                      "in match ", matchID)
+
+        except Exception as e:
+            print("matchID:", matchID, " failed")
+
+    X = np.array(matchesArrayScores)
+    y = np.array(arrayOuput)
+    return X, y
+
+
+def getInputForDay(day):
+    dbInit()
+    inputSize = MAX_PLAYER_PER_TEAM * 4
+    matchesArrayScores = []
+    validMatchId = getMatchesOnDay(day)
+    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+    playerList = []
+    for matchID in validMatchId:
+        try:
+            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+            playerList = playerList + teams[0] + teams[1]
+            matchArrayScores = normalizeInputArray(inputArray)
+
+            if (len(matchArrayScores) == inputSize):
+
+                matchesArrayScores.append(matchArrayScores)
+            else:
+                print(len(matchArrayScores))
+                print("not enough player : ", len(matchArrayScores),
+                        "in match ", matchID)
+
+        except Exception as e:
+            print("matchID:", matchID, " failed")
+
+    X = np.array(matchesArrayScores)
+
+    return X, playerList
 
 
 def getStat():

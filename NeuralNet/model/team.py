@@ -2,6 +2,7 @@ CENTER = 0
 FORWARD = 1
 GUARD = 2
 TEAM_REQUIREMENTS = {str(CENTER): 1, str(FORWARD): 3, str(GUARD): 3}
+PLAYER_POSITIONS = (1, 2, 3, 3, 4, 5, 5, 1, 2, 3, 3, 4, 5, 5)
 
 
 class Team:
@@ -12,6 +13,7 @@ class Team:
         self.findForwardsAndGuards()
 
         for player in players:
+
             if player.inputOrder is not None:
                 #     print(player.toString())
                 self.positionDict[str(player.inputOrder)].append(player)
