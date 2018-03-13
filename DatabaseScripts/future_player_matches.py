@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Insert the fake player matches for games to come"""
+"""Insert the future player matches for games to come"""
 # -*- encoding: utf-8 -*-
 import os,sys,inspect
 import MySQLdb
@@ -44,8 +44,8 @@ def get_match_id(match_date, team1, team2):
     connection.close()
     return result
 
-def insert_fake_player_matches(season, match_date, match_id, team1, team2):
-    """Insert the fake matches"""
+def insert_future_player_matches(season, match_date, match_id, team1, team2):
+    """Insert the future matches"""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
                                  passwd = os.environ["pwd"],  # your password
@@ -89,4 +89,4 @@ if __name__ == '__main__':
     set_env_vars(conf)
     insert_future_match("2018-03-13", "MIN", "WAS")
     mid = get_match_id("2018-03-13", "MIN", "WAS")
-    insert_fake_player_matches("2017", "2018-03-13", str(mid), "MIN", "WAS")
+    insert_future_player_matches("2017", "2018-03-13", str(mid), "MIN", "WAS")
