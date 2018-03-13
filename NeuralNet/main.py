@@ -21,7 +21,7 @@ def get_data():
         data = np.array(all_data[i])
         target = np.array(all_targets[i])
         
-        if(len(data) != 0):
+        if(len(data) > 0):
             print("Data size : ", str(len(target)))
             print("Input form : ", data[0])
             print("Output form : ", target[0])
@@ -45,25 +45,25 @@ def main():
     train_X, test_X, train_y, test_y = get_data()
     train_x_flat = np.array([item for items in train_X for item in items])
     train_y_flat = np.array([item for items in train_y for item in items])
-    print("Total x trained on" + str(len(train_x_flat)))
+    print("Total x tested on" + str(len(test_X)))
    
-    model = NeuralNet("trainedModels/tf.model.test_hn" +
-                      str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
-    model.train_and_test(train_x_flat, train_y_flat,NUMBER_OF_HIDDEN_NODES, LEARNING_RATE)
+    # model = NeuralNet("trainedModels/tf.model.test_hn" +
+    #                   str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
+    # model.train_and_test(train_x_flat, train_y_flat,NUMBER_OF_HIDDEN_NODES, LEARNING_RATE)
 
-    print("final train accuracy:", model.score(train_X, train_y))
-    print("final test accuracy:", model.score(test_X, test_y))
+    # print("final train accuracy:", model.score(train_X, train_y))
+    # print("final test accuracy:", model.score(test_X, test_y))
 
-    # save the model
-    model.save("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) + "_lr" +
-               str(LEARNING_RATE) + ".json")
+    # # save the model
+    # model.save("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) + "_lr" +
+    #            str(LEARNING_RATE) + ".json")
 
-    # # load and score again
-    # model = NeuralNet.load("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) +
-    #                        "_lr" + str(LEARNING_RATE) + ".json")
-    # print("final train accuracy (after reload):", model.score(
-    #     train_X, train_y))
-    # print("final test accuracy (after reload):", model.score(test_X, test_y))
+    #load and score again
+    model = NeuralNet.load("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) +
+                           "_lr" + str(LEARNING_RATE) + ".json")
+    print("final train accuracy (after reload):", model.score(
+        train_X, train_y))
+    print("final test accuracy (after reload):", model.score(test_X, test_y))
 
 
 if __name__ == '__main__':

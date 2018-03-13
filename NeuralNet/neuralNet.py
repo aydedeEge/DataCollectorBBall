@@ -7,7 +7,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
 RANDOM_SEED = 588
-EPOCH_COUNT = 50
+EPOCH_COUNT = 300
 
 class NeuralNet:
     def __init__(self,
@@ -116,5 +116,5 @@ class NeuralNet:
 
                 print("Epoch = %d, cost = %.5f " % (epoch + 1, currentCost))
                 # save the model
-
+            print(sess.run(self.W2[0]))
             self.saver.save(sess, self.savefile)

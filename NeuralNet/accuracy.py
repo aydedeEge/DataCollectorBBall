@@ -9,7 +9,7 @@ def compute_accuracy(games_predicted, games_actual):
     predictedScores = [item for items in games_predicted for item in items]
     actualScores = [item for items in games_actual for item in items]
     position_array = []
-    player_pos = (1, 2, 3, 4, 5, 1, 2, 3, 4, 5)
+    player_pos = (1, 2, 3,3, 4, 5,5, 1, 2, 3,3, 4, 5,5)
     for game in games_predicted:
         position_array.extend(player_pos)
     playerCosts = np.full(len(predictedScores), COST)
