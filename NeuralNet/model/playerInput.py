@@ -7,6 +7,7 @@ class PlayerInput:
                   tID,
                   position,
                   sal,
+                  dpos,
                   eScore=None):
         self.careerScore = cScore
         self.shortScore = sScore
@@ -16,6 +17,7 @@ class PlayerInput:
         self.teamID = tID
         self.position = position
         self.salary = sal
+        self.dailyPosition = dpos
 
     #0 = Center, 1=Forward, 2=Guard
     def setInputOrder(self, inputPosition):

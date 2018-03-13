@@ -8,13 +8,9 @@ import json
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
 NUMBER_OF_HIDDEN_NODES = 128
-LEARNING_RATE = 0.01
+LEARNING_RATE = 0.0045
 MIN_GAMES_PER_DAY = 0
-<<<<<<< HEAD
-EPOCH_COUNT = 300
-=======
-EPOCH_COUNT = 10
->>>>>>> f57515bf65b9b221f2a6cb41625ab641112205a9
+EPOCH_COUNT = 1000
 
 
 def get_data():
@@ -113,12 +109,13 @@ def predict(day):
     print("player selected:")
     for player in predictedLineup:
         print(player.toString())
+    print("Score:" + str(score))
 
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    #train(train_X, train_y)
-    #test(train_X, test_X, train_y, test_y)
+    train(train_X, train_y)
+    test(train_X, test_X, train_y, test_y)
 
     predict('2018-03-13')
 

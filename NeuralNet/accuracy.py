@@ -28,9 +28,21 @@ def compute_accuracy(games_predicted, games_actual, returnLineup):
 def predict_lineup(playerList):
     predictedScores = [player.expectedScore for player in playerList]
     position_array = []
-    for game in range(int(len(playerList) / len(PLAYER_POSITIONS))):
-        position_array.extend(PLAYER_POSITIONS)
-
+    #for game in range(int(len(playerList) / len(PLAYER_POSITIONS))):
+    #    position_array.extend(PLAYER_POSITIONS)
+    for p in playerList:
+        if(p.dailyPosition == "SG"):
+            position_array.append(2)
+        elif(p.dailyPosition == "SF"):
+            position_array.append(3)
+        elif(p.dailyPosition == "PG"):
+            position_array.append(4)
+        elif(p.dailyPosition == "PF"):
+            position_array.append(5)
+        elif(p.dailyPosition == "C"):
+            position_array.append(1)
+        else:
+            print("empty daily position for lineup")
     playerCosts = [player.salary for player in playerList]
 
     index_players_predicted = ilp(predictedScores, playerCosts, position_array,

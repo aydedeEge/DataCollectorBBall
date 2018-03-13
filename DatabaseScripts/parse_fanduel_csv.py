@@ -91,17 +91,18 @@ def insert_future_player_matches(season, match_date, match_ids, fd_data):
             oteam = fix_team(row["Opponent"])
             match_id = match_ids[row["Game"]]
             salary = row["Salary"]
+            position = row["Position"]
             if(str(row["Team"]) + "@" + str(row["Opponent"]) == row["Game"]):
                 home_away = "A"
             else:
                 home_away = "H"
             if(row["Injury Indicator"] != "O"):
-                value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "'),"
+                value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "', '" + position + "'),"
         else:
             print("Not in db: " + key_name)
     value_command = value_command[:-1] + ";"
     command = "INSERT INTO `d2matchb_bball`.`player_matches` "
-    command += "(`player_match_id`, `pid`, `match_id`, `mdate`, `pteam`, `oteam`, `home_away`, `salary`) "
+    command += "(`player_match_id`, `pid`, `match_id`, `mdate`, `pteam`, `oteam`, `home_away`, `salary`, `daily_pos`) "
     command += value_command
 
     cursor.execute(command)
@@ -151,7 +152,9 @@ if __name__ == '__main__':
     season = "2017"
     filename = "DatabaseScripts/FanDuel/FanDuel-NBA-" + game_date + "-" + competition_number + "-players-list.csv"
     fd_data = pd.read_csv(filename)
-    #print(fd_data["Game"])
+    # for index, row in fd_data.iterrows():
+    #     if(row["Injury Indicator"] != "O"):
+    #         print(row["Injury Indicator"])
     matches, hteams, ateams = insert_future_matches(fd_data["Game"], game_date)
     
     match_ids = {}

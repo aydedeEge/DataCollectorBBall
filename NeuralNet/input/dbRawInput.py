@@ -120,7 +120,6 @@ def getPlayerScoresForMatches(match_ids):
 
     #complete and execute command
     command = "SELECT * FROM player_stats where " + player_id_or_condition + ";"
-    print(command)
     cursor.execute(command)
     player_stats_result_set = cursor.fetchall()
 
@@ -161,12 +160,13 @@ def getPlayerScoresForMatches(match_ids):
             career_score = player_career_stats[career_key]
             short_score = row["short_score"]
             salary = row["salary"]
+            dailyPosition = row["daily_pos"]
             position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
             #print(career_score)
             #print(position)
             player = PlayerInput()
             player.setValues(cScore=career_score, sScore = short_score, gScore=game_score,
-                                pID=str(row["pid"]), tID=team_id, position=position, sal=salary)
+                                pID=str(row["pid"]), tID=team_id, position=position, sal=salary, dpos = dailyPosition)
             if(match_id not in player_inputs):
                 player_inputs[match_id] = []
             player_inputs[match_id].append(player)
@@ -208,6 +208,7 @@ def getPlayerScores(match_id):
             else:
                 output = 0
         gScore = row["score"]
+        dailyPosition = row["daily_pos"]
         pID = row["pid"]
         # TODO fetch the position string once we get it
         
@@ -223,7 +224,7 @@ def getPlayerScores(match_id):
         salary = cursor.fetchall()[0]["salary"]
         currPlayer = PlayerInput()
         currPlayer.setValues(cScore=cScore, gScore=gScore,
-                             pID=pID, tID=tID, position=position, sal=salary)
+                             pID=pID, tID=tID, position=position, sal=salary, dpos=dailyPosition)
         playerInputs.append(currPlayer)
 
     # for pi in playerInputs:
