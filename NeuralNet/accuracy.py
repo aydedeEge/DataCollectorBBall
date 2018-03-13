@@ -1,9 +1,9 @@
 from System3.ilp import ilp
 from model.team import PLAYER_POSITIONS
-from model.playerInput import COST
 import numpy as np
 
 GLOBAL_BUDGET = 60000
+DEFAULT_COST = 4000
 
 def compute_accuracy(games_predicted, games_actual, returnLineup):
     predictedScores = [item for items in games_predicted for item in items]
@@ -11,7 +11,7 @@ def compute_accuracy(games_predicted, games_actual, returnLineup):
     position_array = []
     for game in games_predicted:
         position_array.extend(PLAYER_POSITIONS)
-    playerCosts = np.full(len(predictedScores), COST)
+    playerCosts = np.full(len(predictedScores), DEFAULT_COST)
 
     index_players_predicted = ilp(predictedScores, playerCosts, position_array,
                                   GLOBAL_BUDGET)

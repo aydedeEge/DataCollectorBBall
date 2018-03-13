@@ -1,5 +1,3 @@
-COST = 4000
-
 class PlayerInput:
     def setValues(self,
                   cScore,
@@ -8,8 +6,8 @@ class PlayerInput:
                   pID,
                   tID,
                   position,
-                  eScore=None,
-                  sal=1000):
+                  sal,
+                  eScore=None):
         self.careerScore = cScore
         self.shortScore = sScore
         self.gameScore = gScore
@@ -17,7 +15,7 @@ class PlayerInput:
         self.playerID = pID
         self.teamID = tID
         self.position = position
-        self.salary = COST
+        self.salary = sal
 
     #0 = Center, 1=Forward, 2=Guard
     def setInputOrder(self, inputPosition):
