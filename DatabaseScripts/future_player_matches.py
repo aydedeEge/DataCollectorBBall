@@ -87,6 +87,10 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    insert_future_match("2018-03-13", "MIN", "WAS")
-    mid = get_match_id("2018-03-13", "MIN", "WAS")
-    insert_future_player_matches("2017", "2018-03-13", str(mid), "MIN", "WAS")
+    hteam = "IND"
+    ateam = "PHI"
+    game_date = "2018-03-13"
+    season = "2017"
+    insert_future_match(game_date, hteam, ateam)
+    mid = get_match_id(game_date, hteam, ateam)
+    insert_future_player_matches(season, game_date, str(mid), hteam, ateam)
