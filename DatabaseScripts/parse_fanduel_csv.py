@@ -95,7 +95,8 @@ def insert_future_player_matches(season, match_date, match_ids, fd_data):
                 home_away = "A"
             else:
                 home_away = "H"
-            value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "'),"
+            if(row["Injury Indicator"] != "O"):
+                value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "'),"
         else:
             print("Not in db: " + key_name)
     value_command = value_command[:-1] + ";"

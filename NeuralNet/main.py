@@ -7,10 +7,10 @@ import json
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-NUMBER_OF_HIDDEN_NODES = 64
+NUMBER_OF_HIDDEN_NODES = 128
 LEARNING_RATE = 0.01
-MIN_GAMES_PER_DAY = 7
-EPOCH_COUNT = 10
+MIN_GAMES_PER_DAY = 0
+EPOCH_COUNT = 300
 
 
 def get_data():
@@ -96,7 +96,8 @@ def run(day):
 
 def predict(day):
     day_x, playerList = getInputForDay(day)
-
+    print(day_x.shape)
+    print(len(playerList))
     N, M = day_x.shape
     day_X = np.ones((N, M + 1))
     day_X[:, 1:] = day_x
@@ -112,8 +113,8 @@ def predict(day):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    train(train_X, train_y)
-    test(train_X, test_X, train_y, test_y)
+    #train(train_X, train_y)
+    #test(train_X, test_X, train_y, test_y)
 
     predict('2018-03-13')
 

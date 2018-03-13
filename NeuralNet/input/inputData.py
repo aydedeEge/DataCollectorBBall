@@ -241,22 +241,22 @@ def getInputForDay(day):
     player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
     playerList = []
     for matchID in validMatchId:
-        try:
-            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
-            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+        #try:
+        teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+        inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+        
+        matchArrayScores = normalizeInputArray(inputArray)
+
+        if (len(matchArrayScores) == inputSize):
             playerList = playerList + teams[0] + teams[1]
-            matchArrayScores = normalizeInputArray(inputArray)
+            matchesArrayScores.append(matchArrayScores)
+        else:
+            print(len(matchArrayScores))
+            print("not enough player : ", len(matchArrayScores),
+                    "in match ", matchID)
 
-            if (len(matchArrayScores) == inputSize):
-
-                matchesArrayScores.append(matchArrayScores)
-            else:
-                print(len(matchArrayScores))
-                print("not enough player : ", len(matchArrayScores),
-                        "in match ", matchID)
-
-        except Exception as e:
-            print("matchID:", matchID, " failed")
+        #except Exception as e:
+        #    print("matchID:", matchID, " failed")
 
     X = np.array(matchesArrayScores)
 
