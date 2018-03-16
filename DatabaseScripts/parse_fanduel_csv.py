@@ -48,7 +48,7 @@ def get_match_id(match_date, team1, team2):
     connection.close()
     return result
 
-def insert_future_player_matches(season, match_date, match_ids, fd_data):
+def insert_future_player_matches(season, match_date, match_ids, fd_data, update_injuries):
     """Insert the future matches"""
     connection = MySQLdb.connect(host = os.environ["host"],    # your host, usually localhost
                                  user = os.environ["user"],         # your username
@@ -96,13 +96,13 @@ def insert_future_player_matches(season, match_date, match_ids, fd_data):
                 home_away = "A"
             else:
                 home_away = "H"
-            if(row["Injury Indicator"] != "O"):
-                value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "', '" + position + "'),"
+            injury = row["Injury Indicator"]
+            value_command += " ('" + player_match_id + "', '" + str(pid) + "', '" + str(match_id) + "', '" + str(mdate) + "', '" + pteam + "', '" + oteam + "', '" + home_away + "', '" + str(salary) + "', '" + position + "', '" + str(injury) + "'),"
         else:
             print("Not in db: " + key_name)
     value_command = value_command[:-1] + ";"
     command = "INSERT INTO `d2matchb_bball`.`player_matches` "
-    command += "(`player_match_id`, `pid`, `match_id`, `mdate`, `pteam`, `oteam`, `home_away`, `salary`, `daily_pos`) "
+    command += "(`player_match_id`, `pid`, `match_id`, `mdate`, `pteam`, `oteam`, `home_away`, `salary`, `daily_pos`,`injury`) "
     command += value_command
 
     cursor.execute(command)
@@ -147,14 +147,11 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    game_date = "2018-03-13"
-    competition_number = "24098"
+    game_date = "2018-03-17"
+    competition_number = "24185"
     season = "2017"
     filename = "DatabaseScripts/FanDuel/FanDuel-NBA-" + game_date + "-" + competition_number + "-players-list.csv"
     fd_data = pd.read_csv(filename)
-    # for index, row in fd_data.iterrows():
-    #     if(row["Injury Indicator"] != "O"):
-    #         print(row["Injury Indicator"])
     matches, hteams, ateams = insert_future_matches(fd_data["Game"], game_date)
     
     match_ids = {}
@@ -162,4 +159,4 @@ if __name__ == '__main__':
         match_ids[m] = get_match_id(game_date, hteams[m], ateams[m])
     
     #now we have the match IDs, we go through them and add the player matches
-    insert_future_player_matches(season, game_date, match_ids, fd_data)
+    insert_future_player_matches(season, game_date, match_ids, fd_data, False)
