@@ -158,18 +158,18 @@ def getPlayerScoresForMatches(match_ids):
         career_key = str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])
         if(career_key in player_career_stats):
             career_score = player_career_stats[career_key]
-            short_score = row["short_score"]
-            salary = row["salary"]
-            dailyPosition = row["daily_pos"]
-            position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
-            #print(career_score)
-            #print(position)
-            player = PlayerInput()
-            player.setValues(cScore=career_score, sScore = short_score, gScore=game_score,
-                                pID=str(row["pid"]), tID=team_id, position=position, sal=salary, dpos = dailyPosition)
-            if(match_id not in player_inputs):
-                player_inputs[match_id] = []
-            player_inputs[match_id].append(player)
+            injury = row["injury"]
+            if(injury != "O"):
+                short_score = row["short_score"]
+                salary = row["salary"]
+                dailyPosition = row["daily_pos"]
+                position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
+                player = PlayerInput()
+                player.setValues(cScore=career_score, sScore = short_score, gScore=game_score,
+                                    pID=str(row["pid"]), tID=team_id, position=position, sal=salary, dpos = dailyPosition)
+                if(match_id not in player_inputs):
+                    player_inputs[match_id] = []
+                player_inputs[match_id].append(player)
         else:
             print("Season stats not available for player " + str(row["pid"]))
 
