@@ -10,9 +10,6 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.models import model_from_json
 
-RANDOM_SEED = 588
-BETA = 0
-
 
 class NeuralNet:
     def __init__(self, model=None):
