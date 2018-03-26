@@ -54,8 +54,9 @@ def train(train_X, train_y):
     train_x_flat = np.array([item for items in train_X for item in items])
     train_y_flat = np.array([item for items in train_y for item in items])
     print(len(train_y_flat))
-    model = NeuralNet("trainedModels/tf.model.test_hn" +
-                      str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
+    # model = NeuralNet("trainedModels/tf.model.test_hn" +
+    #                   str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
+    model = NeuralNet()
     model.train_and_test(train_x_flat, train_y_flat, NUMBER_OF_HIDDEN_NODES,
                          LEARNING_RATE, EPOCH_COUNT)
 
@@ -69,8 +70,9 @@ def continue_training(train_X, train_y):
 
 
 def test(train_X, test_X, train_y, test_y):
-    model = NeuralNet.load("trainedModels/nn_model_hn" + str(
+    model_loaded = NeuralNet.load("trainedModels/nn_model_hn" + str(
         NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE) + ".json")
+    model = NeuralNet(model_loaded)
     print("final train accuracy:", model.score(train_X, train_y))
     print("final test accuracy:", model.score(test_X, test_y))
 
@@ -116,8 +118,7 @@ def main():
     train_X, test_X, train_y, test_y = get_data()
     train(train_X, train_y)
     test(train_X, test_X, train_y, test_y)
-
-    predict('2018-03-17')
+    #predict('2018-03-17')
 
 if __name__ == '__main__':
     main()
