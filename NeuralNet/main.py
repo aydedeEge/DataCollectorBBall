@@ -4,6 +4,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from neuralNet import NeuralNet
 import json
+import keras
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
@@ -56,7 +57,13 @@ def train(train_X, train_y):
     print(len(train_y_flat))
     # model = NeuralNet("trainedModels/tf.model.test_hn" +
     #                   str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
+    input_size
+    output_size =
+    hidden_layer_sizes =
+    optimizer =keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9)
+    loss =
     model = NeuralNet()
+    #
     model.train_and_test(train_x_flat, train_y_flat, NUMBER_OF_HIDDEN_NODES,
                          LEARNING_RATE, EPOCH_COUNT)
 

@@ -10,24 +10,43 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.models import model_from_json
 
-
 class NeuralNet:
-    def __init__(self, model=None):
+    def __init__(self,
+                 input_size,
+                 output_size,
+                 hidden_layer_sizes,
+                 optimizer,
+                 loss
+                 model=None):
         if model is None:
             self.model = Sequential()
-            self.build(29, 14)
+            self.input_size = input_size
+            self.output_size = output_size
+            self.hidden_layer_sizes = hidden_layer_sizes
+            self.optimizer = optimizer
+            self.loss = loss
+            self.build()
         else:
             self.model = model
 
     def predict(self, X):
         return self.model.predict(X)
 
-    def build(self, x_size, y_size):
-        self.model.add(Dense(units=64, activation='relu', input_dim=29))
-        self.model.add(Dense(units=14, activation='softmax'))
+    def build(self):
+        first_layer_size = self.hidden_layer_sizes.pop(0)
+        self.model.add(
+            Dense(
+                units=first_layer_size,
+                activation='sigmoid',
+                input_dim=self.input_size))
+
+        for layer_size in self.hidden_layer_sizes:
+            self.model.add(Dense(units=layer_size, activation='sigmoid'))
+
+        self.model.add(Dense(units=self.output_size))
         self.model.compile(
-            loss='mean_squared_error',
-            optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9),
+            loss= self.loss,
+            optimizer=self.optimizer,
             metrics=['accuracy'])
 
     def score(self, X, Y):
@@ -66,6 +85,5 @@ class NeuralNet:
         loaded_model.load_weights("model.h5")
         return loaded_model
 
-    def train_and_test(self, train_X, train_y, hidden_nodes, learning_rate,
-                       epoch):
-        self.model.fit(train_X, train_y, epochs=5, batch_size=32)
+    def train_and_test(self, train_X, train_y, epoch):
+        self.model.fit(train_X, train_y, epochs=epoch)
