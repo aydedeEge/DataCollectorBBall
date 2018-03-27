@@ -24,7 +24,7 @@ def calculate_and_insert(limit):
     #4. Update the matches table
 
     #1. Get the desired matches (ordered by most recent)
-    command = "SELECT * FROM matches where hteam_points is null and date < '2017-06-01' order by date desc LIMIT " + str(limit) + ";"
+    command = "SELECT * FROM matches where hteam_points is null order by date desc LIMIT " + str(limit) + ";"
     cursor.execute(command)
     
     matches_result_set = cursor.fetchall()
