@@ -61,6 +61,8 @@ def train(train_X, train_y):
     hidden_layer_sizes = [128,128]
     optimizer = keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9)
     loss = 'mean_squared_error'
+    batch_size = 32
+    dropout_rate = 0.5
     model = NeuralNet(
         None,
         input_size,
@@ -68,6 +70,7 @@ def train(train_X, train_y):
         hidden_layer_sizes,
         optimizer,
         loss,
+        batch_size
     )
     #
     model.train_and_test(train_x_flat, train_y_flat, EPOCH_COUNT)
@@ -125,7 +128,35 @@ def predict(day):
         print(player.toString())
     print("Score:" + str(score))
 
+def cross_val(train_X, train_y):
+    #TODO
+    # train_x_flat = np.array([item for items in train_X for item in items])
+    # train_y_flat = np.array([item for items in train_y for item in items])
+    # print(len(train_y_flat))
+    # # model = NeuralNet("trainedModels/tf.model.test_hn" +
+    # #                   str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
+    # input_size = 29
+    # output_size = 14
+    # hidden_layer_sizes = [128,128]
+    # optimizer = keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9)
+    # loss = 'mean_squared_error'
+    # model = NeuralNet(
+    #     None,
+    #     input_size,
+    #     output_size,
+    #     hidden_layer_sizes,
+    #     optimizer,
+    #     loss,
+    # )
+    # #
+    # model.train_and_test(train_x_flat, train_y_flat, EPOCH_COUNT)
 
+    # model.score(test_X, test_y)
+
+    # # save the model
+    # model.save("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) +
+    #            "_lr" + str(LEARNING_RATE) + ".json")
+    
 def main():
     train_X, test_X, train_y, test_y = get_data()
     train(train_X, train_y)

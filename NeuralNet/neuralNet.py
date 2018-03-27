@@ -19,8 +19,10 @@ class NeuralNet:
                  output_size=None,
                  hidden_layer_sizes=None,
                  optimizer=None,
-                 loss=None):
-        print(K.tensorflow_backend._get_available_gpus())
+                 loss=None,
+                 batch_size=None,
+                 dropout_rate=None):
+        print("Available gpus : " + K.tensorflow_backend._get_available_gpus())
         if model is None:
             self.model = Sequential()
             self.input_size = input_size
@@ -28,6 +30,8 @@ class NeuralNet:
             self.hidden_layer_sizes = hidden_layer_sizes
             self.optimizer = optimizer
             self.loss = loss
+            self.batch_size
+            self.dropout_rate = dropout_rate
             self.build()
         else:
             self.model = model
@@ -45,10 +49,12 @@ class NeuralNet:
 
         for layer_size in self.hidden_layer_sizes:
             self.model.add(Dense(units=layer_size, activation='sigmoid'))
+            self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
-            loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
+            loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
+        print(self.model.summary())
 
     def score(self, X, Y):
         score = []
@@ -74,7 +80,7 @@ class NeuralNet:
         with open(filename, "w") as json_file:
             json_file.write(model_json)
         # serialize weights to HDF5
-        self.model.save_weights("model.h5")
+        self.model.save_weights(filename + "model.h5")
 
     @staticmethod
     def load(filename):
@@ -83,8 +89,9 @@ class NeuralNet:
         json_file.close()
         loaded_model = model_from_json(loaded_model_json)
         # load weights into new model
-        loaded_model.load_weights("model.h5")
+        loaded_model.load_weights(filename + "model.h5")
         return loaded_model
 
     def train_and_test(self, train_X, train_y, epoch):
-        self.model.fit(train_X, train_y, epochs=epoch, batch_size=10000)
+        self.model.fit(
+            train_X, train_y, epochs=epoch, batch_size=self.batch_size)
