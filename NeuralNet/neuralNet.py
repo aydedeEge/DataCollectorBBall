@@ -33,7 +33,8 @@ class NeuralNet:
             return yhat
 
     def predict(self, X):
-        with tf.Session() as session:
+        with tf.Session(config=tf.ConfigProto(
+                log_device_placement=True)) as session:
             # restore the model
             self.saver.restore(session, self.savefile)
             P = session.run(self.predict_op, feed_dict={self.X: X})
@@ -121,7 +122,8 @@ class NeuralNet:
 
             init = tf.global_variables_initializer()
 
-        with tf.Session() as sess:
+        with tf.Session(config=tf.ConfigProto(
+                log_device_placement=True)) as sess:
             sess.run(init)
             for epoch in range(epoch):
 
