@@ -9,6 +9,8 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.models import model_from_json
+from keras import backend as K
+
 
 class NeuralNet:
     def __init__(self,
@@ -16,8 +18,9 @@ class NeuralNet:
                  output_size,
                  hidden_layer_sizes,
                  optimizer,
-                 loss
+                 loss,
                  model=None):
+        print(K.tensorflow_backend._get_available_gpus())
         if model is None:
             self.model = Sequential()
             self.input_size = input_size
@@ -45,9 +48,7 @@ class NeuralNet:
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
-            loss= self.loss,
-            optimizer=self.optimizer,
-            metrics=['accuracy'])
+            loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
 
     def score(self, X, Y):
         score = []
@@ -86,4 +87,4 @@ class NeuralNet:
         return loaded_model
 
     def train_and_test(self, train_X, train_y, epoch):
-        self.model.fit(train_X, train_y, epochs=epoch)
+        self.model.fit(train_X, train_y, epochs=epoch, batch_size=10000)

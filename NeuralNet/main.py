@@ -11,7 +11,7 @@ TEST_SIZE_PERCENT = 0.3
 NUMBER_OF_HIDDEN_NODES = 128
 LEARNING_RATE = 0.0045
 MIN_GAMES_PER_DAY = 0
-EPOCH_COUNT = 1000
+EPOCH_COUNT = 10
 
 
 def get_data():
@@ -31,7 +31,6 @@ def get_data():
             print("Data size : ", str(len(target)))
             print("Input form : ", data[0])
             print("Output form : ", target[0])
-
 
             N, M = data.shape
             # Add ones as x0 for bias = [1,score1,score2,....,scoren]
@@ -57,15 +56,20 @@ def train(train_X, train_y):
     print(len(train_y_flat))
     # model = NeuralNet("trainedModels/tf.model.test_hn" +
     #                   str(NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE))
-    input_size
-    output_size =
-    hidden_layer_sizes =
-    optimizer =keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9)
-    loss =
-    model = NeuralNet()
+    input_size = 29
+    output_size = 14
+    hidden_layer_sizes = [128,128]
+    optimizer = keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9)
+    loss = 'mean_squared_error'
+    model = NeuralNet(
+        input_size,
+        output_size,
+        hidden_layer_sizes,
+        optimizer,
+        loss,
+    )
     #
-    model.train_and_test(train_x_flat, train_y_flat, NUMBER_OF_HIDDEN_NODES,
-                         LEARNING_RATE, EPOCH_COUNT)
+    model.train_and_test(train_x_flat, train_y_flat, EPOCH_COUNT)
 
     # save the model
     model.save("trainedModels/nn_model_hn" + str(NUMBER_OF_HIDDEN_NODES) +
@@ -124,8 +128,9 @@ def predict(day):
 def main():
     train_X, test_X, train_y, test_y = get_data()
     train(train_X, train_y)
-    test(train_X, test_X, train_y, test_y)
+    #test(train_X, test_X, train_y, test_y)
     #predict('2018-03-17')
+
 
 if __name__ == '__main__':
     main()
