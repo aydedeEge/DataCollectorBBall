@@ -58,8 +58,27 @@ def get_all_pids(args=None):
         raise e
 
 # date, season_type, stat_type, players
+def get_all_stats_date(args=None):
+    wp = AllPlayerPage()
+    try:
+        players = wp.get_all_player_stats(
+            date=args[2], 
+            season_type="Regular%20Season",
+        )
+    except Exception as e:
+        raise e
 
+    try:
+        if args[3] == '-db':
+            wp.push_all_player_stats_to_db(players)
+            print("pushed to sql")
+        elif args[3] == '-print':
+            print(players)
+    except Exception as e:
+        print("Did you forget the -print modifier?")
+        raise e
 
+# date, season_type, stat_type, players
 def get_all_stats(args=None):
     wp = AllPlayerPage()
     try:
@@ -183,6 +202,7 @@ def main():
         "pmatches": get_pmatches,
         "all_pids": get_all_pids,
         "stats": get_all_stats,
+        "stats_date": get_all_stats_date,
     }
     # Db config initialization
     conf = read_config()
