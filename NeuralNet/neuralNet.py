@@ -38,36 +38,36 @@ class NeuralNet:
         return P
 
     def build(self, x_size, y_size):
+        with tf.device("/gpu:0"):
+            self.x_size = x_size
+            self.y_size = y_size
+            # define variables and expressions
+            self.X = tf.placeholder(tf.float32, shape=(None, x_size), name='X')
+            self.y = tf.placeholder(tf.float32, shape=(None, y_size), name='y')
 
-        self.x_size = x_size
-        self.y_size = y_size
-        # define variables and expressions
-        self.X = tf.placeholder(tf.float32, shape=(None, x_size), name='X')
-        self.y = tf.placeholder(tf.float32, shape=(None, y_size), name='y')
+            self.W1 = tf.Variable(
+                tf.random_normal((x_size, self.hidden_nodes), stddev=0.1),
+                name='W1')
+            self.W2 = tf.Variable(
+                tf.random_normal((self.hidden_nodes, y_size), stddev=0.1),
+                name='W2')
 
-        self.W1 = tf.Variable(
-            tf.random_normal((x_size, self.hidden_nodes), stddev=0.1),
-            name='W1')
-        self.W2 = tf.Variable(
-            tf.random_normal((self.hidden_nodes, y_size), stddev=0.1),
-            name='W2')
+            self.saver = tf.train.Saver({'W1': self.W1, 'W2': self.W2})
 
-        self.saver = tf.train.Saver({'W1': self.W1, 'W2': self.W2})
+            # Forward propagation
+            yhat = self.forwardprop()
+            self.predict_op = yhat
+            #regularization
+            #TODO used as hyperparam
+            regularizerW1 = tf.nn.l2_loss(self.W1)
+            regularizerW2 = tf.nn.l2_loss(self.W2)
 
-        # Forward propagation
-        yhat = self.forwardprop()
-        self.predict_op = yhat
-        #regularization
-        #TODO used as hyperparam
-        regularizerW1 = tf.nn.l2_loss(self.W1)
-        regularizerW2 = tf.nn.l2_loss(self.W2)
+            # backward propagation
+            cost = tf.reduce_sum(tf.square(yhat - self.y)) / 4
 
-        # backward propagation
-        cost = tf.reduce_sum(tf.square(yhat - self.y)) / 4
-
-        cost = tf.reduce_mean(
-            cost + BETA * regularizerW1 + BETA * regularizerW2)
-        return cost
+            cost = tf.reduce_mean(
+                cost + BETA * regularizerW1 + BETA * regularizerW2)
+            return cost
 
     def score(self, X, Y):
         score = []
@@ -113,8 +113,9 @@ class NeuralNet:
         cost = self.build(train_X.shape[1], train_y.shape[1])
         updates = tf.train.GradientDescentOptimizer(
             self.learning_rate).minimize(cost)
-
-        init = tf.global_variables_initializer()
+       
+        with tf.device("/gpu:0"):
+            init = tf.global_variables_initializer()
 
         with tf.Session() as sess:
             sess.run(init)
