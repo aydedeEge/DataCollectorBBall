@@ -8,6 +8,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.layers import Dropout
 from keras.models import model_from_json
 from keras import backend as K
 
@@ -22,7 +23,7 @@ class NeuralNet:
                  loss=None,
                  batch_size=None,
                  dropout_rate=None):
-        print("Available gpus : " + K.tensorflow_backend._get_available_gpus())
+        print(K.tensorflow_backend._get_available_gpus())
         if model is None:
             self.model = Sequential()
             self.input_size = input_size
@@ -30,7 +31,7 @@ class NeuralNet:
             self.hidden_layer_sizes = hidden_layer_sizes
             self.optimizer = optimizer
             self.loss = loss
-            self.batch_size
+            self.batch_size = batch_size
             self.dropout_rate = dropout_rate
             self.build()
         else:
@@ -40,20 +41,21 @@ class NeuralNet:
         return self.model.predict(X)
 
     def build(self):
-        first_layer_size = self.hidden_layer_sizes.pop(0)
+        first_layer_size = self.hidden_layer_sizes[0]
+        print(first_layer_size)
         self.model.add(
             Dense(
                 units=first_layer_size,
                 activation='sigmoid',
                 input_dim=self.input_size))
 
-        for layer_size in self.hidden_layer_sizes:
+        for layer_size in self.hidden_layer_sizes[1:]:
             self.model.add(Dense(units=layer_size, activation='sigmoid'))
             self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
-            loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
+            loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
         print(self.model.summary())
 
     def score(self, X, Y):
@@ -92,6 +94,6 @@ class NeuralNet:
         loaded_model.load_weights(filename + "model.h5")
         return loaded_model
 
-    def train_and_test(self, train_X, train_y, epoch):
+    def fit(self, train_X, train_y):
         self.model.fit(
-            train_X, train_y, epochs=epoch, batch_size=self.batch_size)
+            train_X, train_y, epochs=10, batch_size=self.batch_size)
