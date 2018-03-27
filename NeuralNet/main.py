@@ -62,6 +62,7 @@ def train(train_X, train_y):
     optimizer = keras.optimizers.SGD(lr=LEARNING_RATE, momentum=0.9)
     loss = 'mean_squared_error'
     model = NeuralNet(
+        None,
         input_size,
         output_size,
         hidden_layer_sizes,
@@ -128,7 +129,7 @@ def predict(day):
 def main():
     train_X, test_X, train_y, test_y = get_data()
     train(train_X, train_y)
-    #test(train_X, test_X, train_y, test_y)
+    test(train_X, test_X, train_y, test_y)
     #predict('2018-03-17')
 
 

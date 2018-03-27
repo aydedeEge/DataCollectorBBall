@@ -14,12 +14,12 @@ from keras import backend as K
 
 class NeuralNet:
     def __init__(self,
-                 input_size,
-                 output_size,
-                 hidden_layer_sizes,
-                 optimizer,
-                 loss,
-                 model=None):
+                 model=None,
+                 input_size=None,
+                 output_size=None,
+                 hidden_layer_sizes=None,
+                 optimizer=None,
+                 loss=None):
         print(K.tensorflow_backend._get_available_gpus())
         if model is None:
             self.model = Sequential()
