@@ -5,6 +5,7 @@ import json
 from accuracy import compute_accuracy, predict_lineup
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from tensorflow.python.client import device_lib
 
 RANDOM_SEED = 588
 BETA = 0
@@ -52,7 +53,7 @@ class NeuralNet:
                 tf.random_normal((self.hidden_nodes, y_size), stddev=0.1),
                 name='W2')
 
-           # self.saver = tf.train.Saver({'W1': self.W1, 'W2': self.W2})
+            # self.saver = tf.train.Saver({'W1': self.W1, 'W2': self.W2})
 
             # Forward propagation
             yhat = self.forwardprop()
@@ -107,14 +108,16 @@ class NeuralNet:
 
     def train_and_test(self, train_X, train_y, hidden_nodes, learning_rate,
                        epoch):
-         with tf.device("/gpu:0"):
+        print("-----------------")
+        print(device_lib.list_local_devices())
+        print("-----------------")
+        with tf.device("/gpu:0"):
             self.hidden_nodes = hidden_nodes
             self.learning_rate = learning_rate
             cost = self.build(train_X.shape[1], train_y.shape[1])
             updates = tf.train.GradientDescentOptimizer(
                 self.learning_rate).minimize(cost)
 
-       
             init = tf.global_variables_initializer()
 
         with tf.Session() as sess:
