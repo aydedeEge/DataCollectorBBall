@@ -26,10 +26,11 @@ class NeuralNet:
             self.build(x_size, y_size)
 
     def forwardprop(self):
-        inputToFirstLayer = tf.matmul(self.X, self.W1)
-        outputFirstLayer = tf.nn.sigmoid(inputToFirstLayer)
-        yhat = tf.matmul(outputFirstLayer, self.W2)  # The varphi function
-        return yhat
+        with tf.device("/gpu:0"):
+            inputToFirstLayer = tf.matmul(self.X, self.W1)
+            outputFirstLayer = tf.nn.sigmoid(inputToFirstLayer)
+            yhat = tf.matmul(outputFirstLayer, self.W2)  # The varphi function
+            return yhat
 
     def predict(self, X):
         with tf.Session() as session:
