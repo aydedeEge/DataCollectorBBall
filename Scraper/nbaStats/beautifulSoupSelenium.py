@@ -171,6 +171,24 @@ def get_all_teams(args):
     except Exception as e:
         raise e
 
+def get_pmatches_player(args):
+    p = PlayerPage()
+    try:
+        matches = p.get_player_matches(
+            player_id=args[2],
+            date=args[3],
+            season_type="Regular%20Season",
+            stat_type="boxscores-traditional"
+        )
+
+        print("Finished gathering player_ids")
+
+        p.push_player_matches_to_db(
+            matches=matches
+        )
+    except Exception as e:
+        raise e
+
 def main():
     accepted_args = {
         "pids": get_pids,
@@ -183,6 +201,7 @@ def main():
         "pmatches": get_pmatches,
         "all_pids": get_all_pids,
         "stats": get_all_stats,
+        "pmatches_player": get_pmatches_player,
     }
     # Db config initialization
     conf = read_config()
