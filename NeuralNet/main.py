@@ -14,11 +14,11 @@ from keras.wrappers.scikit_learn import KerasRegressor
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-EPOCH_COUNT = 1000
+EPOCH_COUNT = 10000
 DEFAUL_HIDDEN_LAYERS = [32, 32]
 DEFAUL_LEARNING_RATE = 0.01
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
-DEFAULT_BATCH_SIZE = 1000
+DEFAULT_BATCH_SIZE = 10000
 DEFAULT_DROPOUT = 0
 MIN_GAMES_PER_DAY = 8
 
@@ -66,7 +66,7 @@ def train(train_X, train_y):
     model = make_model(
         hidden_layer_sizes=DEFAUL_HIDDEN_LAYERS,
         learning_r=DEFAUL_LEARNING_RATE,
-        batch_size=DEFAULT_BATCH_SIZE,
+        batch_size_2=DEFAULT_BATCH_SIZE,
         dropout_rate=DEFAULT_DROPOUT)
 
     model.fit(train_x_flat, train_y_flat)
@@ -198,7 +198,7 @@ def cross_val(train_X, train_y):
         n_jobs=1,
         scoring=score_for_crossval)
 
-    validator.fit(train_x_flat, train_y_flat)
+    validator.fit(train_x_flat, train_y_flat,verbose=10)
 
     validator.cv_results_.pop('params', None)
     keys = validator.cv_results_.keys()
@@ -222,9 +222,9 @@ def cross_val(train_X, train_y):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    cross_val(train_X, train_y)
+    train(train_X, train_y)
     #test(train_X, test_X, train_y, test_y)
-    #predict('2018-03-17')
+    predict('2018-03-28')
 
 
 if __name__ == '__main__':
