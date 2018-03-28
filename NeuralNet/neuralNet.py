@@ -93,7 +93,7 @@ class NeuralNet:
         loaded_model = model_from_json(loaded_model_json)
         # load weights into new model
         loaded_model.load_weights(filename + "model.h5")
-        return loaded_model
+        return NeuralNet(loaded_model)
 
     def fit(self, train_X, train_y):
         self.model.fit(

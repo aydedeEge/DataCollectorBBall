@@ -115,7 +115,7 @@ def predict(day):
     day_X = np.ones((N, M + 1))
     day_X[:, 1:] = day_x
     model = NeuralNet.load("trainedModels/nn_model_hn" + str(
-        NUMBER_OF_HIDDEN_NODES) + "_lr" + str(LEARNING_RATE) + ".json")
+        DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAUL_LEARNING_RATE) + ".json")
 
     score, predictedLineup = model.getPrediction(day_X, playerList)
 
@@ -180,11 +180,11 @@ def cross_val(train_X, train_y):
     train_y_flat = np.array([item for items in train_y for item in items])
     print("Training on" + str(len(train_y_flat)))
 
-    l_rs = [0.005,0.01,0.02,0.05,0.1,0.2]
+    l_rs = [0.005, 0.01, 0.02, 0.05, 0.1, 0.2]
     hidden_layer_sizes = [[64, 64], [32, 128], [32, 32, 32], [64, 64, 64],
                           [128, 64, 128]]
-    batch_sizes = [10000,5000,250]
-    dropout_rates = [0.25,0.5]
+    batch_sizes = [10000, 5000, 250]
+    dropout_rates = [0.25, 0.5]
     params = {
         'hidden_layer_sizes': hidden_layer_sizes,
         'learning_r': l_rs,
@@ -198,7 +198,7 @@ def cross_val(train_X, train_y):
         n_jobs=1,
         scoring=score_for_crossval)
 
-    validator.fit(train_x_flat, train_y_flat,verbose=10)
+    validator.fit(train_x_flat, train_y_flat, verbose=10)
 
     validator.cv_results_.pop('params', None)
     keys = validator.cv_results_.keys()
@@ -222,8 +222,8 @@ def cross_val(train_X, train_y):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    train(train_X, train_y)
-    #test(train_X, test_X, train_y, test_y)
+    #train(train_X, train_y)
+    test(train_X, test_X, train_y, test_y)
     predict('2018-03-28')
 
 
