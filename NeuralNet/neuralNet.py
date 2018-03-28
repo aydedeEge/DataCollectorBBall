@@ -12,6 +12,8 @@ from keras.layers import Dropout
 from keras.models import model_from_json
 from keras import backend as K
 
+EPOCH_COUNT = 5000
+
 
 class NeuralNet:
     def __init__(self,
@@ -42,20 +44,19 @@ class NeuralNet:
 
     def build(self):
         first_layer_size = self.hidden_layer_sizes[0]
-        print(first_layer_size)
         self.model.add(
             Dense(
                 units=first_layer_size,
                 activation='sigmoid',
                 input_dim=self.input_size))
-
+        self.model.add(Dropout(self.dropout_rate))
         for layer_size in self.hidden_layer_sizes[1:]:
             self.model.add(Dense(units=layer_size, activation='sigmoid'))
             self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
-            loss=self.loss, optimizer=self.optimizer, metrics=['accuracy'])
+            loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
         print(self.model.summary())
 
     def score(self, X, Y):
@@ -96,4 +97,4 @@ class NeuralNet:
 
     def fit(self, train_X, train_y):
         self.model.fit(
-            train_X, train_y, epochs=10, batch_size=self.batch_size)
+            train_X, train_y, epochs=EPOCH_COUNT, batch_size=self.batch_size,verbose=0)
