@@ -1,5 +1,6 @@
-tensorflow_gpu==1.4.1
 numpy==1.11.0
-pulp==1.6.8
+tensorflow_gpu==1.4.1
+PuLP==1.6.8
+Keras==2.1.5
 scikit_learn==0.19.1
-tensorflow==1.6.0rc1
+tensorflow==1.7.0rc1

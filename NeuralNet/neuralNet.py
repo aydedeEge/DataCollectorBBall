@@ -2,70 +2,59 @@
 import tensorflow as tf
 import numpy as np
 import json
+import keras
 from accuracy import compute_accuracy, predict_lineup
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.models import model_from_json
+from keras import backend as K
 
-RANDOM_SEED = 588
-BETA = 0
 
 class NeuralNet:
     def __init__(self,
-                 savefile,
-                 hidden_nodes=None,
-                 learning_rate=None,
-                 x_size=None,
-                 y_size=None):
-        self.savefile = savefile
-        tf.set_random_seed(RANDOM_SEED)
-        if hidden_nodes and learning_rate and x_size and y_size:
-            self.hidden_nodes = hidden_nodes
-            self.learning_rate = learning_rate
-            self.build(x_size, y_size)
-
-    def forwardprop(self):
-        inputToFirstLayer = tf.matmul(self.X, self.W1)
-        outputFirstLayer = tf.nn.sigmoid(inputToFirstLayer)
-        yhat = tf.matmul(outputFirstLayer, self.W2)  # The varphi function
-        return yhat
+                 model=None,
+                 input_size=None,
+                 output_size=None,
+                 hidden_layer_sizes=None,
+                 optimizer=None,
+                 loss=None,
+                 batch_size=None,
+                 dropout_rate=None):
+        print("Available gpus : " + K.tensorflow_backend._get_available_gpus())
+        if model is None:
+            self.model = Sequential()
+            self.input_size = input_size
+            self.output_size = output_size
+            self.hidden_layer_sizes = hidden_layer_sizes
+            self.optimizer = optimizer
+            self.loss = loss
+            self.batch_size
+            self.dropout_rate = dropout_rate
+            self.build()
+        else:
+            self.model = model
 
     def predict(self, X):
-        with tf.Session() as session:
-            # restore the model
-            self.saver.restore(session, self.savefile)
-            P = session.run(self.predict_op, feed_dict={self.X: X})
-        return P
+        return self.model.predict(X)
 
-    def build(self, x_size, y_size):
-        self.x_size = x_size
-        self.y_size = y_size
-        # define variables and expressions
-        self.X = tf.placeholder(tf.float32, shape=(None, x_size), name='X')
-        self.y = tf.placeholder(tf.float32, shape=(None, y_size), name='y')
+    def build(self):
+        first_layer_size = self.hidden_layer_sizes.pop(0)
+        self.model.add(
+            Dense(
+                units=first_layer_size,
+                activation='sigmoid',
+                input_dim=self.input_size))
 
-        self.W1 = tf.Variable(
-            tf.random_normal((x_size, self.hidden_nodes), stddev=0.1),
-            name='W1')
-        self.W2 = tf.Variable(
-            tf.random_normal((self.hidden_nodes, y_size), stddev=0.1),
-            name='W2')
+        for layer_size in self.hidden_layer_sizes:
+            self.model.add(Dense(units=layer_size, activation='sigmoid'))
+            self.model.add(Dropout(self.dropout_rate))
 
-        self.saver = tf.train.Saver({'W1': self.W1, 'W2': self.W2})
-
-        # Forward propagation
-        yhat = self.forwardprop()
-        self.predict_op = yhat
-        #regularization
-        #TODO used as hyperparam
-        regularizerW1 = tf.nn.l2_loss(self.W1)
-        regularizerW2 = tf.nn.l2_loss(self.W2)
-        
-        # backward propagation
-        cost = tf.reduce_sum(tf.square(yhat - self.y)) / 4
-
-        cost = tf.reduce_mean(
-            cost + BETA * regularizerW1 + BETA * regularizerW2)
-        return cost
+        self.model.add(Dense(units=self.output_size))
+        self.model.compile(
+            loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
+        print(self.model.summary())
 
     def score(self, X, Y):
         score = []
@@ -87,53 +76,22 @@ class NeuralNet:
         return predict_lineup(players)
 
     def save(self, filename):
-        j = {
-            'HD': self.hidden_nodes,
-            'LR': self.learning_rate,
-            'X_M': self.x_size,
-            'Y_M': self.y_size,
-            'model': self.savefile
-        }
-        with open(filename, 'w') as f:
-            json.dump(j, f)
+        model_json = self.model.to_json()
+        with open(filename, "w") as json_file:
+            json_file.write(model_json)
+        # serialize weights to HDF5
+        self.model.save_weights(filename + "model.h5")
 
     @staticmethod
     def load(filename):
-        with open(filename) as f:
-            j = json.load(f)
-            return NeuralNet(j['model'], j['HD'], j['LR'], j['X_M'], j['Y_M'])
+        json_file = open(filename, 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        loaded_model = model_from_json(loaded_model_json)
+        # load weights into new model
+        loaded_model.load_weights(filename + "model.h5")
+        return loaded_model
 
-    def train_and_test(self, train_X, train_y, hidden_nodes, learning_rate,
-                       epoch):
-
-        self.hidden_nodes = hidden_nodes
-        self.learning_rate = learning_rate
-        cost = self.build(train_X.shape[1], train_y.shape[1])
-        updates = tf.train.GradientDescentOptimizer(
-            self.learning_rate).minimize(cost)
-
-        init = tf.global_variables_initializer()
-
-        with tf.Session() as sess:
-            sess.run(init)
-            for epoch in range(epoch):
-
-                for i in range(len(train_X)):
-                    # print(train_y[i: i + 1])
-                    sess.run(
-                        updates,
-                        feed_dict={
-                            self.X: train_X[i:i + 1],
-                            self.y: train_y[i:i + 1]
-                        })
-
-                currentCost = sess.run(
-                    cost, feed_dict={
-                        self.X: train_X,
-                        self.y: train_y
-                    })
-
-                print("Epoch = %d, cost = %.5f " % (epoch + 1, currentCost))
-                # save the model
-
-            self.saver.save(sess, self.savefile)
+    def train_and_test(self, train_X, train_y, epoch):
+        self.model.fit(
+            train_X, train_y, epochs=epoch, batch_size=self.batch_size)
