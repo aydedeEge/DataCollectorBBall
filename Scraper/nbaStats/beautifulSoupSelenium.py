@@ -88,13 +88,46 @@ def get_pmatches(args=None):
             date=args[2],
             season_type="Regular%20Season",
         )
-        print("Finished gathering player_ids")
+        print("Finished gathering player_ids") 
+
+        try:
+            pwp.push_all_pmatches_to_db_by_date(
+                date=args[2],
+                season_type="Regular%20Season",
+                stat_type="boxscores-traditional",
+                players=players,
+                n_games=args[3]
+            )
+        except IndexError:
+            pwp.push_all_pmatches_to_db_by_date(
+                date=args[2],
+                season_type="Regular%20Season",
+                stat_type="boxscores-traditional",
+                players=players,
+            )
+
+    except Exception as e:
+        raise e
+
+# 03%2F14%2F2018 this is the format that the dates have to be in
+def get_pmatches_from_to(args):
+    wp = AllPlayerPage()
+    pwp = PlayerPage()
+    try:
+        players = wp.get_all_player_ids(
+            date=args[2],
+            season_type="Regular%20Season",
+        )
+        print("Finished gathering player_ids") 
 
         pwp.push_all_pmatches_to_db_by_date(
             date=args[2],
             season_type="Regular%20Season",
             stat_type="boxscores-traditional",
-            players=players
+            players=players,
+            date_from=args[3],
+            date_to=args[4]
+
         )
     except Exception as e:
         raise e
@@ -178,14 +211,15 @@ def get_pmatches_player(args):
             player_id=args[2],
             date=args[3],
             season_type="Regular%20Season",
-            stat_type="boxscores-traditional"
+            stat_type="boxscores-traditional",
+            n_games=2
         )
 
         print("Finished gathering player_ids")
 
-        p.push_player_matches_to_db(
-            matches=matches
-        )
+        # p.push_player_matches_to_db(
+        #     matches=matches
+        # )
     except Exception as e:
         raise e
 
@@ -202,6 +236,7 @@ def main():
         "all_pids": get_all_pids,
         "stats": get_all_stats,
         "pmatches_player": get_pmatches_player,
+        "pmatches_to_from": get_pmatches_from_to
     }
     # Db config initialization
     conf = read_config()
