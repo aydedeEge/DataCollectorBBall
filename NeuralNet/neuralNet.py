@@ -12,7 +12,7 @@ from keras.layers import Dropout
 from keras.models import model_from_json
 from keras import backend as K
 
-EPOCH_COUNT = 500
+EPOCH_COUNT = 100
 
 
 class NeuralNet:
@@ -97,4 +97,4 @@ class NeuralNet:
 
     def fit(self, train_X, train_y):
         self.model.fit(
-            train_X, train_y, epochs=EPOCH_COUNT, batch_size=self.batch_size,verbose=1)
+            train_X, train_y, epochs=EPOCH_COUNT, batch_size=self.batch_size,verbose=0)

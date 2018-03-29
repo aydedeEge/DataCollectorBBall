@@ -14,12 +14,12 @@ from keras.wrappers.scikit_learn import KerasRegressor
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-EPOCH_COUNT = 10000
-DEFAUL_HIDDEN_LAYERS = [32, 32]
-DEFAUL_LEARNING_RATE = 0.01
+EPOCH_COUNT =2000
+DEFAUL_HIDDEN_LAYERS = [128, 128]
+DEFAUL_LEARNING_RATE = 0.05
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
-DEFAULT_BATCH_SIZE = 10000
-DEFAULT_DROPOUT = 0
+DEFAULT_BATCH_SIZE = 1000
+DEFAULT_DROPOUT = 0.4
 MIN_GAMES_PER_DAY = 8
 
 
@@ -180,11 +180,13 @@ def cross_val(train_X, train_y):
     train_y_flat = np.array([item for items in train_y for item in items])
     print("Training on" + str(len(train_y_flat)))
 
-    l_rs = [0.005, 0.01, 0.02, 0.05, 0.1, 0.2]
+    l_rs = [0.001,0.005, 0.01, 0.02, 0.05, 0.1, 0.2]
+    l_rs = [0.1]
     hidden_layer_sizes = [[64, 64], [32, 128], [32, 32, 32], [64, 64, 64],
                           [128, 64, 128]]
+    hidden_layer_sizes = [[64,64]]
     batch_sizes = [10000, 5000, 250]
-    dropout_rates = [0.25, 0.5]
+    dropout_rates = [0.1,0.25, 0.5]
     params = {
         'hidden_layer_sizes': hidden_layer_sizes,
         'learning_r': l_rs,
@@ -196,9 +198,10 @@ def cross_val(train_X, train_y):
         estimator=my_classifier,
         param_grid=params,
         n_jobs=1,
-        scoring=score_for_crossval)
+        scoring=score_for_crossval,
+	verbose=10)
 
-    validator.fit(train_x_flat, train_y_flat, verbose=10)
+    validator.fit(train_x_flat[0:50], train_y_flat[0:50])
 
     validator.cv_results_.pop('params', None)
     keys = validator.cv_results_.keys()
@@ -222,9 +225,9 @@ def cross_val(train_X, train_y):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    #train(train_X, train_y)
-    test(train_X, test_X, train_y, test_y)
-    predict('2018-03-28')
+    cross_val(train_X, train_y)
+    #test(train_X, test_X, train_y, test_y)
+    #predict('2018-03-28')
 
 
 if __name__ == '__main__':
