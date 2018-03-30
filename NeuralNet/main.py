@@ -14,8 +14,8 @@ from keras.wrappers.scikit_learn import KerasRegressor
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-DEFAUL_HIDDEN_LAYERS = [128, 128]
-DEFAUL_LEARNING_RATE = 0.05
+DEFAUL_HIDDEN_LAYERS = [64, 128]
+DEFAUL_LEARNING_RATE = 0.001
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
 DEFAULT_BATCH_SIZE = 1000
 DEFAULT_DROPOUT = 0.4
@@ -107,6 +107,7 @@ def run(day):
     print("players selected ids :", predictedLineup)
 
 
+
 def predict(day):
     day_x, playerList = getInputForDay(day)
     print(day_x.shape)
@@ -123,7 +124,6 @@ def predict(day):
     for player in predictedLineup:
         print(player.toString())
     print("Score:" + str(score))
-
 
 def make_model(hidden_layer_sizes, learning_r, batch_size_2, dropout_rate):
     input_size = 29
@@ -224,9 +224,9 @@ def cross_val(train_X, train_y):
 def main():
     train_X, test_X, train_y, test_y = get_data()
     #train(train_X, train_y)
-    cross_val(train_X, train_y)
-    #test(train_X, test_X, train_y, test_y)
-    #predict('2018-03-28')
+    #cross_val(train_X, train_y)
+   # test(train_X, test_X, train_y, test_y)
+    predict('2018-03-30')
 
 
 if __name__ == '__main__':
