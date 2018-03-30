@@ -12,7 +12,7 @@ from keras.layers import Dropout
 from keras.models import model_from_json
 from keras import backend as K
 
-EPOCH_COUNT = 100
+EPOCH_COUNT = 5000
 
 
 class NeuralNet:
@@ -25,7 +25,6 @@ class NeuralNet:
                  loss=None,
                  batch_size=None,
                  dropout_rate=None):
-        print(K.tensorflow_backend._get_available_gpus())
         if model is None:
             self.model = Sequential()
             self.input_size = input_size
@@ -57,7 +56,7 @@ class NeuralNet:
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
             loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
-        print(self.model.summary())
+        #self.model.summary()
 
     def score(self, X, Y):
         score = []
@@ -97,4 +96,8 @@ class NeuralNet:
 
     def fit(self, train_X, train_y):
         self.model.fit(
-            train_X, train_y, epochs=EPOCH_COUNT, batch_size=self.batch_size,verbose=0)
+            train_X,
+            train_y,
+            epochs=EPOCH_COUNT,
+            batch_size=self.batch_size,
+            verbose=0)

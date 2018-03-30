@@ -14,7 +14,6 @@ from keras.wrappers.scikit_learn import KerasRegressor
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-EPOCH_COUNT =2000
 DEFAUL_HIDDEN_LAYERS = [128, 128]
 DEFAUL_LEARNING_RATE = 0.05
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
@@ -70,10 +69,11 @@ def train(train_X, train_y):
         dropout_rate=DEFAULT_DROPOUT)
 
     model.fit(train_x_flat, train_y_flat)
-
+    fileToSave = "trainedModels/nn_model_hn" + str(
+        DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAUL_LEARNING_RATE) + ".json"
+    print(fileToSave)
     # save the model
-    model.save("trainedModels/nn_model_hn" + str(DEFAUL_HIDDEN_LAYERS[0]) +
-               "_lr" + str(DEFAUL_LEARNING_RATE) + ".json")
+    model.save(fileToSave)
 
 
 def continue_training(train_X, train_y):
@@ -180,13 +180,11 @@ def cross_val(train_X, train_y):
     train_y_flat = np.array([item for items in train_y for item in items])
     print("Training on" + str(len(train_y_flat)))
 
-    l_rs = [0.001,0.005, 0.01, 0.02, 0.05, 0.1, 0.2]
-    l_rs = [0.1]
-    hidden_layer_sizes = [[64, 64], [32, 128], [32, 32, 32], [64, 64, 64],
+    l_rs = [0.001, 0.01, 0.1]
+    hidden_layer_sizes = [[64, 64], [32, 32, 32], [64, 64, 64],
                           [128, 64, 128]]
-    hidden_layer_sizes = [[64,64]]
     batch_sizes = [10000, 5000, 250]
-    dropout_rates = [0.1,0.25, 0.5]
+    dropout_rates = [0.1, 0.25, 0.5]
     params = {
         'hidden_layer_sizes': hidden_layer_sizes,
         'learning_r': l_rs,
@@ -197,9 +195,9 @@ def cross_val(train_X, train_y):
     validator = GridSearchCV(
         estimator=my_classifier,
         param_grid=params,
-        n_jobs=1,
+        n_jobs=4,
         scoring=score_for_crossval,
-	verbose=10)
+        verbose=10)
 
     validator.fit(train_x_flat[0:50], train_y_flat[0:50])
 
@@ -225,6 +223,7 @@ def cross_val(train_X, train_y):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
+    #train(train_X, train_y)
     cross_val(train_X, train_y)
     #test(train_X, test_X, train_y, test_y)
     #predict('2018-03-28')
