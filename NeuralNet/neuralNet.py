@@ -12,7 +12,7 @@ from keras.layers import Dropout
 from keras.models import model_from_json
 from keras import backend as K
 
-EPOCH_COUNT = 5000
+EPOCH_COUNT = 1000
 
 
 class NeuralNet:
@@ -37,6 +37,7 @@ class NeuralNet:
             self.build()
         else:
             self.model = model
+           
 
     def predict(self, X):
         return self.model.predict(X)
@@ -92,12 +93,18 @@ class NeuralNet:
         loaded_model = model_from_json(loaded_model_json)
         # load weights into new model
         loaded_model.load_weights(filename + "model.h5")
-        return NeuralNet(loaded_model)
+        optimizer = keras.optimizers.Adam(lr=0.001)
+        loss = 'mean_squared_error'
+        loaded_model.compile(loss=loss, optimizer=optimizer, metrics=['mae'])
+      
+        model = NeuralNet(loaded_model)
+      
+        return model
 
     def fit(self, train_X, train_y):
         self.model.fit(
             train_X,
             train_y,
             epochs=EPOCH_COUNT,
-            batch_size=self.batch_size,
-            verbose=0)
+            batch_size=500,
+            verbose=1)

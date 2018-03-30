@@ -14,11 +14,11 @@ from keras.wrappers.scikit_learn import KerasRegressor
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-DEFAUL_HIDDEN_LAYERS = [128, 128]
-DEFAUL_LEARNING_RATE = 0.05
+DEFAUL_HIDDEN_LAYERS = [64, 64]
+DEFAUL_LEARNING_RATE = 0.001
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
-DEFAULT_BATCH_SIZE = 1000
-DEFAULT_DROPOUT = 0.4
+DEFAULT_BATCH_SIZE = 500
+DEFAULT_DROPOUT = 0.1
 MIN_GAMES_PER_DAY = 8
 
 
@@ -77,7 +77,17 @@ def train(train_X, train_y):
 
 
 def continue_training(train_X, train_y):
-    pass
+    train_x_flat = np.array([item for items in train_X for item in items])
+    train_y_flat = np.array([item for items in train_y for item in items])
+    print("Training on :" + str(len(train_y_flat)) + "games")
+ 
+    model_loaded = NeuralNet.load("trainedModels/nn_model_hn" + str(
+        DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAUL_LEARNING_RATE) + ".json")
+    model = model_loaded
+    model.fit(train_x_flat, train_y_flat)
+    fileToSave = "trainedModels/nn_model_hn" + str(
+        DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAUL_LEARNING_RATE) + ".json"
+    model.save(fileToSave)
 
 
 def test(train_X, test_X, train_y, test_y):
@@ -152,28 +162,6 @@ def score_for_crossval(estimator, X, Y):
     return np.average(score)
 
 
-def combinations(n, list, combos=[]):
-    # initialize combos during the first pass through
-    if combos is None:
-        combos = []
-
-    if len(list) == n:
-        # when list has been dwindeled down to size n
-        # check to see if the combo has already been found
-        # if not, add it to our list
-        if combos.count(list) == 0:
-            combos.append(list)
-            combos.sort()
-        return combos
-    else:
-        # for each item in our list, make a recursive
-        # call to find all possible combos of it and
-        # the remaining items
-        for i in range(len(list)):
-            refined_list = list[:i] + list[i + 1:]
-            combos = combinations(n, refined_list, combos)
-        return combos
-
 
 def cross_val(train_X, train_y):
     train_x_flat = np.array([item for items in train_X for item in items])
@@ -224,8 +212,9 @@ def cross_val(train_X, train_y):
 def main():
     train_X, test_X, train_y, test_y = get_data()
     #train(train_X, train_y)
-    cross_val(train_X, train_y)
-    #test(train_X, test_X, train_y, test_y)
+    continue_training(train_X, train_y)
+    #cross_val(train_X, train_y)
+    test(train_X, test_X, train_y, test_y)
     #predict('2018-03-28')
 
 
