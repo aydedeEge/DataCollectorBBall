@@ -1,6 +1,7 @@
 from System3.ilp import ilp
 from model.team import PLAYER_POSITIONS
 import numpy as np
+import math
 
 GLOBAL_BUDGET = 60000
 DEFAULT_COST = 4000
@@ -51,3 +52,54 @@ def predict_lineup(playerList):
     selected_lineup = [playerList[i] for i in index_players_predicted]
     expected_score = sum([player.expectedScore for player in selected_lineup])
     return expected_score, selected_lineup
+
+def get_lineups(playerList, numberOfLineups):
+    lineupsArray = []
+    expectedScoresArray = []
+
+    # Generate as many lineups as requested.
+    for i in range(1, numberOfLineups):
+        predictedScores = [player.expectedScore for player in playerList]
+
+        # Go through predicted scores and add Gaussian noise.
+        currentIndex = 0
+        for score in predictedScores:
+            # Set parameters for noise function and generate the noise.
+            mean = score
+            variance = 5
+            sigma = math.sqrt(variance)
+            noisyValue = np.random.normal(mean, sigma)
+
+            # Add the "noisy value" back into the predictedScores array.
+            predictedScores[currentIndex] = noisyValue
+            currentIndex += 1
+
+        position_array = []
+        #for game in range(int(len(playerList) / len(PLAYER_POSITIONS))):
+        #    position_array.extend(PLAYER_POSITIONS)
+        for p in playerList:
+            if(p.dailyPosition == "SG"):
+                position_array.append(2)
+            elif(p.dailyPosition == "SF"):
+                position_array.append(3)
+            elif(p.dailyPosition == "PG"):
+                position_array.append(4)
+            elif(p.dailyPosition == "PF"):
+                position_array.append(5)
+            elif(p.dailyPosition == "C"):
+                position_array.append(1)
+            else:
+                print("empty daily position for lineup")
+        playerCosts = [player.salary for player in playerList]
+
+        index_players_predicted = ilp(predictedScores, playerCosts, position_array,
+                                    GLOBAL_BUDGET)
+
+        lineup = [playerList[i] for i in index_players_predicted]
+        expected_score = sum([player.expectedScore for player in lineup])
+
+        lineupsArray.append(lineup)
+        expectedScoresArray.append(expected_score)
+
+    return expectedScoresArray, lineupsArray
+
