@@ -4,6 +4,7 @@
 import os,sys,inspect
 import MySQLdb
 import pandas as pd
+import math
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -66,8 +67,12 @@ def insert_future_player_matches(season, match_date, match_ids, fd_data, update_
 
     or_conditional = ""
     for i in range(len(first_names)):
-        or_conditional += " (first_name = \"" + first_names[i] + "\" and last_name = \"" + fix_name(last_names[i]) + "\") OR"
-
+        if(isinstance(first_names[i], float)):
+            # This covers Nene
+            or_conditional += " (first_name = \"" + last_names[i] + "\") OR"
+        else:
+            or_conditional += " (first_name = \"" + first_names[i] + "\" and last_name = \"" + fix_name(last_names[i]) + "\") OR"
+    
     command = "SELECT * from players where" + or_conditional[:-3] + ";"
     #print(command)
     cursor.execute(command)
@@ -140,6 +145,8 @@ def fix_team(team):
             return "NOP"
         elif(team == "SA"):
             return "SAS"
+        elif(team == "GS"):
+            return "GSW"
         else:
             print("ERROR: Team unknown (" + team + ")")
 
@@ -147,8 +154,8 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    game_date = "2018-03-17"
-    competition_number = "24185"
+    game_date = "2018-03-30"
+    competition_number = "24511"
     season = "2017"
     filename = "DatabaseScripts/FanDuel/FanDuel-NBA-" + game_date + "-" + competition_number + "-players-list.csv"
     fd_data = pd.read_csv(filename)
