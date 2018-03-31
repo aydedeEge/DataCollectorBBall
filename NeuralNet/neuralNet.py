@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import json
 import keras
-from accuracy import compute_accuracy, predict_lineup
+from accuracy import compute_accuracy, predict_lineup, get_lineups
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
@@ -75,7 +75,7 @@ class NeuralNet:
         ]
         for i in range(len(players)):
             players[i].expectedScore = player_expectedScore[i]
-        return predict_lineup(players)
+        return get_lineups(players,3)
 
     def save(self, filename):
         model_json = self.model.to_json()

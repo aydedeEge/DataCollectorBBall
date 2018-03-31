@@ -107,7 +107,6 @@ def run(day):
     print("players selected ids :", predictedLineup)
 
 
-
 def predict(day):
     day_x, playerList = getInputForDay(day)
     print(day_x.shape)
@@ -118,12 +117,16 @@ def predict(day):
     model = NeuralNet.load("trainedModels/nn_model_hn" + str(
         DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAUL_LEARNING_RATE) + ".json")
 
-    score, predictedLineup = model.getPrediction(day_X, playerList)
+    scores, predictedLineups = model.getPrediction(day_X, playerList)
+    for i in range(len(scores)):
+        predictedLineup = predictedLineups[i]
+        print("---------------")
+        print("player selected:")
+        for player in predictedLineup:
+            print(player.toString())
+        print("Excpected total score :" + str(scores[i]))
+        
 
-    print("player selected:")
-    for player in predictedLineup:
-        print(player.toString())
-    print("Score:" + str(score))
 
 def make_model(hidden_layer_sizes, learning_r, batch_size_2, dropout_rate):
     input_size = 29
@@ -225,7 +228,7 @@ def main():
     train_X, test_X, train_y, test_y = get_data()
     #train(train_X, train_y)
     #cross_val(train_X, train_y)
-   # test(train_X, test_X, train_y, test_y)
+    #test(train_X, test_X, train_y, test_y)
     predict('2018-03-30')
 
 
