@@ -151,13 +151,15 @@ def getDataPositionOrder():
     y_path = 'yMatchesPos.npy'
     my_file = Path(x_path)
     if not my_file.is_file():
-        storeDataFormatted(14, getNormalizedTeamsPos, x_path, y_path)
+        #number of inputs is 21, since 7 players with 3 stats each (career, short, stdev)
+        storeDataFormatted(21, getNormalizedTeamsPos, x_path, y_path)
     X = np.load(x_path)
     y = np.load(y_path)
     return X, y
 
-
+#unused
 def getSortedOrder():
+    print("THIS METHOD SHOULD NOT BE BEING CALLED!")
     x_path = 'XScores.npy'
     y_path = 'yMatches.npy'
     my_file = Path(x_path)
@@ -169,7 +171,9 @@ def getSortedOrder():
    
     return X, y
 
+# unused
 def getSortedOrderForDay(day):
+    print("THIS METHOD IS UNUSED. WHY IS IT BEING CALLED?")
     dbInit()
     inputSize = MAX_PLAYER_PER_POS_TEAM * 2
     matchesArrayScores = []
@@ -201,10 +205,11 @@ def getSortedOrderForDay(day):
     y = np.array(arrayOuput)
     return X,y,gamesPlayer
 
-
+# UNUSED
 def getSortedOrderForDay(day):
+    print("THIS METHOD IS UNUSED. WHY IS IT BEING CALLED?")
     dbInit()
-    inputSize = MAX_PLAYER_PER_TEAM * 4
+    inputSize = MAX_PLAYER_PER_TEAM * 6
     matchesArrayScores = []
     arrayOuput = []
     validMatchId = getMatchesOnDay(day)
@@ -236,7 +241,7 @@ def getSortedOrderForDay(day):
 
 def getInputForDay(day):
     dbInit()
-    inputSize = MAX_PLAYER_PER_TEAM * 4
+    inputSize = MAX_PLAYER_PER_TEAM * 6 # career stats, short term stats, variance
     matchesArrayScores = []
     validMatchId = getMatchesOnDay(day)
     player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)

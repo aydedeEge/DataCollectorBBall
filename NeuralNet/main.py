@@ -93,7 +93,9 @@ def test(train_X, test_X, train_y, test_y):
 
 
 #format of day should be YYYY-MM-DD
+# UNUSED
 def run(day):
+    print("This mETHOD should not be being calleD!")
     day_x, day_y, Gamesplayers = getSortedOrderForDay(day)
     playersList = [item.playerID for items in Gamesplayers for item in items]
 
@@ -128,7 +130,7 @@ def predict(day):
         print(player.toString())
     print("Score:" + str(score))
 
-def cross_val(train_X, train_y):
+# def cross_val(train_X, train_y):
     #TODO
     # train_x_flat = np.array([item for items in train_X for item in items])
     # train_y_flat = np.array([item for items in train_y for item in items])
