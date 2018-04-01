@@ -34,8 +34,8 @@ class PlayerInput:
         # str(self.careerScore) + ", had game score " + str(self.gameScore) + "at the position " + self.position + "  .Input order :" + str(self.inputOrder)
         return "Player " + str(self.playerID) + ", on team " + str(
             self.teamID
-        ) + ",  position " + self.position + "  .Input order :" + str(
-            self.inputOrder)
+        ) + ",  position " + self.position + "  .Expected score :" + str(
+            self.expectedScore)
 
     def __init__(self):
         self.careerScore = 0

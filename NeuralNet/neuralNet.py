@@ -3,13 +3,16 @@ import tensorflow as tf
 import numpy as np
 import json
 import keras
-from accuracy import compute_accuracy, predict_lineup
+from accuracy import compute_accuracy, predict_lineup, get_lineups
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.layers import Dropout
 from keras.models import model_from_json
 from keras import backend as K
+
+EPOCH_COUNT = 5000
 
 
 class NeuralNet:
@@ -22,7 +25,6 @@ class NeuralNet:
                  loss=None,
                  batch_size=None,
                  dropout_rate=None):
-        print("Available gpus : " + K.tensorflow_backend._get_available_gpus())
         if model is None:
             self.model = Sequential()
             self.input_size = input_size
@@ -30,7 +32,7 @@ class NeuralNet:
             self.hidden_layer_sizes = hidden_layer_sizes
             self.optimizer = optimizer
             self.loss = loss
-            self.batch_size
+            self.batch_size = batch_size
             self.dropout_rate = dropout_rate
             self.build()
         else:
@@ -40,21 +42,21 @@ class NeuralNet:
         return self.model.predict(X)
 
     def build(self):
-        first_layer_size = self.hidden_layer_sizes.pop(0)
+        first_layer_size = self.hidden_layer_sizes[0]
         self.model.add(
             Dense(
                 units=first_layer_size,
                 activation='sigmoid',
                 input_dim=self.input_size))
-
-        for layer_size in self.hidden_layer_sizes:
+        self.model.add(Dropout(self.dropout_rate))
+        for layer_size in self.hidden_layer_sizes[1:]:
             self.model.add(Dense(units=layer_size, activation='sigmoid'))
             self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
             loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
-        print(self.model.summary())
+        #self.model.summary()
 
     def score(self, X, Y):
         score = []
@@ -73,7 +75,7 @@ class NeuralNet:
         ]
         for i in range(len(players)):
             players[i].expectedScore = player_expectedScore[i]
-        return predict_lineup(players)
+        return get_lineups(players,3)
 
     def save(self, filename):
         model_json = self.model.to_json()
@@ -90,8 +92,12 @@ class NeuralNet:
         loaded_model = model_from_json(loaded_model_json)
         # load weights into new model
         loaded_model.load_weights(filename + "model.h5")
-        return loaded_model
+        return NeuralNet(loaded_model)
 
-    def train_and_test(self, train_X, train_y, epoch):
+    def fit(self, train_X, train_y):
         self.model.fit(
-            train_X, train_y, epochs=epoch, batch_size=self.batch_size)
+            train_X,
+            train_y,
+            epochs=EPOCH_COUNT,
+            batch_size=self.batch_size,
+            verbose=0)

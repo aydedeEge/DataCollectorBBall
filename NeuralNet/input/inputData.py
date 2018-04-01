@@ -205,38 +205,38 @@ def getSortedOrderForDay(day):
     y = np.array(arrayOuput)
     return X,y,gamesPlayer
 
-# UNUSED
-def getSortedOrderForDay(day):
-    print("THIS METHOD IS UNUSED. WHY IS IT BEING CALLED?")
-    dbInit()
-    inputSize = MAX_PLAYER_PER_TEAM * 6
-    matchesArrayScores = []
-    arrayOuput = []
-    validMatchId = getMatchesOnDay(day)
-    player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
+# def getSortedOrderForDay(day):
+#     dbInit()
+#     inputSize = MAX_PLAYER_PER_TEAM * 4
+#     matchesArrayScores = []
+#     arrayOuput = []
+#     validMatchId = getMatchesOnDay(day)
+#     player_inputs, matches_on_day = getPlayerScoresForMatches(validMatchId)
 
-    for matchID in validMatchId:
-        try:
-            teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
-            inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
+#     for matchID in validMatchId:
+#         try:
+#             teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+#             inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
 
-            matchArrayScores = normalizeInputArray(inputArray)
+#             matchArrayScores = normalizeInputArray(inputArray)
 
-            if (len(matchArrayScores) == inputSize):
+#             if (len(matchArrayScores) == inputSize):
 
-                matchesArrayScores.append(matchArrayScores)
-                arrayOuput.append(result)
-            else:
-                print(len(matchArrayScores))
-                print("not enough player : ", len(matchArrayScores),
-                      "in match ", matchID)
+#                 matchesArrayScores.append(matchArrayScores)
+#                 arrayOuput.append(result)
+#             else:
+#                 print(len(matchArrayScores))
+#                 print("not enough player : ", len(matchArrayScores),
+#                       "in match ", matchID)
 
-        except Exception as e:
-            print("matchID:", matchID, " failed")
+#         except Exception as e:
+#             print("matchID:", matchID, " failed")
 
-    X = np.array(matchesArrayScores)
-    y = np.array(arrayOuput)
-    return X, y
+#     X = np.array(matchesArrayScores)
+#     y = np.array(arrayOuput)
+#     return X, y
+
+
 
 
 def getInputForDay(day):
