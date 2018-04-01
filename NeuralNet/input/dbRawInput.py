@@ -160,7 +160,7 @@ def getPlayerScoresForMatches(match_ids):
             career_score = player_career_stats[career_key]
             injury = row["injury"]
             if(injury != "O"):
-                short_score = row["short_score"]
+                short_score = row["short_score_5"]
                 salary = row["salary"]
                 dailyPosition = row["daily_pos"]
                 position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
