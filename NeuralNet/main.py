@@ -24,7 +24,7 @@ MIN_GAMES_PER_DAY = 8
 FILENAME_USED_NN = "trainedModels/nn_model_hn" + str(
     DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAULT_LEARNING_RATE) + ".json"
 
-INPUT_SIZE = 29
+INPUT_SIZE = 43
 OUTPUT_SIZE  = 14
 
 def get_data():
