@@ -1,5 +1,6 @@
 from System3.ilp import ilp
 from model.team import PLAYER_POSITIONS
+import math
 import numpy as np
 import math
 
@@ -100,6 +101,7 @@ def get_lineups(playerList, numberOfLineups):
 
         lineupsArray.append(lineup)
         expectedScoresArray.append(expected_score)
+
 
     return expectedScoresArray, lineupsArray
 

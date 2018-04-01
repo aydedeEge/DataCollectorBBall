@@ -140,6 +140,8 @@ def fix_team(team):
             return "NOP"
         elif(team == "SA"):
             return "SAS"
+        elif(team == "GS"):
+            return "GSW"
         else:
             print("ERROR: Team unknown (" + team + ")")
 
@@ -147,8 +149,8 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    game_date = "2018-03-17"
-    competition_number = "24185"
+    game_date = "2018-04-01"
+    competition_number = "24574"
     season = "2017"
     filename = "DatabaseScripts/FanDuel/FanDuel-NBA-" + game_date + "-" + competition_number + "-players-list.csv"
     fd_data = pd.read_csv(filename)
