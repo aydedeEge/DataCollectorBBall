@@ -48,7 +48,6 @@ def calculate(player_id):
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM player_matches where pid = " + str(player_id) + " order by mdate;")
     result_set = cursor.fetchall()
-    short_scores = {}
     game_scores = []
 
     when_conditional = ""
@@ -56,11 +55,12 @@ def calculate(player_id):
 
     for row in result_set:
         player_match_id = str(row["player_match_id"])
-        curr_score = last_n_average(game_scores, N_PREVIOUS)
-        short_scores[player_match_id] = curr_score
+        if(row["short_score_5"] == None):
+            curr_score = last_n_average(game_scores, N_PREVIOUS)
+            when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_score) + "' "
+            when_list += "'" + str(player_match_id) + "',"
         game_scores.append(row["score"])
-        when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_score) + "' "
-        when_list += "'" + str(player_match_id) + "',"
+        
 
     print("Total short_scores calculated = " + str(len(result_set)))
     if(len(result_set) != 0):
@@ -115,5 +115,5 @@ if __name__ == '__main__':
     for pid in ids_to_update:
         res = calculate(pid)
         count+=1
-        print("done " + str(count) + "/" + str(300))
+        print("done " + str(count) + "/" + str(len(ids_to_update)))
         

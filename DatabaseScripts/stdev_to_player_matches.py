@@ -44,10 +44,12 @@ def calculate(player_id):
 
     for row in result_set:
         player_match_id = str(row["player_match_id"])
-        curr_stdev = last_n_stdev(game_scores, N_PREVIOUS)
+        #only update if it's nothing...
+        if(row["stdev_10"] == None):
+            curr_stdev = last_n_stdev(game_scores, N_PREVIOUS)
+            when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_stdev) + "' "
+            when_list += "'" + str(player_match_id) + "',"
         game_scores.append(row["score"])
-        when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_stdev) + "' "
-        when_list += "'" + str(player_match_id) + "',"
 
     print("Total standard deviations calculated = " + str(len(result_set)))
     if(len(result_set) != 0):
