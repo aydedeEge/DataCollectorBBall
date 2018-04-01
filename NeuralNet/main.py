@@ -138,7 +138,7 @@ def predict(args):
     filename = FILENAME_USED_NN
     if len(args) == 5:
         filename = "trainedModels/" + args[4]
-    day_x, playerList = getInputForDay(day)
+    day_x, playerList = getInputForDay(day, True)
     print(day_x.shape)
     print(len(playerList))
     N, M = day_x.shape

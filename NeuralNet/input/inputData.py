@@ -42,7 +42,7 @@ def normalizeInputArray(inputArray):
     return normalizedInput
 
 
-def getNormalizedTeamsPos(playerArray):
+def getNormalizedTeamsPos(playerArray, force_lineups = False):
 
     playerOfteam1 = filter(lambda player: player.teamID == 1, playerArray)
     playerOfteam2 = filter(lambda player: player.teamID == 2, playerArray)
@@ -54,9 +54,9 @@ def getNormalizedTeamsPos(playerArray):
         playerOfteam2, key=lambda player: player.careerScore, reverse=True)
 
     team1 = Team()
-    team1.setValues(playerOfteam1)
+    team1.setValues(playerOfteam1, force_lineups)
     team2 = Team()
-    team2.setValues(playerOfteam2)
+    team2.setValues(playerOfteam2, force_lineups)
     return team1.positionArray, team2.positionArray
 
 # unused
@@ -241,7 +241,7 @@ def getSortedOrderForDay(day):
 
 
 
-def getInputForDay(day):
+def getInputForDay(day, force_lineups=False):
     dbInit()
     inputSize = MAX_PLAYER_PER_TEAM * 6 # career stats, short term stats, variance
     matchesArrayScores = []
@@ -250,7 +250,7 @@ def getInputForDay(day):
     playerList = []
     for matchID in validMatchId:
         #try:
-        teams = getNormalizedTeamsPos(player_inputs[str(matchID)])
+        teams = getNormalizedTeamsPos(player_inputs[str(matchID)], force_lineups)
         inputArray, result = getInputArrayFromPlayers(teams[0] + teams[1])
         
         matchArrayScores = normalizeInputArray(inputArray)

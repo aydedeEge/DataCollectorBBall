@@ -99,7 +99,7 @@ def getPlayerScoresForMatches(match_ids):
     match_or_condition = match_or_condition[:-14]
 
     #make the command and execute
-    command = "SELECT * FROM d2matchb_bball.player_matches where " + match_or_condition + " order by mdate;"
+    command = "SELECT mdate, pid, home_away, match_id, mdate, winloss, score, player_match_id, injury, short_score_5, stdev_10, salary, daily_pos FROM d2matchb_bball.player_matches where " + match_or_condition + " order by mdate;"
     cursor.execute(command)
     player_matches_result_set = cursor.fetchall()
 
@@ -113,8 +113,9 @@ def getPlayerScoresForMatches(match_ids):
 
 
     reshaped_pids = []
-    if(len(player_ids) > 4000):
-        reshaped_pids.append(player_ids[0:4000])
+    if(len(player_ids) > 3000):
+        reshaped_pids.append(player_ids[0:2000])
+        reshaped_pids.append(player_ids[2000:4000])
         reshaped_pids.append(player_ids[4000:])
     else:
         reshaped_pids.append(player_ids)

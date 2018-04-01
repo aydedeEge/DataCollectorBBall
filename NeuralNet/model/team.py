@@ -6,7 +6,7 @@ PLAYER_POSITIONS = (1, 2, 3, 3, 4, 5, 5, 1, 2, 3, 3, 4, 5, 5)
 
 
 class Team:
-    def setValues(self, players):
+    def setValues(self, players, Force=False):
         self.players = players
         #Find the centers
         self.findCenters()
@@ -20,21 +20,38 @@ class Team:
             else:
                 print("player with nothing")
             #might need to sort them TODO
+
         wantedC = TEAM_REQUIREMENTS[str(CENTER)]
         wantedF = TEAM_REQUIREMENTS[str(FORWARD)]
         wantedG = TEAM_REQUIREMENTS[str(GUARD)]
+        haveC = len(self.positionDict['0'])
         haveF = len(self.positionDict['1'])
         haveG = len(self.positionDict['2'])
+        
 
+        #force is set if we NEED to get a proper lineup out of these guys.
+        if(Force):
+            #the idea here is to substitute a guard with a forward and vice versa if we're short one.
+            if(haveF < wantedF or haveG < wantedG):
+                #We don't like to go into the centers
+                if(not (haveF + haveG < wantedF + wantedG)):
+                    #otherwise add the difference
+                    if(haveF < haveG):
+                        wantedG += wantedF - haveF
+                    else:
+                        wantedF += wantedG - haveG
+                else:
+                    wantedC += wantedF - haveF + wantedG - haveG
+            elif(haveC < wantedC):
+                if(haveF > wantedF):
+                    wantedF +=1
+                elif(haveG > wantedG):
+                    wantedG +=1
+        
         playersC = self.positionDict['0'][0:wantedC]
-        #the idea here is to substitute a guard with a forward and vice versa if we're short one.
-        if(haveF == wantedF - 1 and haveG > wantedG):
-            wantedG +=1
-        elif(haveG == wantedG - 1 and haveF > wantedF):
-            wantedF +=1
         playersF = self.positionDict['1'][0:wantedF]
         playersG = self.positionDict['2'][0:wantedG]
-
+        
         allPlayers = playersC + playersF + playersG
         self.positionArray = allPlayers
 
