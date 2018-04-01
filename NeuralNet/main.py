@@ -113,7 +113,9 @@ def test(train_X, test_X, train_y, test_y, args):
 
 
 #format of day should be YYYY-MM-DD
+# UNUSED
 def run(day):
+    print("This mETHOD should not be being calleD!")
     day_x, day_y, Gamesplayers = getSortedOrderForDay(day)
     playersList = [item.playerID for items in Gamesplayers for item in items]
 
@@ -238,7 +240,6 @@ def cross_val(train_X, train_y, args):
                 else:
                     row = row + [str(validator.cv_results_[k][i - 1])]
             csv_writer.writerow(row)
-
 
 def main():
     train_X, test_X, train_y, test_y = get_data()

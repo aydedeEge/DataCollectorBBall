@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Calculate the match scores"""
+"""Calculate the standard deviation"""
 # -*- encoding: utf-8 -*-
 import os,sys,inspect
 import MySQLdb
+import numpy as np
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -10,31 +11,19 @@ sys.path.insert(0,parentdir)
 
 from load_config import read_config, set_env_vars
 
-
-# TODO: if it already exists, update the score instead of throwing dup key error
-FG_3_SCORE = 3
-FG_SCORE = 2
-FT_SCORE = 1
-RB_SCORE = 1.2
-AST_SCORE = 1.5
-BLK_SCORE = 3
-STEAL_SCORE = 3
-TURNOVER_SCORE = -1
 SEASON = 2017
-N_PREVIOUS = 5
+N_PREVIOUS = 10
 
-def last_n_average(values, n):
-    average = 0.
-    value_size = len(values)
-    count = 0
-    while(value_size - count - 1 >= 0 and count < n):
-        average += values[value_size - count - 1]
-        count += 1
-    
-    if(count > 0):
-        return average / float(count)
-    else:
+def last_n_stdev(values, n):
+    if(len(values) < 2):
         return 0
+    elif(len(values) < n):
+        return np.std(values, ddof=1)
+    else:
+        var_values = []
+        for i in range(0, n):
+            var_values.append(values[len(values)-1-i])
+        return np.std(var_values, ddof=1)
 
 def calculate(player_id):
     """Calculate the scores"""
@@ -48,7 +37,6 @@ def calculate(player_id):
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM player_matches where pid = " + str(player_id) + " order by mdate;")
     result_set = cursor.fetchall()
-    short_scores = {}
     game_scores = []
 
     when_conditional = ""
@@ -56,16 +44,15 @@ def calculate(player_id):
 
     for row in result_set:
         player_match_id = str(row["player_match_id"])
-        curr_score = last_n_average(game_scores, N_PREVIOUS)
-        short_scores[player_match_id] = curr_score
+        curr_stdev = last_n_stdev(game_scores, N_PREVIOUS)
         game_scores.append(row["score"])
-        when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_score) + "' "
+        when_conditional += "WHEN '" + str(player_match_id) + "' THEN '" + str(curr_stdev) + "' "
         when_list += "'" + str(player_match_id) + "',"
 
-    print("Total short_scores calculated = " + str(len(result_set)))
+    print("Total standard deviations calculated = " + str(len(result_set)))
     if(len(result_set) != 0):
-        command = "UPDATE `d2matchb_bball`.`player_matches` SET short_score_5 = CASE player_match_id "
-        command += when_conditional + "ELSE short_score_5 END WHERE player_match_id IN(" + when_list[:-1] + ");"
+        command = "UPDATE `d2matchb_bball`.`player_matches` SET stdev_10 = CASE player_match_id "
+        command += when_conditional + "ELSE stdev_10 END WHERE player_match_id IN(" + when_list[:-1] + ");"
         cursor.execute(command)
         connection.commit()
         # Close the connection
@@ -81,7 +68,7 @@ def get_player_ids(limit):
                                  passwd = os.environ["pwd"],  # your password
                                  db = os.environ["db"])        # name of the data base
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    command = "SELECT distinct(pid) FROM player_matches WHERE pid NOT IN (SELECT pid FROM player_matches WHERE short_score_5 is not null) limit " + str(limit) + ";"
+    command = "SELECT distinct(pid) FROM player_matches WHERE pid NOT IN (SELECT pid FROM player_matches WHERE stdev_10 is not null) limit " + str(limit) + ";"
     cursor.execute(command)
     result_set = cursor.fetchall()
     result = []
@@ -97,7 +84,7 @@ def get_player_ids_to_append(limit):
                                  passwd = os.environ["pwd"],  # your password
                                  db = os.environ["db"])        # name of the data base
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    command = "SELECT distinct(pid) FROM player_matches WHERE pid IN (SELECT pid FROM player_matches WHERE short_score_5 is null) limit " + str(limit) + ";"
+    command = "SELECT distinct(pid) FROM player_matches WHERE pid IN (SELECT pid FROM player_matches WHERE stdev_10 is null) limit " + str(limit) + ";"
     cursor.execute(command)
     result_set = cursor.fetchall()
     result = []
@@ -115,5 +102,5 @@ if __name__ == '__main__':
     for pid in ids_to_update:
         res = calculate(pid)
         count+=1
-        print("done " + str(count) + "/" + str(300))
+        print("done " + str(count) + "/" + str(len(ids_to_update)))
         

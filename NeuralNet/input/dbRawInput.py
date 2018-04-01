@@ -2,6 +2,7 @@ import MySQLdb
 import os
 import sys
 import inspect
+import numpy as np
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -40,7 +41,7 @@ def getmatchIDsValid():
 def getSeasonYearFromDate(date):
     items = str(date).split("-")
     if(int(items[1]) > 4):
-        return items[0]
+        return int(items[0])
     else:
         return int(items[0]) - 1
 
@@ -110,23 +111,34 @@ def getPlayerScoresForMatches(match_ids):
         if(curr_player_id not in player_ids):
             player_ids.append(curr_player_id)
 
+
+    reshaped_pids = []
+    if(len(player_ids) > 4000):
+        reshaped_pids.append(player_ids[0:4000])
+        reshaped_pids.append(player_ids[4000:])
+    else:
+        reshaped_pids.append(player_ids)
+
     #now we can get the career stats in bulk, since we have all the player IDs
     player_career_stats = {}
     player_career_pos = {}
-    player_id_or_condition = "player_stats_id = "
-    for player_id in player_ids:
-        player_id_or_condition += player_id + " OR player_stats_id ="
-    player_id_or_condition = player_id_or_condition[:-21]
+    for a in range(0, len(reshaped_pids)):
+        part_player_ids = reshaped_pids[a]
 
-    #complete and execute command
-    command = "SELECT * FROM player_stats where " + player_id_or_condition + ";"
-    cursor.execute(command)
-    player_stats_result_set = cursor.fetchall()
+        player_id_or_condition = "player_stats_id = "
+        for player_id in part_player_ids:
+            player_id_or_condition += player_id + " OR player_stats_id ="
+        player_id_or_condition = player_id_or_condition[:-21]
 
-    # for each row, we have a career stat
-    for row in player_stats_result_set:
-        player_career_stats[str(row["player_stats_id"])] = row["score"]
-        player_career_pos[str(row["player_stats_id"])] = row["position"]
+        #complete and execute command
+        command = "SELECT * FROM player_stats where " + player_id_or_condition + ";"
+        cursor.execute(command)
+        player_stats_result_set = cursor.fetchall()
+
+        # for each row, we have a career stat
+        for row in player_stats_result_set:
+            player_career_stats[str(row["player_stats_id"])] = row["score"]
+            player_career_pos[str(row["player_stats_id"])] = row["position"]
 
 
     #now we can make the final player objects
@@ -155,17 +167,39 @@ def getPlayerScoresForMatches(match_ids):
             team_id = 1
         else:
             team_id = 2
-        career_key = str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])
-        if(career_key in player_career_stats):
-            career_score = player_career_stats[career_key]
+        last_year_career_key = str(getSeasonYearFromDate(row["mdate"])-1) + str(row["pid"])
+        this_year_career_key = str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])
+        #Try to get last year's data first. If it's the first year they played, allow for this year's
+        if(last_year_career_key in player_career_stats):
+            last_year_career_score = player_career_stats[last_year_career_key]
             injury = row["injury"]
             if(injury != "O"):
                 short_score = row["short_score_5"]
+                stdev_10 = row["stdev_10"]
                 salary = row["salary"]
                 dailyPosition = row["daily_pos"]
-                position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
+                #try for a more up to date position
+                if(this_year_career_key in player_career_pos):
+                    position = player_career_pos[this_year_career_key]
+                else:
+                    position = player_career_pos[last_year_career_key]
                 player = PlayerInput()
-                player.setValues(cScore=career_score, sScore = short_score, gScore=game_score,
+                player.setValues(cScore=last_year_career_score, sScore = short_score, stdev_10 = stdev_10, gScore=game_score,
+                                    pID=str(row["pid"]), tID=team_id, position=position, sal=salary, dpos = dailyPosition)
+                if(match_id not in player_inputs):
+                    player_inputs[match_id] = []
+                player_inputs[match_id].append(player)
+        elif(this_year_career_key in player_career_stats):
+            this_year_career_score = player_career_stats[this_year_career_key]
+            injury = row["injury"]
+            if(injury != "O"):
+                short_score = row["short_score_5"]
+                stdev_10 = row["stdev_10"]
+                salary = row["salary"]
+                dailyPosition = row["daily_pos"]
+                position = player_career_pos[this_year_career_key]
+                player = PlayerInput()
+                player.setValues(cScore=this_year_career_score, sScore = short_score, stdev_10 = stdev_10, gScore=game_score,
                                     pID=str(row["pid"]), tID=team_id, position=position, sal=salary, dpos = dailyPosition)
                 if(match_id not in player_inputs):
                     player_inputs[match_id] = []
@@ -216,7 +250,7 @@ def getPlayerScores(match_id):
             tID = 1
         else:
             tID = 2
-        pStatsID = getSeasonYearFromDate(row["mdate"]) + str(pID)
+        pStatsID = str(getSeasonYearFromDate(row["mdate"])) + str(pID)
         cursor.execute(
             "SELECT * FROM player_stats where player_stats_id = " + pStatsID + ";")
         cScore = cursor.fetchall()[0]["score"]
