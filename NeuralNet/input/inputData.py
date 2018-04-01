@@ -59,8 +59,9 @@ def getNormalizedTeamsPos(playerArray):
     team2.setValues(playerOfteam2)
     return team1.positionArray, team2.positionArray
 
-
+# unused
 def getNormalizedTeams(playerArray):
+    print("This method is unused. You shouldn't get here.")
     team1 = filter(lambda player: player.teamID == 1, playerArray)
     team2 = filter(lambda player: player.teamID == 2, playerArray)
     # sort in order of importance, will cut the last ones in the list

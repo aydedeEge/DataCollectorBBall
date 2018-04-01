@@ -20,9 +20,20 @@ class Team:
             else:
                 print("player with nothing")
             #might need to sort them TODO
-        playersC = self.positionDict['0'][0:TEAM_REQUIREMENTS[str(CENTER)]]
-        playersF = self.positionDict['1'][0:TEAM_REQUIREMENTS[str(FORWARD)]]
-        playersG = self.positionDict['2'][0:TEAM_REQUIREMENTS[str(GUARD)]]
+        wantedC = TEAM_REQUIREMENTS[str(CENTER)]
+        wantedF = TEAM_REQUIREMENTS[str(FORWARD)]
+        wantedG = TEAM_REQUIREMENTS[str(GUARD)]
+        haveF = len(self.positionDict['1'])
+        haveG = len(self.positionDict['2'])
+
+        playersC = self.positionDict['0'][0:wantedC]
+        #the idea here is to substitute a guard with a forward and vice versa if we're short one.
+        if(haveF == wantedF - 1 and haveG > wantedG):
+            wantedG +=1
+        elif(haveG == wantedG - 1 and haveF > wantedF):
+            wantedF +=1
+        playersF = self.positionDict['1'][0:wantedF]
+        playersG = self.positionDict['2'][0:wantedG]
 
         allPlayers = playersC + playersF + playersG
         self.positionArray = allPlayers
