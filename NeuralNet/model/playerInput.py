@@ -2,6 +2,7 @@ class PlayerInput:
     def setValues(self,
                   cScore,
                   sScore,
+                  stdev_10,
                   gScore,
                   pID,
                   tID,
@@ -11,6 +12,7 @@ class PlayerInput:
                   eScore=None):
         self.careerScore = cScore
         self.shortScore = sScore
+        self.stdev_10 = stdev_10
         self.gameScore = gScore
         self.expectedScore = eScore
         self.playerID = pID
@@ -38,6 +40,7 @@ class PlayerInput:
     def __init__(self):
         self.careerScore = 0
         self.shortScore = 0
+        self.stdev_10 = 0
         self.gameScore = 0
         self.playerID = 0
         self.teamID = 0

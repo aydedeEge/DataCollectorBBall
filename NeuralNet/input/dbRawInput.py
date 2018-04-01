@@ -161,11 +161,12 @@ def getPlayerScoresForMatches(match_ids):
             injury = row["injury"]
             if(injury != "O"):
                 short_score = row["short_score_5"]
+                stdev_10 = row["stdev_10"]
                 salary = row["salary"]
                 dailyPosition = row["daily_pos"]
                 position = player_career_pos[str(getSeasonYearFromDate(row["mdate"])) + str(row["pid"])]
                 player = PlayerInput()
-                player.setValues(cScore=career_score, sScore = short_score, gScore=game_score,
+                player.setValues(cScore=career_score, sScore = short_score, stdev_10 = stdev_10, gScore=game_score,
                                     pID=str(row["pid"]), tID=team_id, position=position, sal=salary, dpos = dailyPosition)
                 if(match_id not in player_inputs):
                     player_inputs[match_id] = []

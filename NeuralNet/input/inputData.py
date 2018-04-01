@@ -23,6 +23,7 @@ def getInputArrayFromPlayers(playersArray):
     for player in playersArray:
         inputArray.append(player.careerScore)
         inputArray.append(player.shortScore)
+        inputArray.append(player.stdev_10)
         outputArray.append(player.gameScore)
     return inputArray, outputArray
 
