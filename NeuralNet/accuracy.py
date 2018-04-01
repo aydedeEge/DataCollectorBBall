@@ -52,7 +52,7 @@ def predict_lineup(playerList):
 
     selected_lineup = [playerList[i] for i in index_players_predicted]
     expected_score = sum([player.expectedScore for player in selected_lineup])
-    return expected_score, selected_lineup
+    return [expected_score], [selected_lineup]
 
 def get_lineups(playerList, numberOfLineups):
     lineupsArray = []

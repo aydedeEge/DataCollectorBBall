@@ -13,6 +13,7 @@ from keras.models import model_from_json
 from keras import backend as K
 
 EPOCH_COUNT = 5000
+VERBOSE = 1  # set it to 1 to see output, 0 to not see it
 
 
 class NeuralNet:
@@ -24,7 +25,8 @@ class NeuralNet:
                  optimizer=None,
                  loss=None,
                  batch_size=None,
-                 dropout_rate=None):
+                 dropout_rate=None,
+                 epoch=EPOCH_COUNT):
         if model is None:
             self.model = Sequential()
             self.input_size = input_size
@@ -34,8 +36,19 @@ class NeuralNet:
             self.loss = loss
             self.batch_size = batch_size
             self.dropout_rate = dropout_rate
+            self.epoch = epoch
             self.build()
+        elif optimizer is not None:
+            print("use previous weights")
+            self.model = model
+            self.optimizer = optimizer
+            self.loss = loss
+            self.batch_size = batch_size
+            self.epoch = epoch
+            self.model.compile(
+                loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
         else:
+            print("use previous weights")
             self.model = model
 
     def predict(self, X):
@@ -56,7 +69,8 @@ class NeuralNet:
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
             loss=self.loss, optimizer=self.optimizer, metrics=['mae'])
-        #self.model.summary()
+        if VERBOSE == 1:
+            self.model.summary()
 
     def score(self, X, Y):
         score = []
@@ -68,14 +82,20 @@ class NeuralNet:
         y_predicted = self.predict(X_day)
         return compute_accuracy(y_predicted, Y_day, returnLineup)
 
-    def getPrediction(self, X_day, players):
+    def getPrediction(self, X_day, players, num_lineups):
         y_predicted = self.predict(X_day)
         player_expectedScore = [
             item for items in y_predicted for item in items
         ]
         for i in range(len(players)):
             players[i].expectedScore = player_expectedScore[i]
-        return get_lineups(players,3)
+        expected_score, selected_lineup = predict_lineup(players)
+        if (num_lineups > 0):
+            expected_scores_noisy, selected_lineups_noisy = get_lineups(
+                players, num_lineups + 1)
+            expected_score = expected_score + expected_scores_noisy
+            selected_lineup = selected_lineup + selected_lineups_noisy
+        return expected_score, selected_lineup
 
     def save(self, filename):
         model_json = self.model.to_json()
@@ -92,12 +112,12 @@ class NeuralNet:
         loaded_model = model_from_json(loaded_model_json)
         # load weights into new model
         loaded_model.load_weights(filename + "model.h5")
-        return NeuralNet(loaded_model)
+        return loaded_model
 
     def fit(self, train_X, train_y):
         self.model.fit(
             train_X,
             train_y,
-            epochs=EPOCH_COUNT,
+            epochs=self.epoch,
             batch_size=self.batch_size,
-            verbose=0)
+            verbose=VERBOSE)
