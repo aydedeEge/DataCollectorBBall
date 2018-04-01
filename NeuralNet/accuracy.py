@@ -2,6 +2,7 @@ from System3.ilp import ilp
 from model.team import PLAYER_POSITIONS
 import math
 import numpy as np
+import math
 
 GLOBAL_BUDGET = 60000
 DEFAULT_COST = 4000
@@ -101,4 +102,6 @@ def get_lineups(playerList, numberOfLineups):
         lineupsArray.append(lineup)
         expectedScoresArray.append(expected_score)
 
+
     return expectedScoresArray, lineupsArray
+
