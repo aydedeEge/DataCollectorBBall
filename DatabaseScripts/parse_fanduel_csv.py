@@ -140,6 +140,8 @@ def fix_team(team):
             return "NOP"
         elif(team == "SA"):
             return "SAS"
+        elif(team == "GS"):
+            return "GSW"
         else:
             print("ERROR: Team unknown (" + team + ")")
 
