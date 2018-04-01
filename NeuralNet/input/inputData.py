@@ -12,9 +12,8 @@ from pathlib import Path
 
 MAX_PLAYER_PER_TEAM = 7
 MAX_PLAYER_PER_POS_TEAM = 5
-# Highest score found in db is 48.something
-NORMALIZING_SCORE_UPPER_BOUND = 50.0
-
+#Career score, short score, standard deviation
+NORMALIZE_UPPER_BOUNDS = (50.0, 65.0, 25.0)
 # transform an array of players
 # create a score (float) array, usable by a neural net, from an array of players
 def getInputArrayFromPlayers(playersArray):
@@ -36,8 +35,10 @@ def getAverageAndDistributionVar(inputArray):
 
 def normalizeInputArray(inputArray):
     normalizedInput = []
+    count = 0
     for score in inputArray:
-        normalizedInput.append(score / NORMALIZING_SCORE_UPPER_BOUND)
+        normalizedInput.append(score / NORMALIZE_UPPER_BOUNDS[count % len(NORMALIZE_UPPER_BOUNDS)])
+        count +=1
     return normalizedInput
 
 
