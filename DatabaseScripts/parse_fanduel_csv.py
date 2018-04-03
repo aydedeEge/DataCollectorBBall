@@ -66,8 +66,11 @@ def insert_future_player_matches(season, match_date, match_ids, fd_data, update_
 
     or_conditional = ""
     for i in range(len(first_names)):
-        or_conditional += " (first_name = \"" + first_names[i] + "\" and last_name = \"" + fix_name(last_names[i]) + "\") OR"
-
+        #fixes the nene issue...
+        if(not isinstance(first_names[i], float)):
+            or_conditional += " (first_name = \"" + first_names[i] + "\" and last_name = \"" + fix_name(last_names[i]) + "\") OR"
+        else:
+            or_conditional += " (first_name = \"" + last_names[i] + "\") OR"
     command = "SELECT * from players where" + or_conditional[:-3] + ";"
     #print(command)
     cursor.execute(command)
@@ -149,8 +152,8 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    game_date = "2018-04-01"
-    competition_number = "24574"
+    game_date = "2018-04-03"
+    competition_number = "24627"
     season = "2017"
     filename = "DatabaseScripts/FanDuel/FanDuel-NBA-" + game_date + "-" + competition_number + "-players-list.csv"
     fd_data = pd.read_csv(filename)
