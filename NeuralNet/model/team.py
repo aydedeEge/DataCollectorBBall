@@ -34,15 +34,17 @@ class Team:
             #the idea here is to substitute a guard with a forward and vice versa if we're short one.
             if(haveF < wantedF or haveG < wantedG):
                 #We don't like to go into the centers
-                if(not (haveF + haveG < wantedF + wantedG)):
+                if(haveF + haveG < wantedF + wantedG):
+                    wantedC += wantedF - haveF + wantedG - haveG
+                    wantedG = haveG
+                    wantedF = haveF
+                else:
                     #otherwise add the difference
-                    if(haveF < haveG):
+                    if(haveF < wantedF):
                         wantedG += wantedF - haveF
                     else:
                         wantedF += wantedG - haveG
-                else:
-                    wantedC += wantedF - haveF + wantedG - haveG
-            elif(haveC < wantedC):
+            if(haveC < wantedC):
                 if(haveF > wantedF):
                     wantedF +=1
                 elif(haveG > wantedG):
