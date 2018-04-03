@@ -9,6 +9,8 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
+from keras.layers import Activation
+from keras.layers.advanced_activations import LeakyReLU
 from keras.models import model_from_json
 from keras import backend as K
 
@@ -59,11 +61,14 @@ class NeuralNet:
         self.model.add(
             Dense(
                 units=first_layer_size,
-                activation='sigmoid',
                 input_dim=self.input_size))
+        self.model.add(LeakyReLU(alpha=0.3))
+        self.model.add(Activation('sigmoid'))
         self.model.add(Dropout(self.dropout_rate))
         for layer_size in self.hidden_layer_sizes[1:]:
-            self.model.add(Dense(units=layer_size, activation='sigmoid'))
+            self.model.add(Dense(units=layer_size))
+            self.model.add(LeakyReLU(alpha=0.3))
+            self.model.add(Activation('sigmoid'))
             self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
