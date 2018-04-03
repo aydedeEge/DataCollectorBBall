@@ -15,11 +15,11 @@ from keras.wrappers.scikit_learn import KerasRegressor
 
 RANDOM_SEED = 588
 TEST_SIZE_PERCENT = 0.3
-DEFAUL_HIDDEN_LAYERS = [64, 128]
-DEFAULT_LEARNING_RATE = 0.01
+DEFAUL_HIDDEN_LAYERS = [64, 64,64]
+DEFAULT_LEARNING_RATE = 0.005
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
 DEFAULT_BATCH_SIZE = 5000
-DEFAULT_DROPOUT = 0.25
+DEFAULT_DROPOUT = 0
 MIN_GAMES_PER_DAY = 8
 FILENAME_USED_NN = "trainedModels/nn_model_hn" + str(
     DEFAUL_HIDDEN_LAYERS[0]) + "_lr" + str(DEFAULT_LEARNING_RATE) + ".json"
@@ -63,13 +63,16 @@ def get_data():
         random_state=RANDOM_SEED)
 
 
-def train(train_X, train_y, args):
+def train(train_X, train_y, test_x,test_y,args):
     epoch = int(args[2])
     filename = FILENAME_USED_NN
     if len(args) == 4:
         filename = "trainedModels/" + args[3]
     train_x_flat = np.array([item for items in train_X for item in items])
     train_y_flat = np.array([item for items in train_y for item in items])
+    test_x_flat = np.array([item for items in test_x for item in items])
+    test_y_flat = np.array([item for items in test_y for item in items])
+    print("Testing on : " + str(len(test_y_flat)) + " games")
     print("Training on :" + str(len(train_y_flat)) + "games")
     model = make_model(
         hidden_layer_sizes=DEFAUL_HIDDEN_LAYERS,
@@ -78,12 +81,12 @@ def train(train_X, train_y, args):
         dropout_rate=DEFAULT_DROPOUT,
         epoch=epoch)
 
-    model.fit(train_x_flat, train_y_flat)
+    model.fit(train_x_flat, train_y_flat,test_x_flat,test_y_flat)
     # save the model
     model.save(filename)
 
 
-def continue_training(train_X, train_y, args):
+def continue_training(train_X, train_y, test_X,test_y,args):
     print("NOT SURE THIS IS WORKING")
     epoch = int(args[2])
     filename = FILENAME_USED_NN
@@ -91,6 +94,8 @@ def continue_training(train_X, train_y, args):
         filename = "trainedModels/" + args[3]
     train_x_flat = np.array([item for items in train_X for item in items])
     train_y_flat = np.array([item for items in train_y for item in items])
+    test_x_flat = np.array([item for items in test_X for item in items])
+    test_y_flat = np.array([item for items in test_y for item in items])
     model_loaded = NeuralNet.load(filename)
     
     model = make_model(
@@ -99,8 +104,8 @@ def continue_training(train_X, train_y, args):
         batch_size_2=DEFAULT_BATCH_SIZE,
         epoch=epoch)
     print("Continue training on :" + str(len(train_y_flat)) + "games")
-    model.fit(train_x_flat, train_y_flat)
-
+    model.fit(train_x_flat, train_y_flat,test_x_flat,test_y_flat)
+    model.save(filename)
 
 def test(train_X, test_X, train_y, test_y, args):
     filename = FILENAME_USED_NN
@@ -243,13 +248,12 @@ def cross_val(train_X, train_y, args):
 
 def main():
     train_X, test_X, train_y, test_y = get_data()
-    INPUT_SIZE = train_X[0][1] #not working?
-    OUTPUT_SIZE = train_y[0][1]
+    print(train_X[0])
     accepted_args = {
         "train":
-        lambda args: train(train_X, train_y, args),
+        lambda args: train(train_X, train_y, test_X, test_y, args),
         "continue_training":
-        lambda args: continue_training(train_X, train_y, args),
+        lambda args: continue_training(train_X, train_y, test_X, test_y,args),
         "cross_val":
         lambda args: cross_val(train_X, train_y, args),
         "test":

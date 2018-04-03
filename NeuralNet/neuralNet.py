@@ -61,10 +61,10 @@ class NeuralNet:
                 units=first_layer_size,
                 activation='sigmoid',
                 input_dim=self.input_size))
-        self.model.add(Dropout(self.dropout_rate))
+#        self.model.add(Dropout(self.dropout_rate))
         for layer_size in self.hidden_layer_sizes[1:]:
             self.model.add(Dense(units=layer_size, activation='sigmoid'))
-            self.model.add(Dropout(self.dropout_rate))
+ #           self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(
@@ -114,10 +114,11 @@ class NeuralNet:
         loaded_model.load_weights(filename + "model.h5")
         return loaded_model
 
-    def fit(self, train_X, train_y):
+    def fit(self, train_X, train_y,test_x,test_y):
         self.model.fit(
             train_X,
             train_y,
+	    validation_data = (test_x,test_y),
             epochs=self.epoch,
             batch_size=self.batch_size,
             verbose=VERBOSE)
