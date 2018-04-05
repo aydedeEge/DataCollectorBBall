@@ -8,8 +8,7 @@ Things I want:
 	- Talk about improvements to be made
 	- Have good font and figure sizes (figure this out)
 	- Meet all criteria fully
-
-Ask flo about any missing ML Stuff...
+	- Ask flo about any missing ML Stuff...
 
 
 
@@ -37,6 +36,8 @@ The inputs to our system would be NBA statistics. We scraped the following from 
 [[cool diagram]]
 
 This is only XZ% of the total data we could scrape!
+
+[Tools used]
 
 We decided to build a neural network (NN) to do it, and here's why. An NN is useful under the following criteria, which our design problem met:
 1. There has to be a distinguishable pattern between the inputs (player stats, games happening) and the outputs (lineups) of the system. 
