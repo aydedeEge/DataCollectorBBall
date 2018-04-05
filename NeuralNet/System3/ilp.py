@@ -97,8 +97,19 @@ def main():
     playerCosts = [70, 65, 90, 85, 90, 55, 70, 20, 100, 90]
     playerPositions = [1, 2, 3, 4, 5, 1, 2, 3, 4, 5]
     globalBudget = 1000
+    playerStdevs = [1, 10, 12, 2, 4, 12, 6, 7, 3, 7]
+    stdevBudget = 35
 
-    ilp(expectedScores, playerCosts, playerPositions, globalBudget)
+
+    # ilp(expectedScores, playerCosts, playerPositions, globalBudget, playerStdevs, stdevBudget):
+    ilp(
+        expectedScores=expectedScores, 
+        playerCosts=playerCosts, 
+        playerPositions=playerPositions, 
+        globalBudget=globalBudget,
+        playerStdevs=playerStdevs,
+        stdevBudget=stdevBudget
+    )
 
 
 if __name__ == '__main__':
