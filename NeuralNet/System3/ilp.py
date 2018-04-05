@@ -66,7 +66,7 @@ def ilp(expectedScores, playerCosts, playerPositions, globalBudget, playerStdevs
     # Constraint 7:
     my_lp_problem += playerStdevs[0] * decisionVariables["x" + str(0)] <= stdevBudget, "Constraint_7"
     for i in range(1, numberOfPlayers):
-        my_lp_problem.constraints["Constraint_7"] += pplayerStdevs[i] * decisionVariables["x" + str(i)]
+        my_lp_problem.constraints["Constraint_7"] += playerStdevs[i] * decisionVariables["x" + str(i)]
 
     # Print out objective function, constraints, and all variables with their corresponding ranges.
     #print(my_lp_problem)
