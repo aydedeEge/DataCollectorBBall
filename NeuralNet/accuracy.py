@@ -6,6 +6,7 @@ import math
 
 GLOBAL_BUDGET = 60000
 DEFAULT_COST = 4000
+STDEV_BUDGET = 35
 
 def compute_accuracy(games_predicted, games_actual, returnLineup):
     predictedScores = [item for items in games_predicted for item in items]
@@ -46,9 +47,10 @@ def predict_lineup(playerList):
         else:
             print("empty daily position for lineup")
     playerCosts = [player.salary for player in playerList]
+    playerstdev = [player.stdev_10 for player in playerList]
 
-    index_players_predicted = ilp(predictedScores, playerCosts, position_array,
-                                  GLOBAL_BUDGET)
+    index_players_predicted = ilp(expectedScores=predictedScores, playerCosts=playerCosts, playerPositions=position_array,
+                                  globalBudget=GLOBAL_BUDGET, playerStdevs=playerstdev, stdevBudget=STDEV_BUDGET)
 
     selected_lineup = [playerList[i] for i in index_players_predicted]
     expected_score = sum([player.expectedScore for player in selected_lineup])

@@ -10,7 +10,7 @@ def getIndecesOfPlayersAtPosition(positionOfInterest, playerPositions):
     return indexArray
 
 
-def ilp(expectedScores, playerCosts, playerPositions, globalBudget):
+def ilp(expectedScores, playerCosts, playerPositions, globalBudget, playerStdevs, stdevBudget):
     # Set up problem as a Linear Programming Maximisation problem.
     my_lp_problem = pulp.LpProblem("My LP Problem", pulp.LpMaximize)
     numberOfPlayers = len(expectedScores)
@@ -59,11 +59,14 @@ def ilp(expectedScores, playerCosts, playerPositions, globalBudget):
                     i)] += decisionVariables["x" + str(index)]
 
     # Constraint 6:
-    my_lp_problem += playerCosts[0] * decisionVariables["x" + str(
-        0)] <= globalBudget, "Constraint_6"
+    my_lp_problem += playerCosts[0] * decisionVariables["x" + str(0)] <= globalBudget, "Constraint_6"
     for i in range(1, numberOfPlayers):
-        my_lp_problem.constraints["Constraint_6"] += playerCosts[
-            i] * decisionVariables["x" + str(i)]
+        my_lp_problem.constraints["Constraint_6"] += playerCosts[i] * decisionVariables["x" + str(i)]
+
+    # Constraint 7:
+    my_lp_problem += playerStdevs[0] * decisionVariables["x" + str(0)] <= stdevBudget, "Constraint_7"
+    for i in range(1, numberOfPlayers):
+        my_lp_problem.constraints["Constraint_7"] += pplayerStdevs[i] * decisionVariables["x" + str(i)]
 
     # Print out objective function, constraints, and all variables with their corresponding ranges.
     #print(my_lp_problem)
