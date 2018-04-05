@@ -1,0 +1,133 @@
+Things I want:
+	- screenshots from fanduel
+	- Really explain what your project is, in all aspects...  
+	- Talk about WHY you think it could work	
+	- explanation of a neural network
+	- dive into three different parts of architectures
+	- talk about improvements you've made
+	- Talk about improvements to be made
+	- Have good font and figure sizes (figure this out)
+	- Meet all criteria fully
+
+Ask flo about any missing ML Stuff...
+
+
+
+The goal of this project was to make a machine learning system that could compete profitably in daily fantasy NBA competitions.
+
+Daily: happen every day that there are matches, and never last more than a day
+Fantasy: uses an artificial points system (e.g. 1.2 points for a rebound)
+NBA: based on games that are actually happening in the NBA
+Competitions: Actively competing against other real people (or machines?)
+
+These competitions work as follows. You have to select 9 players of certain basketball positions (center, forward, etc.) who are playing tonight, across any teams. Each player has a salary, and you have a budget. The goal of the competition is to maximize the amount of fantasy points your lineup gets.
+
+Below is a screenshot of a competition page, with the parts mentioned:
+
+<<screenshot>>
+
+
+[[Our goal was to build a machine learning system that could predict these lineups and maybe even win some money.]]
+
+The inputs to our system would be NBA statistics. We scraped the following from the NBA website:
+	- XXX matches
+	- XXX players
+	- XXX season stats for players
+	- XXX match stats for players
+[[cool diagram]]
+
+This is only XZ% of the total data we could scrape!
+
+We decided to build a neural network (NN) to do it, and here's why. An NN is useful under the following criteria, which our design problem met:
+1. There has to be a distinguishable pattern between the inputs (player stats, games happening) and the outputs (lineups) of the system. 
+2. The relationship cannot be trivially represented mathematically, otherwise no reason to use machine learning
+3. There must be enough data to properly "train" the network
+
+Now let's talk about what a neural network is. Below is an image of a simple NN. It has one hidden layer, X outputs, and Y inputs. The inputs might be the IMDB rating of a movie and the output might be a predicted rating specific to a person. There are two main "stages" for a Neural network.
+
+1. Feed forward, or how outputs are computed from inputs
+	When feeding an input through the network, every edge represents a weight to multiply the input by, and every node represents an "activation function" to apply to the incoming value. Repeat the process and the input is what's left at the end.
+2. Back propagation, or how the system learns
+	Once an input is fed through the network, the error or cost of the input can be calculated. <<equation>> The goal then is to change the weights on the edges to reduce this error! We do this by "backpropagating" the error through the network. Then, the weights are changed, and the network will perform better on the input (know the movie better). The amount that the weights are changed is called the learning rate, and this is an important hyperparameter of the system.
+
+There are more complex additions and changes that can be made for a NN, but they basically all reduce to what is above.
+
+Choosing inputs and outputs (system architecture):
+	- Our first idea was to have 3*n inputs, where n is the number of active players in the NBA. One would be for their score, the second would be their salary, and the third would be whether or not they were playing tonight. We would then have one output for each player, with a "1" meaning he should be in our lineup, and a "0" meaning he should not.
+
+<<image of that net>>
+
+This had a bunch of problems:
+	1. It would be tough for the network to learn what the inputs mean
+	2. We don't have that much data for active players
+	3. The network would not be reliably solving the salary constraint!
+	4. The network will find correlations between players in different games
+
+Instead, we spent time on architecture, and came up with a much better solution:
+
+<<image of better solution>>
+
+The first system is unrelated to the neural network and instead computes the players' "scores" with a simple function.
+
+The neural network now only has XX inputs, and XX outputs! That is because it is a general NN for predicting how players will do in a match, based on their last year's career score, short term score, and their variance. It is also not at all tied to specific players. We may be losing some information here, but in turn we get to train this on all NBA data (past decades). As well, now that we do matches individually, they are independent, and there is no correlation. We have solved problems 1-4!
+
+The third system then takes in all of the scores, and solves the salary constraint problem!
+
+System 1: Simple algorithm that roughly represents how good the players are at scoring fantasy points
+<<show equation>>
+
+System 2: Neural network that figures out how well they will do tonight
+<<give an example with faces>>
+
+System 3: Linear Programming (LP) constraint problem, similar to the backpack problem
+<<Show inputs + outputs>>
+
+We were able to get multiple lineups by adding random Gaussian noise to the outputs of the NN before feeding them to the LP problem.
+
+Once we started to get lineups, we needed a success metric. We ideally wanted our success metric to be the profitability of the system, but because we have no competition history, we couldn't do that. Instead, we decided that we would use a metric of how well we do relative to the best lineup that day. 
+<<equation>.
+
+Looking at competitions, we saw that when this metric hits about 80%, the system begins to be profitable.
+<< show example>>
+
+After definining our success metric, we decided it was time to perform cross-validation. Cross-validation is a method of selecting the best hyperparameters of a machine learning system. It is a way to choose the number of hidden nodes, hidden layers, learning rate, and any other aspects of the system that will maximize the accuracy of the system. This is a computationally heavy process, and so we rented a GPU from PaperSpace.
+
+Once cross-validation was complete, we started joining competitions. We ran into some issues:
+	- Non-updated database
+	- Players who weren't likely to play that night
+	- The system throwing out games without certain positions
+	- Using the wrong data for a player
+
+We solved these issues and kept going. To our surprise, the system was successful. Below are screenshots of each of the competitions we played in where all of our players played.
+
+<<screenshots>>
+One can see that, even in the competitions we lose, we do not perform that poorly. 
+
+There are also some really cool takeaways:
+	- Sometimes predictions are really neat
+		- <<covington two days in a row>>
+	- Sometimes we guess people who other people don't guess (our NN sees something!)
+		- <<high scoring barely picked>>
+
+But who are we up against? Pros!
+<<screenshot>>
+A blue star means they have been in over 1000 competitions and have won money
+A white star means they have been in at least 500
+
+By empirically looking, we found that ~85% of people are experienced in these competitions! There are beginner competitions, but that is not scalable!
+
+Our neural network was able to break even even at a level dominated by competitive players. 
+
+We did not think our network was going to be nearly as successful, and so we have spent more time testing than improving. We have so many areas to improve, and those are coming:
+
+Ways to improve:
+Figure out noise better
+Add more valuable features
+Define a better score function
+Perform more cross-validation
+Do Boosting/Bagging
+Standard deviation into LP
+More precise player positions
+More data (or less data)
+Bagging, more data, better data, more cross validation
+RNN with 3 past games
