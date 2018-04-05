@@ -64,12 +64,12 @@ class NeuralNet:
                 input_dim=self.input_size))
         self.model.add(LeakyReLU(alpha=0.3))
         self.model.add(Activation('sigmoid'))
-        self.model.add(Dropout(self.dropout_rate))
+#        self.model.add(Dropout(self.dropout_rate))
         for layer_size in self.hidden_layer_sizes[1:]:
             self.model.add(Dense(units=layer_size))
             self.model.add(LeakyReLU(alpha=0.3))
             self.model.add(Activation('sigmoid'))
-            self.model.add(Dropout(self.dropout_rate))
+ #           self.model.add(Dropout(self.dropout_rate))
 
         self.model.add(Dense(units=self.output_size))
         self.model.compile(

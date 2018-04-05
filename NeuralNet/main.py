@@ -13,10 +13,10 @@ import sys
 from itertools import permutations
 from keras.wrappers.scikit_learn import KerasRegressor
 
-RANDOM_SEED = 588
+RANDOM_SEED = 88
 TEST_SIZE_PERCENT = 0.3
-DEFAUL_HIDDEN_LAYERS = [64, 64,64]
-DEFAULT_LEARNING_RATE = 0.005
+DEFAUL_HIDDEN_LAYERS = [128, 128,128,128]
+DEFAULT_LEARNING_RATE = 0.01
 DEFAULT_OPTIMIZER = lambda x: keras.optimizers.Adam(lr=x)
 DEFAULT_BATCH_SIZE = 5000
 DEFAULT_DROPOUT = 0
