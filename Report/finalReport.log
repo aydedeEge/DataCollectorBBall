@@ -1,14 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.11.27)  1 DEC 2017 10:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.3.22)  5 APR 2018 04:10
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**finalReport.tex
-(./finalReport.tex
-LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 5 language(s) loaded.
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+**./finalReport.tex
+(finalReport.tex
+LaTeX2e <2017-04-15>
+Babel <3.18> and hyphenation patterns for 75 language(s) loaded.
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\size11.clo"
 File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -23,20 +21,20 @@ File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\inputenc.sty"
 Package: inputenc 2015/03/17 v1.2c Input encoding file
 \inpenc@prehook=\toks14
 \inpenc@posthook=\toks15
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\utf8.def"
+File: utf8.def 2017/01/28 v1.1t UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.dfu
-File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.dfu"
+File: t1enc.dfu 2017/01/28 v1.1t UTF-8 support for inputenc
    defining Unicode char U+00A0 (decimal 160)
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
@@ -248,11 +246,17 @@ File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
    defining Unicode char U+0219 (decimal 537)
    defining Unicode char U+021A (decimal 538)
    defining Unicode char U+021B (decimal 539)
-   defining Unicode char U+01E02 (decimal 7682)
-   defining Unicode char U+01E03 (decimal 7683)
+   defining Unicode char U+0232 (decimal 562)
+   defining Unicode char U+0233 (decimal 563)
+   defining Unicode char U+1E02 (decimal 7682)
+   defining Unicode char U+1E03 (decimal 7683)
    defining Unicode char U+200C (decimal 8204)
+   defining Unicode char U+2010 (decimal 8208)
+   defining Unicode char U+2011 (decimal 8209)
+   defining Unicode char U+2012 (decimal 8210)
    defining Unicode char U+2013 (decimal 8211)
    defining Unicode char U+2014 (decimal 8212)
+   defining Unicode char U+2015 (decimal 8213)
    defining Unicode char U+2018 (decimal 8216)
    defining Unicode char U+2019 (decimal 8217)
    defining Unicode char U+201A (decimal 8218)
@@ -264,12 +268,14 @@ File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
    defining Unicode char U+2039 (decimal 8249)
    defining Unicode char U+203A (decimal 8250)
    defining Unicode char U+2423 (decimal 9251)
+   defining Unicode char U+1E20 (decimal 7712)
+   defining Unicode char U+1E21 (decimal 7713)
 )
 Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/ot1enc.dfu
-File: ot1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\ot1enc.dfu"
+File: ot1enc.dfu 2017/01/28 v1.1t UTF-8 support for inputenc
    defining Unicode char U+00A0 (decimal 160)
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
@@ -309,8 +315,8 @@ File: ot1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
 Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/omsenc.dfu
-File: omsenc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\omsenc.dfu"
+File: omsenc.dfu 2017/01/28 v1.1t UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00B6 (decimal 182)
    defining Unicode char U+00B7 (decimal 183)
@@ -333,42 +339,42 @@ Now handling font encoding U ...
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
-Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fontenc.sty"
+Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.def
-File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
+File: t1enc.def 2017/04/05 v2.0i Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathpazo.sty
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\mathpazo.sty"
 Package: mathpazo 2005/04/12 PSNFSS-v9.2a Palatino w/ Pazo Math (D.Puga, WaS) 
 \symupright=\mathgroup4
-)
-(/usr/share/texlive/texmf-dist/tex/latex/subfiles/subfiles.sty
+) ("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\subfiles\subfiles.s
+ty"
 Package: subfiles 2012/05/23 Federico Garcia
-
-(/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
+ ("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\tools\verbatim.sty"
 Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks16
 \verbatim@line=\toks17
 \verbatim@in@stream=\read1
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\geometry\geometry.sty
+"
 Package: geometry 2010/09/12 v5.6 Page Geometry
-
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+ ("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks18
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is detected.
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
-Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\ifvtex.sty
+"
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
 Package ifvtex Info: VTeX not detected.
 )
-(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty
+"
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
 \Gm@cnth=\count87
@@ -383,55 +389,110 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layouthoffset=\dimen109
 \Gm@layoutvoffset=\dimen110
 \Gm@dimlist=\toks19
-)
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\geometry\geometry.cfg
+"))
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\graphicx.sty
+"
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\graphics.sty
+"
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+ ("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\trig.sty"
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
-File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-cfg\graphics
+.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 95.
+Package graphics Info: Driver file: pdftex.def on input line 99.
 
-(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
-)
-\Gread@gobject=\count90
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-def\pdftex.d
+ef"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen111
 \Gin@req@width=\dimen112
 )
-(./finalReport.aux)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\adjustbox\adjustbox.s
+ty"
+Package: adjustbox 2012/05/21 v1.0 Adjusting TeX boxes (trim, clip, ...)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\xkeyval\xkeyval.sty"
+Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\xkeyval\xkeyval.tex
+"
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\xkeyval\xkvutils.te
+x"
+\XKV@toks=\toks20
+\XKV@tempa@toks=\toks21
+)
+\XKV@depth=\count90
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\adjustbox\adjcalc.sty
+"
+Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back
+-ends (calc, etex, pgfmath)
+)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\adjustbox\trimclip.st
+y"
+Package: trimclip 2012/05/16 v1.0 Trim and clip general TeX material
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\collectbox\collectbox
+.sty"
+Package: collectbox 2012/05/17 v0.4b Collect macro arguments as boxes
+\collectedbox=\box26
+)
+\tc@llx=\dimen113
+\tc@lly=\dimen114
+\tc@urx=\dimen115
+\tc@ury=\dimen116
+Package trimclip Info: Using driver 'tc-pdftex.def'.
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\adjustbox\tc-pdftex.d
+ef"
+File: tc-pdftex.def 2012/05/13 v1.0 Clipping driver for pdftex
+))
+\adjbox@Width=\dimen117
+\adjbox@Height=\dimen118
+\adjbox@Depth=\dimen119
+\adjbox@Totalheight=\dimen120
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ifoddpage\ifoddpage.s
+ty"
+Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
+\c@checkoddpage=\count91
+)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ltxmisc\varwidth.sty"
+Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
+\@vwid@box=\box27
+\sift@deathcycles=\count92
+\@vwid@loff=\dimen121
+\@vwid@roff=\dimen122
+)) (finalReport.aux)
 \openout1 = `finalReport.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Try loading font information for T1+ppl on input line 12.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ppl.fd
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Try loading font information for T1+ppl on input line 14.
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\t1ppl.fd"
 File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 )
-\big@size=\dimen113
+\big@size=\dimen123
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -467,221 +528,313 @@ File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count91
-\scratchdimen=\dimen114
-\scratchbox=\box26
-\nofMPsegments=\count92
-\nofMParguments=\count93
-\everyMPshowfont=\toks20
-\MPscratchCnt=\count94
-\MPscratchDim=\dimen115
-\MPnumerator=\count95
-\makeMPintoPDFobject=\count96
-\everyMPtoPDFconversion=\toks21
-) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+\scratchcounter=\count93
+\scratchdimen=\dimen124
+\scratchbox=\box28
+\nofMPsegments=\count94
+\nofMParguments=\count95
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count96
+\MPscratchDim=\dimen125
+\MPnumerator=\count97
+\makeMPintoPDFobject=\count98
+\everyMPtoPDFconversion=\toks23
 )
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-bas
+e.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.
+sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\kvdefineke
+ys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.st
+y"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)))
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.st
+y"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.
+sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.s
+ty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.s
+ty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds
+.sty"
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO
 )
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
-
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
-))
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
-)))
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
 Package grfext Info: Graphics extension search list:
-(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
-
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 37.
-LaTeX Font Info:    Try loading font information for OT1+ppl on input line 54.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 39.
+LaTeX Font Info:    Try loading font information for OT1+ppl on input line 56.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ppl.fd
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\ot1ppl.fd"
 File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
 )
-LaTeX Font Info:    Try loading font information for OML+zplm on input line 54.
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 56.
 
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlzplm.fd
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omlzplm.fd"
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMS+zplm on input line 54.
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 56.
 
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omszplm.fd
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omszplm.fd"
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMX+zplm on input line 54.
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 56.
 
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxzplm.fd
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omxzplm.fd"
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Try loading font information for OT1+zplm on input line 54.
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 56.
 
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1zplm.fd
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\ot1zplm.fd"
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
-) [1
+)
+[1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+{C:/Users/me/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 80.
- (./abstractText.tex) [1]
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 82.
+
+(abstractText.tex) [1]
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 89.
- [2]
-(./finalReport.toc
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 91.
+ [2] (finalReport.toc
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 1.
 )
 \tf@toc=\write3
 \openout3 = `finalReport.toc'.
 
- [3] (./finalReport.lof)
+ [3] (finalReport.lof)
 \tf@lof=\write4
 \openout4 = `finalReport.lof'.
 
  [4
 
 ]
-(./sections/01-Abbreviations.tex) [5] (./sections/02-Introduction.tex) [6]
-(./sections/03-Background.tex
-LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 1.
-) [7] (./sections/04-Requirements.tex
-LaTeX Font Info:    Try loading font information for OMS+ppl on input line 12.
+(sections/01-Abbreviations.tex
+Underfull \hbox (badness 10000) in paragraph at lines 1--2
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsppl.fd
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+ppl on input line 3.
+("C:\Users\me\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omsppl.fd"
 File: omsppl.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ppl/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 12.
-
-<figures/fantasy_competition_header.png, id=31, 673.51625pt x 126.4725pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 3.
+)
+[5] (sections/02-Introduction.tex) (sections/03-Background.tex
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 1.
+ [6]
+<figures/neural_net.jpeg, id=28, 512.91624pt x 351.3125pt>
+File: figures/neural_net.jpeg Graphic file (type jpg)
+<use figures/neural_net.jpeg>
+Package pdftex.def Info: figures/neural_net.jpeg  used on input line 10.
+(pdftex.def)             Requested size: 234.8775pt x 160.87666pt.
+)
+(sections/04-Requirements.tex [7 <./figures/neural_net.jpeg>]
+<figures/fantasy_competition_header.png, id=32, 673.51625pt x 126.4725pt>
 File: figures/fantasy_competition_header.png Graphic file (type png)
-
 <use figures/fantasy_competition_header.png>
-Package pdftex.def Info: figures/fantasy_competition_header.png used on input l
-ine 22.
+Package pdftex.def Info: figures/fantasy_competition_header.png  used on input 
+line 20.
 (pdftex.def)             Requested size: 352.31625pt x 66.15782pt.
-
-<figures/fantasy_competition_payout.png, id=33, 929.4725pt x 512.91624pt>
+<figures/fantasy_competition_payout.png, id=34, 929.4725pt x 512.91624pt>
 File: figures/fantasy_competition_payout.png Graphic file (type png)
-
 <use figures/fantasy_competition_payout.png>
-Package pdftex.def Info: figures/fantasy_competition_payout.png used on input l
-ine 31.
+Package pdftex.def Info: figures/fantasy_competition_payout.png  used on input 
+line 29.
 (pdftex.def)             Requested size: 352.31625pt x 194.41713pt.
  [8 <./figures/fantasy_competition_header.png>]
 <figures/fantasy_competition_lineup.png, id=39, 954.56625pt x 606.265pt>
 File: figures/fantasy_competition_lineup.png Graphic file (type png)
-
 <use figures/fantasy_competition_lineup.png>
-Package pdftex.def Info: figures/fantasy_competition_lineup.png used on input l
-ine 43.
+Package pdftex.def Info: figures/fantasy_competition_lineup.png  used on input 
+line 41.
 (pdftex.def)             Requested size: 352.31625pt x 223.75949pt.
-
 <figures/fantasy_competition_scoring.png, id=40, 784.9325pt x 171.64125pt>
 File: figures/fantasy_competition_scoring.png Graphic file (type png)
-
 <use figures/fantasy_competition_scoring.png>
-Package pdftex.def Info: figures/fantasy_competition_scoring.png used on input 
-line 53.
-(pdftex.def)             Requested size: 234.8775pt x 51.35919pt.
- [9 <./figures/fantasy_competition_payout.png>] [10 <./figures/fantasy_competit
-ion_lineup.png> <./figures/fantasy_competition_scoring.png>]) [11] (./sections/
-05-Design and Results.tex
-
-LaTeX Warning: Reference `fig:first_iteration' on page 12 undefined on input li
-ne 15.
-
-<figures/first_iteration.jpg, id=53, 723.70375pt x 273.02pt>
+Package pdftex.def Info: figures/fantasy_competition_scoring.png  used on input
+ line 51.
+(pdftex.def)             Requested size: 352.31625pt x 77.04141pt.
+ [9 <./figures/fantasy_competition_payout.png>]
+[10 <./figures/fantasy_competition_lineup.png> <./figures/fantasy_competition_s
+coring.png>]) ("sections/05-Design and Results.tex" [11]
+<figures/first_iteration.jpg, id=53, 723.70375pt x 272.01625pt>
 File: figures/first_iteration.jpg Graphic file (type jpg)
-
 <use figures/first_iteration.jpg>
-Package pdftex.def Info: figures/first_iteration.jpg used on input line 18.
-(pdftex.def)             Requested size: 352.31625pt x 132.91444pt.
-
-
-LaTeX Warning: Reference `fig:second_iteration' on page 12 undefined on input l
-ine 32.
-
+Package pdftex.def Info: figures/first_iteration.jpg  used on input line 45.
+(pdftex.def)             Requested size: 352.31625pt x 132.4258pt.
 <figures/second_iteration.png, id=54, 738.76pt x 112.42pt>
 File: figures/second_iteration.png Graphic file (type png)
-
 <use figures/second_iteration.png>
-Package pdftex.def Info: figures/second_iteration.png used on input line 35.
+Package pdftex.def Info: figures/second_iteration.png  used on input line 58.
 (pdftex.def)             Requested size: 399.29463pt x 60.7625pt.
  [12 <./figures/first_iteration.jpg>]
-<figures/player_scores.png, id=59, 513.92pt x 273.02pt>
+<figures/player_scores.png, id=59, 513.92pt x 272.01625pt>
 File: figures/player_scores.png Graphic file (type png)
-
 <use figures/player_scores.png>
-Package pdftex.def Info: figures/player_scores.png used on input line 46.
-(pdftex.def)             Requested size: 234.8775pt x 124.77837pt.
- [13 <./figures/second_iteration.png> <./figures/player_scores.png>]) [14] (./s
-ections/06-Future Plans.tex [15]) [16] [17]
-(./sections/07-Impact on Society and Environment.tex) [18]
-(./sections/08-Teamwork Report.tex) [19] (./sections/09-Conclusion.tex)
-[20] (./sections/10-References.tex) [21] (./sections/11-Appendices.tex)
-[22] (./finalReport.aux)
+Package pdftex.def Info: figures/player_scores.png  used on input line 69.
+(pdftex.def)             Requested size: 234.8775pt x 124.31961pt.
+ [13 <./figures/second_iteration.png>]
+<figures/neural_network_full.png, id=64, 745.78625pt x 307.1475pt>
+File: figures/neural_network_full.png Graphic file (type png)
+<use figures/neural_network_full.png>
+Package pdftex.def Info: figures/neural_network_full.png  used on input line 79
+.
+(pdftex.def)             Requested size: 281.85587pt x 116.07986pt.
+<figures/neural_network_averages.png, id=65, 573.14125pt x 307.1475pt>
+File: figures/neural_network_averages.png Graphic file (type png)
+<use figures/neural_network_averages.png>
+Package pdftex.def Info: figures/neural_network_averages.png  used on input lin
+e 88.
+(pdftex.def)             Requested size: 187.89914pt x 100.69347pt.
+ [14 <./figures/player_scores.png> <./figures/neural_network_full.png>]
+<figures/neural_network_ordered.png, id=71, 745.78625pt x 307.1475pt>
+File: figures/neural_network_ordered.png Graphic file (type png)
+<use figures/neural_network_ordered.png>
+Package pdftex.def Info: figures/neural_network_ordered.png  used on input line
+ 99.
+(pdftex.def)             Requested size: 281.85587pt x 116.07986pt.
+ [15 <./figures/neural_network_averages.png> <./figures/neural_network_ordered.
+png>]
+<figures/arctanShape.png, id=77, 883.3pt x 574.145pt>
+File: figures/arctanShape.png Graphic file (type png)
+<use figures/arctanShape.png>
+Package pdftex.def Info: figures/arctanShape.png  used on input line 114.
+(pdftex.def)             Requested size: 281.85587pt x 183.2045pt.
+ [16 <./figures/arctanShape.png>]
+<figures/distributionAfterCombination.png, id=83, 602.25pt x 372.39125pt>
+File: figures/distributionAfterCombination.png Graphic file (type png)
+<use figures/distributionAfterCombination.png>
+Package pdftex.def Info: figures/distributionAfterCombination.png  used on inpu
+t line 135.
+(pdftex.def)             Requested size: 352.31625pt x 217.85652pt.
 
-LaTeX Warning: There were undefined references.
+Underfull \hbox (badness 10000) in paragraph at lines 141--142
+
+ []
+
+[17 <./figures/distributionAfterCombination.png (PNG copy)>]
+<figures/accuracyAveragedInputs.png, id=87, 650.43pt x 371.3875pt>
+File: figures/accuracyAveragedInputs.png Graphic file (type png)
+<use figures/accuracyAveragedInputs.png>
+Package pdftex.def Info: figures/accuracyAveragedInputs.png  used on input line
+ 147.
+(pdftex.def)             Requested size: 281.85587pt x 160.94022pt.
+<figures/accuracy5Scores.png, id=88, 647.41875pt x 372.39125pt>
+File: figures/accuracy5Scores.png Graphic file (type png)
+<use figures/accuracy5Scores.png>
+Package pdftex.def Info: figures/accuracy5Scores.png  used on input line 157.
+(pdftex.def)             Requested size: 281.85587pt x 162.11957pt.
+<figures/accuracy7Scores.png, id=89, 647.41875pt x 372.39125pt>
+File: figures/accuracy7Scores.png Graphic file (type png)
+<use figures/accuracy7Scores.png>
+Package pdftex.def Info: figures/accuracy7Scores.png  used on input line 164.
+(pdftex.def)             Requested size: 281.85587pt x 162.11957pt.
+ [18 <./figures/accuracyAveragedInputs.png (PNG copy)>]
+<figures/accuracyPositions.png, id=94, 649.42625pt x 372.39125pt>
+File: figures/accuracyPositions.png Graphic file (type png)
+<use figures/accuracyPositions.png>
+Package pdftex.def Info: figures/accuracyPositions.png  used on input line 173.
+
+(pdftex.def)             Requested size: 281.85587pt x 161.61954pt.
+<figures/accuracyData.png, id=95, 1294.8375pt x 372.39125pt>
+File: figures/accuracyData.png Graphic file (type png)
+<use figures/accuracyData.png>
+Package pdftex.def Info: figures/accuracyData.png  used on input line 182.
+(pdftex.def)             Requested size: 469.75502pt x 135.10059pt.
+
+Overfull \hbox (0.79999pt too wide) in paragraph at lines 182--183
+ [][] 
+ []
+
+[19 <./figures/accuracy5Scores.png (PNG copy)> <./figures/accuracy7Scores.png (
+PNG copy)>]) ("sections/06-Future Plans.tex" [20 <./figures/accuracyPositions.p
+ng (PNG copy)> <./figures/accuracyData.png>] [21])
+("sections/07-Impact on Society and Environment.tex" [22]) [23]
+("sections/08-Teamwork Report.tex" [24]) (sections/09-Conclusion.tex)
+(sections/10-References.tex [25]
+Underfull \hbox (badness 10000) in paragraph at lines 10--11
+[]\T1/ppl/m/n/10.95 Abu-Mostafa, Yaser. "Learn-ing From Data", Cal-tech, 2012. 
+[On-line]. Avail-able:
+ []
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+Underfull \hbox (badness 1622) in paragraph at lines 23--24
+[]\T1/ppl/m/n/10.95 Mayo, B. (2015). iPhone 6s Plus bat-tery rated 2750 mAH, 5%
+ smaller ca-pac-ity than
+ []
 
- ) 
+
+Underfull \hbox (badness 4279) in paragraph at lines 23--24
+\T1/ppl/m/n/10.95 iPhone 6 Plus. 9to5Mac. Avail-able: https://9to5mac.com/2015/
+09/21/phone-6s-plus-
+ []
+
+) [26] (finalReport.aux) ) 
 Here is how much of TeX's memory you used:
- 2815 strings out of 494910
- 38626 string characters out of 6179835
- 97574 words of memory out of 5000000
- 5989 multiletter control sequences out of 15000+600000
- 37342 words of font info for 63 fonts, out of 8000000 for 9000
- 36 hyphenation exceptions out of 8191
- 37i,6n,32p,1548b,274s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/p
-alatino/uplri8a.pfb>
-Output written on finalReport.pdf (23 pages, 326055 bytes).
+ 3581 strings out of 493305
+ 54490 string characters out of 3131107
+ 113740 words of memory out of 3000000
+ 6962 multiletter control sequences out of 15000+200000
+ 38512 words of font info for 67 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 41i,7n,37p,2206b,341s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/me/AppData/Local/Programs/MiKTeX 2.9/fonts/
+enc/dvips/base/8r.enc}<C:/Users/me/AppData/Local/Programs/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmr10.pfb><C:/Users/me/AppData/Local/Programs/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/me/AppData/Local/Programs/Mi
+KTeX 2.9/fonts/type1/urw/palatino/uplb8a.pfb><C:/Users/me/AppData/Local/Program
+s/MiKTeX 2.9/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/me/AppData/Local/Pro
+grams/MiKTeX 2.9/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on finalReport.pdf (27 pages, 585563 bytes).
 PDF statistics:
- 109 PDF objects out of 1000 (max. 8388607)
- 66 compressed objects within 1 object stream
+ 140 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 91 words of extra memory for PDF output out of 10000 (max. 10000000)
 

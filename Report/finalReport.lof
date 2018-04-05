@@ -1,7 +1,18 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Daily NBA fantasy competition header}}{8}
-\contentsline {figure}{\numberline {2}{\ignorespaces FanDuel daily fantasy competition payout}}{9}
-\contentsline {figure}{\numberline {3}{\ignorespaces Fantasy basketball competition lineup}}{10}
-\contentsline {figure}{\numberline {4}{\ignorespaces Fantasy basketball competition scoring}}{10}
-\contentsline {figure}{\numberline {5}{\ignorespaces First design iteration}}{12}
-\contentsline {figure}{\numberline {6}{\ignorespaces Redesigned System Architecture}}{13}
-\contentsline {figure}{\numberline {7}{\ignorespaces Player scores system}}{13}
+\contentsline {figure}{\numberline {1}{\ignorespaces Illustration of neural network \cite {neural_net} }}{7}
+\contentsline {figure}{\numberline {2}{\ignorespaces Daily NBA fantasy competition header}}{8}
+\contentsline {figure}{\numberline {3}{\ignorespaces FanDuel daily fantasy competition payout}}{9}
+\contentsline {figure}{\numberline {4}{\ignorespaces Fantasy basketball competition lineup}}{10}
+\contentsline {figure}{\numberline {5}{\ignorespaces Fantasy basketball competition scoring}}{10}
+\contentsline {figure}{\numberline {6}{\ignorespaces First design iteration}}{12}
+\contentsline {figure}{\numberline {7}{\ignorespaces Redesigned System Architecture}}{13}
+\contentsline {figure}{\numberline {8}{\ignorespaces Player scores system}}{14}
+\contentsline {figure}{\numberline {9}{\ignorespaces Desired complete matches neural network}}{14}
+\contentsline {figure}{\numberline {10}{\ignorespaces Matches neural network with averaged player scores}}{15}
+\contentsline {figure}{\numberline {11}{\ignorespaces Matches neural network with ordered player scores}}{15}
+\contentsline {figure}{\numberline {12}{\ignorespaces Shape of modified arctangent used for mapping point difference to output}}{16}
+\contentsline {figure}{\numberline {13}{\ignorespaces Team Compositions by Player Positions After Combinations}}{17}
+\contentsline {figure}{\numberline {14}{\ignorespaces Accuracy of network for averaged player scores inputs}}{18}
+\contentsline {figure}{\numberline {15}{\ignorespaces Accuracy of network for 5 player scores inputs per team}}{19}
+\contentsline {figure}{\numberline {16}{\ignorespaces Accuracy of network for 7 player scores inputs per team}}{19}
+\contentsline {figure}{\numberline {17}{\ignorespaces Accuracy of network for positionally ordered score inputs}}{20}
+\contentsline {figure}{\numberline {18}{\ignorespaces Accuracy of neural network vs. amount of data used}}{20}
