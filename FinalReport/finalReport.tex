@@ -1,0 +1,164 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+%TODO Decide between Palantino and Computer modern
+\usepackage{mathpazo} % Palatino font
+\usepackage{subfiles}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} %package to manage images
+\setlength{\emergencystretch}{10pt} % handles text going outside of boxes
+\setcounter{tocdepth}{2} %makes the table of contents only go 2 layers deep
+\usepackage[export]{adjustbox} % for frames on figures
+%TODO Decide if we want first paragraph tabbed after section
+%\usepackage{indentfirst}
+\begin{document}
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\begin{titlepage} % Suppresses displaying the page number on the title page and the subsequent page counts as page 1
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for horizontal lines, change thickness here
+	
+	\center % Centre everything on the page
+	
+	%------------------------------------------------
+	%	Headings
+	%------------------------------------------------
+	
+	\textsc{\LARGE McGill University}\\[1.5cm] % Main heading such as the name of your university/college
+	
+	\textsc{\Large Final Report - Group 23}\\[0.5cm] % Major heading such as course name
+	
+	\textsc{\large ECSE456 - Design Project 1}\\[0.5cm] % Minor heading such as course title
+	
+	%------------------------------------------------
+	%	Title
+	%------------------------------------------------
+	
+	\HRule\\[0.4cm]
+	
+	{\huge\bfseries Picking Winners for Fantasy Basketball with Machine Learning}\\[0.4cm] % Title of your document
+	
+	\HRule\\[1.5cm]
+	
+	%------------------------------------------------
+	%	Author(s)
+	%------------------------------------------------
+	
+	\begin{minipage}{0.5\textwidth}
+		\begin{flushleft}
+			\large
+			\textit{Group Members}\\
+			Ege \textsc{Aydede} - {\small 260576559}\\
+			Stephen \textsc{Poole} - {\small 260508650}\\
+			Florence \textsc{Regol} - {\small 260639261}\\
+			Asher \textsc{Wright} - {\small 260559393}
+		\end{flushleft}
+	\end{minipage}
+	~
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushright}
+			\large
+			\textit{Supervisor}\\
+			Prof. Ioannis \textsc{Psaromiligkos} 
+		\end{flushright}
+	\end{minipage}
+	
+
+	
+	%------------------------------------------------
+	%	Date
+	%------------------------------------------------
+	
+	\vfill\vfill\vfill % Position the date 3/4 down the remaining page
+	
+	{\large December 1, 2017} 
+		%----------------------------------------------------------------------------------------
+	
+	\vfill % Push the date up 1/4 of the remaining page
+\end{titlepage}
+%----------------------------------------------------------------------------------------
+%	ABSTRACT PAGE
+%----------------------------------------------------------------------------------------
+\begin{abstract}
+\subfile{"abstractText"}
+\end{abstract}
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\section*{Acknowledgements}
+\end{center}
+We would like to acknowledge and thank everyone who helped us with this project, including our supervisor, Professor Psaromiligkos, and two helpful talkers, Islay Wright and Ben Potter.
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+\tableofcontents
+\pagebreak
+%this adds the list of figures to the table of contents
+%TODO figure out if we want LoF in ToC
+\cleardoublepage
+\addcontentsline{toc}{section}{\listfigurename}
+\listoffigures
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS
+%----------------------------------------------------------------------------------------
+\section*{Abbreviations}
+
+\subfile{"sections/01-Abbreviations"}
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	Introduction
+%----------------------------------------------------------------------------------------
+\section{Introduction}
+\subfile{"sections/02-Introduction"}
+%----------------------------------------------------------------------------------------
+%	Background
+%----------------------------------------------------------------------------------------
+\section{Background}
+\subfile{"sections/03-Background"}
+%----------------------------------------------------------------------------------------
+%	Requirements
+%----------------------------------------------------------------------------------------
+\section{Requirements}
+\subfile{"sections/04-Requirements"}
+%----------------------------------------------------------------------------------------
+%	Design and Results
+%----------------------------------------------------------------------------------------
+\section{Design and Results}
+\subfile{"sections/05-Design and Results"}
+%----------------------------------------------------------------------------------------
+%	Future Plans
+%----------------------------------------------------------------------------------------
+\section{Future Plans}
+\subfile{"sections/06-Future Plans"}
+%----------------------------------------------------------------------------------------
+%	Impact on Society and Environment
+%----------------------------------------------------------------------------------------
+\section{Impact on Society and Environment}
+\subfile{"sections/07-Impact on Society and Environment"}
+%----------------------------------------------------------------------------------------
+%	Teamwork Report
+%----------------------------------------------------------------------------------------
+\section{Teamwork Report}
+\subfile{"sections/08-Teamwork Report"}
+%----------------------------------------------------------------------------------------
+%	Conclusion
+%----------------------------------------------------------------------------------------
+\section{Conclusion}
+\subfile{"sections/09-Conclusion"}
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	References
+%----------------------------------------------------------------------------------------
+\addcontentsline{toc}{section}{References}
+\subfile{"sections/10-References"}
+%----------------------------------------------------------------------------------------
+%	Appendices
+%----------------------------------------------------------------------------------------
+%\addcontentsline{toc}{section}{Appendix A}
+%\subfile{"sections/11-Appendices"}
+\end{document}
