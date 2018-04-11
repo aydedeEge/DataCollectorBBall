@@ -3,16 +3,15 @@
 % In this section you should describe the problem or system you are addressing in detail. Describe the project requirements and constraints.
 %-----------------------------------------------------------------
 \subsection{Design Problem}
-The problem we are trying to solve is to beat daily fantasy basketball competitions using machine learning. In order to fully understand this problem, it is important to detail daily, top-heavy, fantasy basketball competitions. 
+The problem we are trying to solve is to beat daily fantasy basketball competitions using machine learning with neural networks. In order to fully understand this problem, it is important to detail the specifics of these daily fantasy basketball competitions. 
 \subsubsection{Competition Choice}
-When most people think of fantasy sports, they think of creating a team at the beginning of the sport's season, and following this team through the season. The types of competitions and specific competition rules actually vary greatly, and rather than try to create a system that can handle all of these, we decided to target a specific subset. The competitions we will target must meet the following criteria:
+Although fantasy points are often thought of as long-term league competitions with drafting and brackets, these were not the types of competitions that the program targets. There are many different types of competitions with varying competition rules. Instead of trying to create a system that can handle all of these, we decided to target a specific subset, which contains these daily fantasy basketball competitions. Daily refers to competitions on a given day where real basketball games are being played and involve only the games being played that day (with no residual effects on future competitions). and fantasy refers to the fact that the competition uses an arbitrary points system. There were a few important criteria for the contests we targeted:
 \begin{itemize}
-\item Daily competitions
+\item Daily fantasy competitions
 \item Low entry fee (< \$10)
-\item High, top-heavy, prize pool
-\item Multiple entries allowed
+\item Allow for multiple entries
 \end{itemize}
-Daily competitions are different from the traditionally thought of fantasy season. They occur over a single day, where real basketball games are being played and involve only the games being played that day.
+
 A header for one of these daily competitions on FanDuel.com that meets our other criteria can be seen in figure \ref{fig:comp_header}. This header shows the low entry fee of \$7, the high prize pool of \$100,000, and that multiple entries are allowed. It also shows a list of the real games that are occurring that night.
 
 \begin{figure}[ht]
@@ -22,7 +21,7 @@ A header for one of these daily competitions on FanDuel.com that meets our other
     \label{fig:comp_header}
 \end{figure}
 
-The third criterion in the list specifies a "top-heavy" prize pool. This was one of the conditions of the Picking Winners paper, and is one of ours, as well. The meaning of top-heavy is that most of the prize-pool winnings go to the top contenders. This is different from a 50-50 contest, where the top 50\% of competitors are given double their entry fee. With top-heavy competitions, "contests give a disproportionately high fraction of the entry fees to the top scoring lineups." \cite{picking_winners}. The entry fees for these competitions are usually less than \$10, and the top placing competitors usually win thousands of dollars. We aim for these types of competitions because we aim to submit many different lineups, each with a high probability of success. The payout structure of a competition with a \$4.44 entry fee and \$400,000 prize-pool can be seen in Figure \ref{fig:comp_payout}. One can see that the difference between first and tenth place is 200 times, whereas the difference between tenth and one-hundredth is only 10 times.
+One of the criteria of the Picking Winners paper was that the prize pool be "top-heavy", meaning that most of the winnings are given to the top contenders. With top-heavy competitions, "contests give a disproportionately high fraction of the entry fees to the top scoring lineups." \cite{picking_winners}. The entry fees for these competitions are usually less than \$10, and the top placing competitors usually win thousands of dollars. The payout structure of a competition with a \$4.44 entry fee and \$400,000 prize-pool can be seen in Figure \ref{fig:comp_payout}. One can see that the difference between first and tenth place is 200 times, whereas the difference between tenth and one-hundredth is only 10 times. Hunter  et al.'s \cite{picking_winners} justification was that they felt they had a chance to come in the top 10 of each competition, and thus had a higher expected value with these top-heavy competitions. This was not one of our strict conditions, as we were not aiming for a top ten finish, but we did participate in these types of competitions. Another type of contest that we participated in was a 50-50 contest, where the top 50\% of competitors are given near double their entry fee. 
 
 \begin{figure}[ht]
     \centering
@@ -31,10 +30,10 @@ The third criterion in the list specifies a "top-heavy" prize pool. This was one
     \label{fig:comp_payout}
 \end{figure}
 
-The goal is for one or two of our entries to be on the top-heavy side of a competition (not every competition), offsetting the losses of the other entries. Another reason we feel that obtaining a high ranking entry is feasible is because we believe that our system, if successful, will return uncommon lineups that other methods (intuition or optimization) will not return.
+The idea behind a top-heavy competition is that, even if many of your lineups do not win, one or two may win a lot, offsetting the losses of the other entries. One reason we felt we may have a chance at a high ranking entry is that we believed that our system could return uncommon selections of players for our lineups that other methods (intuition or optimization) would not return. The reason that this could be beneficial is because, usually, less-picked players are cheaper, and thus a good but less-picked player would generate more points per dollar spent, allowing for a higher total score.
 
 \subsubsection{Entries}
-After selecting the competition to enter, the participant must create an entry, or lineup. This lineup must comprise players that are playing in the real games on that day. Additionally, the lineup must have a certain amount of specific basketball positions. A common requirement is that the lineup has to have two point guards (PG), two shooting guards (SG), two power forwards (PF), two small forwards (SF), and one center (C). Note that this may not be representative of a real basketball lineup. Figure \ref{fig:comp_lineup} shows the lineup selection interface for FanDuel.com. On the right side, one can see the required positions for a given competition, along with the lineup's budget, in the top right corner. This budget is the amount of money each contender is allowed to spend on their lineup. On the left side, one can see the price of each player, along with their position, and their average fantasy performance for the season, on which the price is dependent.
+After selecting the competition to enter, the participant must create an entry, or lineup. This lineup must comprise players that are playing in the real games on that day. Additionally, the lineup must have a certain amount of specific basketball positions. A common requirement is that the lineup must have two point guards (PG), two shooting guards (SG), two power forwards (PF), two small forwards (SF), and one center (C). Note that this may not be representative of a real basketball lineup. Figure \ref{fig:comp_lineup} shows the lineup selection interface for FanDuel.com. On the right side, one can see the required positions for a given competition, along with the lineup's budget, in the top right corner. This budget is the amount of money each contender is allowed to spend on their lineup. On the left side, one can see the price of each player, along with their position, and their average fantasy performance for the season, on which the price is dependent.
 
 \begin{figure}[ht]
     \centering
@@ -44,7 +43,7 @@ After selecting the competition to enter, the participant must create an entry, 
 \end{figure}
 
 \subsubsection{Scoring}
-The participant's goal is to have the lineup with the highest score. The score is based on how well their selected players perform in real life, and is based on the amount of free throws, three pointers, field goals, blocks, steals, assists, and turnovers each player gets. A sample scoring system for competitions on FanDuel can be seen in Figure \ref{fig:comp_scoring}.
+The participant's goal is to have the lineup with the highest score. The score is based on how well their selected players perform in real life, and is based on the amount of free throws, three pointers, field goals, blocks, steals, assists, and turnovers each player gets. The scoring system for competitions on FanDuel, which was our selected betting site, can be seen in Figure \ref{fig:comp_scoring}.
 
 \begin{figure}[ht]
     \centering
@@ -54,7 +53,7 @@ The participant's goal is to have the lineup with the highest score. The score i
 \end{figure}
 
 \subsection{Requirements and Constraints}
-In order to solve the described problem, we had to comply with everything that was mentioned above. However, there are other requirements and constraints which are given below.
+In order to solve the described problem, we had to comply with everything that was mentioned above. However, there are other requirements and constraints which are given below, taken from our original report.
 \subsubsection{Functional Requirements}
 %(e.g. what a product should do)
 \begin{itemize}
@@ -73,14 +72,14 @@ In order to solve the described problem, we had to comply with everything that w
 
 \subsubsection{Technical Requirements}
 \begin{itemize}
-\item The system should be able to train on the order of magnitude of minutes
+\item The system should be able to train to convergence on the order of minutes, so as to allow for cross-validation
 \item The system should be modular, allowing for quick and easy changes
-\item The system should allow NN parameters and other parameters (data amount) to be changed quickly for testing
+\item The system should allow the NN hyperparameters, such as the learning rate, amount of data used for training, and architecture, to be changed easily
 \end{itemize}
 
 \subsubsection{Constraints}
 \begin{itemize}
-\item The system must not require any expensive services
-\item The system must be trainable on our personal computers
+\item The system should not require any expensive services
+\item The system should be trainable on our personal computers (but not necessarily be able to be cross-validated on our computers)
 \item The system must be completed within eight months (two university terms)
 \end{itemize}
