@@ -152,8 +152,8 @@ if __name__ == '__main__':
     # Db config initialization
     conf = read_config()
     set_env_vars(conf)
-    game_date = "2018-04-04"
-    competition_number = "24667"
+    game_date = "2018-04-14"
+    competition_number = "24943"
     season = "2017"
     filename = "DatabaseScripts/FanDuel/FanDuel-NBA-" + game_date + "-" + competition_number + "-players-list.csv"
     fd_data = pd.read_csv(filename)
