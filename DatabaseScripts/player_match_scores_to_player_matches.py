@@ -32,7 +32,7 @@ def calculate(limit):
     # you must create a Cursor object. It will let
     # you execute all the queries you need
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT * FROM player_matches where score is null and match_id is not null LIMIT " + str(limit) + ";")
+    cursor.execute("SELECT * FROM player_matches where score is null and match_id is not null and minutes is not null LIMIT " + str(limit) + ";")
     result_set = cursor.fetchall()
     scores = {}
     when_conditional = ""
