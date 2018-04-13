@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  12 APR 2018 12:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  13 APR 2018 10:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -720,60 +720,59 @@ File: figures/neural_network_full.png Graphic file (type png)
 Package pdftex.def Info: figures/neural_network_full.png used on input line 75.
 
 (pdftex.def)             Requested size: 281.85587pt x 116.07986pt.
-
-<figures/winningvslosing.png, id=70, 601.4972pt x 110.66344pt>
+ [15 <./figures/neural_network_full.png>]
+<figures/winningvslosing.png, id=75, 601.4972pt x 110.66344pt>
 File: figures/winningvslosing.png Graphic file (type png)
 
 <use figures/winningvslosing.png>
-Package pdftex.def Info: figures/winningvslosing.png used on input line 101.
+Package pdftex.def Info: figures/winningvslosing.png used on input line 118.
 (pdftex.def)             Requested size: 281.85587pt x 51.85646pt.
- [15 <./figures/neural_network_full.png>]
+
 
 LaTeX Warning: Reference `fig:neural_network_ordered' on page 16 undefined on i
-nput line 113.
+nput line 130.
 
 [16 <./figures/winningvslosing.png>]
-<figures/distributionAfterCombination.png, id=80, 602.25pt x 372.39125pt>
+<figures/distributionAfterCombination.png, id=81, 602.25pt x 372.39125pt>
 File: figures/distributionAfterCombination.png Graphic file (type png)
 
 <use figures/distributionAfterCombination.png>
 Package pdftex.def Info: figures/distributionAfterCombination.png used on input
- line 119.
+ line 136.
 (pdftex.def)             Requested size: 352.31625pt x 217.85652pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
+ [17 <./figures/distributionAfterCombination.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 144--145
 
  []
 
-[17 <./figures/distributionAfterCombination.png (PNG copy)>]
-<figures/fanduel_comp.png, id=84, 833.36343pt x 205.5178pt>
+<figures/fanduel_comp.png, id=85, 833.36343pt x 205.5178pt>
 File: figures/fanduel_comp.png Graphic file (type png)
 
 <use figures/fanduel_comp.png>
-Package pdftex.def Info: figures/fanduel_comp.png used on input line 137.
+Package pdftex.def Info: figures/fanduel_comp.png used on input line 154.
 (pdftex.def)             Requested size: 281.85587pt x 69.50822pt.
 
 
-LaTeX Warning: Reference `fig:good_picks' on page 18 undefined on input line 14
-1.
+LaTeX Warning: Reference `fig:good_picks' on page 18 undefined on input line 15
+8.
 
-<figures/mevsbest.png, id=85, 869.49844pt x 667.74469pt>
+<figures/mevsbest.png, id=86, 869.49844pt x 667.74469pt>
 File: figures/mevsbest.png Graphic file (type png)
 
 <use figures/mevsbest.png>
-Package pdftex.def Info: figures/mevsbest.png used on input line 145.
+Package pdftex.def Info: figures/mevsbest.png used on input line 162.
 (pdftex.def)             Requested size: 375.80544pt x 288.6122pt.
 
-<figures/competitors.png, id=86, 605.26125pt x 263.48438pt>
+<figures/competitors.png, id=87, 605.26125pt x 263.48438pt>
 File: figures/competitors.png Graphic file (type png)
 
 <use figures/competitors.png>
-Package pdftex.def Info: figures/competitors.png used on input line 156.
+Package pdftex.def Info: figures/competitors.png used on input line 173.
 (pdftex.def)             Requested size: 281.85587pt x 122.69987pt.
- [18 <./figures/fanduel_comp.png> <./figures/mevsbest.png>]) (./sections/06-Fut
-ure Plans.tex) [19 <./figures/competitors.png>]
-(./sections/07-Impact on Society and Environment.tex [20])
-(./sections/08-Teamwork Report.tex [21] [22]) (./sections/09-Conclusion.tex)
+ [18 <./figures/fanduel_comp.png>])
+(./sections/06-Future Plans.tex [19 <./figures/mevsbest.png> <./figures/competi
+tors.png>]) (./sections/07-Impact on Society and Environment.tex [20]) [21]
+(./sections/08-Teamwork Report.tex [22]) (./sections/09-Conclusion.tex)
 (./sections/10-References.tex [23]
 Underfull \hbox (badness 10000) in paragraph at lines 11--12
 []\T1/ppl/m/n/10.95 Abu-Mostafa, Yaser. "Learn-ing From Data", Cal-tech, 2012. 
@@ -801,23 +800,24 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3601 strings out of 493014
- 52071 string characters out of 6133351
- 117352 words of memory out of 5000000
- 6979 multiletter control sequences out of 15000+600000
- 38512 words of font info for 67 fonts, out of 8000000 for 9000
+ 3607 strings out of 493014
+ 52115 string characters out of 6133351
+ 119352 words of memory out of 5000000
+ 6980 multiletter control sequences out of 15000+600000
+ 41626 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,6n,35p,2204b,327s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/tex
-live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
-ive/2016/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/201
-6/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2016/texmf
--dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on finalReport.pdf (25 pages, 734379 bytes).
+exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
+xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texl
+ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texli
+ve/2016/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2016
+/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2016/texmf-
+dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on finalReport.pdf (25 pages, 743858 bytes).
 PDF statistics:
- 132 PDF objects out of 1000 (max. 8388607)
- 74 compressed objects within 1 object stream
+ 136 PDF objects out of 1000 (max. 8388607)
+ 77 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  71 words of extra memory for PDF output out of 10000 (max. 10000000)
 

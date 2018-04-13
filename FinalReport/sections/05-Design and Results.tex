@@ -82,10 +82,27 @@ We did not spend much time attempting to increase this value, as it was an aside
 
 
 \paragraph{System 3: Choosing Lineups}\mbox{}\\
-The choosing lineups system is the system that takes the player game scores, salaries, and positions of each player in tonight's games, and outputs lineups with maximized summed player scores. This problem was similar to a backpack problem, but with more constraints. We selected the python library PuLP as the tool to use to solve this constraint problem, and found it to be quite effective. As well, we were able to use this system to generate multiple lineups by applying Gaussian noise to the players' scores before passing these to the system.
+The choosing lineups system takes as input the player game scores, salaries, positions of each player in tonight's games, as well as the total budget we are working with, and outputs lineups with maximized summed player scores. This problem was similar to a backpack problem, but with more constraints. We selected the python library PuLP as the tool to use to solve this constraint problem, and found it to be quite effective. As well, we were able to use this system to generate multiple lineups by applying Gaussian noise to the players' scores before passing these to the system.
 %TODO stephen write here about detailed implementation. need figure.
+The objective function we sought to maximize had the following structure:
 
-\textit{Under construction: we will have a more detailed section on our ILP and how it worked}
+\[ z = p_1*x_1 + p_2*x_2 + ... + p_n*x_n \]
+
+In this, \textit{z} is the objective function, \textit{n} is the number of players we have on a given night, each \textit{p} variable represents one of the \textit{n} players, and each \textit{x} variable is a binary decision variable that will indicate whether or not the corresponding player has been chosen or not.
+
+Maximizing the objective function was subject to six constraints. The first five constraints specified the number of players of each position type we were allowed to have in our lineup. Specifically, the constraints of our fantasy league require our lineup to have exactly two point guards, two shooting guards, two small forwards, two power forwards, and one center. The constraint specifying the number of allowed point guards, for example, looked like this:
+
+\[ x_1 + ... + x_j = 2 \]
+
+where \textit{x\textsubscript{1}} to \textit{x\textsubscript{j}} are the binary decision variables of the point guards playing on a given night. The remaining four positional constraints are structured in the same way.
+
+The final constraint ensures that we respect the total budget we are working with when purchasing players. It simply says that the the sum of the costs of the players selected cannot exceed the total budget we have to work with. This is shown in the equation below:
+
+\[ p_1*x_1 + p_2*x_2 + ... + p_n*x_n <= Total Budget \]
+
+As was the case in the objective function, \textit{n} is the number of players we have on a given night, each \textit{p} variable represents one of the \textit{n} players, and each \textit{x} variable is the binary decision variable for the corresponding player.
+
+Although there exist several ways of solving integer linear programming programs, the python PuLP library handles this decision for us. Inputting the objective function and constraints mentioned above is sufficient for PuLP to find an optimal lineup solution.
 
 \paragraph{Cross Validation \& Testing}\mbox{}\\
 In order to properly test this system, we needed to define a success metric, or a way of measuring how well the system was performing. Ideally, this metric would be profitability, but this was not possible without the historic competition data. Instead, we used a heuristic which is given in Equation \ref{eq_heuristic}
