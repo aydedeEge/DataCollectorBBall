@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 import json
 import keras
+import matplotlib.pyplot as plt
 from accuracy import compute_accuracy, predict_lineup, get_lineups
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
@@ -13,6 +14,7 @@ from keras.layers import Activation
 from keras.layers.advanced_activations import LeakyReLU
 from keras.models import model_from_json
 from keras import backend as K
+
 
 EPOCH_COUNT = 5000
 VERBOSE = 1  # set it to 1 to see output, 0 to not see it
@@ -119,11 +121,35 @@ class NeuralNet:
         loaded_model.load_weights(filename + "model.h5")
         return loaded_model
 
+    def plot_result(self,result):
+        accuracy = result.history['mean_absolute_error']
+        val_accuracy = result.history['val_mean_absolute_error']
+        loss = result.history['loss']
+        val_loss = result.history['val_loss']
+        epochs = range(len(accuracy))
+        plt.plot(epochs, accuracy, 'bo', label='Training accuracy')
+        plt.plot(epochs, val_accuracy, 'b', label='Validation accuracy')
+        plt.title('Training and validation mean absolute error')
+        plt.savefig("plot_mea.png")
+        plt.figure()
+        plt.plot(epochs, loss, 'bo', label='Training loss')
+        plt.plot(epochs, val_loss, 'b', label='Validation loss')
+        plt.title('Training and validation loss')
+        plt.legend()
+        plt.savefig("plot_loss.png")
+
     def fit(self, train_X, train_y,test_x,test_y):
-        self.model.fit(
+        result = self.model.fit(
             train_X,
             train_y,
 	    validation_data = (test_x,test_y),
             epochs=self.epoch,
             batch_size=self.batch_size,
             verbose=VERBOSE)
+        
+        self.plot_result(result)
+
+   
+            
+
+

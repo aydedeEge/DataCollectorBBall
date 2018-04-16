@@ -1,2 +1,0 @@
-model_checkpoint_path: "tf.model.test_hn64_lr0.01"
-all_model_checkpoint_paths: "tf.model.test_hn64_lr0.01"
