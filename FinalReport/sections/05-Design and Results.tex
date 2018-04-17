@@ -65,7 +65,6 @@ The first step of the design solution was to calculate a score for each player w
     \caption{Player scores system}
     \label{fig:player_scores}
 \end{figure}
-%TODO fix this graphic (it isn't right)
 \paragraph{System 2: Matches Neural Network}\mbox{}\\
 The scores for every player, obtained in the first step, are then used as inputs for the matches NN. The matches neural net puts two teams of players, each represented by two scores, "against each other". That is to say, the first fourteen inputs are used for seven of Team A's players (short term and long term score each), and the next fourteen are used for seven of Team B's players. We selected seven as a compromise between being too restrictive (not all teams have many active players in each position), and not having enough inputs. The players on each team are ordered by their basketball position. The basketball positions given by our source are guard (G), forward (F), and center (C). As not each team plays the same amount of players in each position, we had to determine what a representative combination of the above positions would look like, which will be discussed in the Data Results section. Ultimately, we decided that a representative set for which we had data would be one center, three guards, and three forwards.\\
 The output of the NN is a ``fantasy game score'' for each player. The benefit of this NN is that, since all basketball matches follow the same rules, with the most impactful variable being the skill level of each player on either team, we can train this net on every match that has happened in the past 50 years, and still use it to predict scores for matches today. A point guard in 1980 who had incoming scores of [10, 10] will be treated the same as a point guard today with those scores. This NN has a relatively low amount of inputs, none of which are unused. This means it needs less data to train successfully. This design can be seen in Figure \ref{fig:neural_network_full}.
@@ -83,7 +82,7 @@ We did not spend much time attempting to increase this value, as it was an aside
 
 \paragraph{System 3: Choosing Lineups}\mbox{}\\
 The choosing lineups system takes as input the player game scores, salaries, positions of each player in tonight's games, as well as the total budget we are working with, and outputs lineups with maximized summed player scores. This problem was similar to a backpack problem, but with more constraints. We selected the python library PuLP as the tool to use to solve this constraint problem, and found it to be quite effective. As well, we were able to use this system to generate multiple lineups by applying Gaussian noise to the players' scores before passing these to the system.
-%TODO stephen write here about detailed implementation. need figure.
+
 The objective function we sought to maximize had the following structure:
 
 \[ z = p_1*x_1 + p_2*x_2 + ... + p_n*x_n \]
@@ -119,9 +118,7 @@ This formula yielded around 60\% with random choices between the top seven playe
     \caption{Scores for best lineup and barely profitable lineup}
     \label{fig:80pRule}
 \end{figure}
-In order to increase our performance, we began to train the network. In doing so, we realized that one of the limitations of training and attempting to cross-validate the hyperparameters was the computational time. To remedy this, we rented a remote computer with a powerful GPU, %TODO what GPU?
- and changed our machine learning code to be GPU optimized by switching from TensorFlow to TensorFlowGPU. %TODO check this with Flo
-The service we used was called Paperspace, and it was chosen for its low hourly rates with no commitment requirement. We ran cross-validation on Paperspace, and were able to increase our performance metric to 82\% - just above the profitability line. Thus, we began testing in actual competitions; the results of doing so will be discussed in the implementation results section.
+In order to increase our performance, we began to train the network. In doing so, we realized that one of the limitations of training and attempting to cross-validate the hyperparameters was the computational time. To remedy this, we rented a remote computer with an NVIDIA P4000 GPU, and changed our machine learning code to be GPU optimized by switching from TensorFlow to the GPU enabled version of TensorFlow. The service we used was called Paperspace, and it was chosen for its low hourly rates with no commitment requirement. We ran cross-validation on Paperspace, and were able to increase our performance metric to 82\% - just above the profitability line. Thus, we began testing in actual competitions; the results of doing so will be discussed in the implementation results section.
 
 \subsection{Results and Discussion}
 There are two types of results that will be given in this report. The first are those related to how much data was scraped from our source, or generated, and the second is related to the success rate of the neural network.
