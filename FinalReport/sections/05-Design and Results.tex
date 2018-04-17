@@ -42,7 +42,7 @@ We began designing the software architecture before finishing the aforementioned
     \label{fig:first_iteration}
 \end{figure}
  
-After discussing this design within our group and with our supervisor, we realized it had major limitations, listed below. First, this system would only use data from active players. This was not taking advantage of the many decades of basketball data to which we had access. Second, it would also require a massive amount of data to be able to learn properly. This is because, generally, the amount of data required to learn adequately is correlated with both the complexity, and the number of, inputs. %TODO citation
+After discussing this design within our group and with our supervisor, we realized it had major limitations, listed below. First, this system would only use data from active players. This was not taking advantage of the many decades of basketball data to which we had access. Second, it would also require a massive amount of data to be able to learn properly. This is because, generally, the amount of data required to learn adequately is correlated with both the complexity, and the number of, inputs (as discussed in COMP 551).
 Third, there would be many unused inputs each time the system is used. Since there are usually around six NBA games each night, there are 120 active players on a single night. There are about 500 total active players, which means that there would be about 380 unused inputs. Although this is not explicitly a problem, it makes it seem like there would be a better way to structure the design. The final limitation of the initial NN design was that it would be prone to discover imaginary correlations. 
 %WEAK%
 Since the NN only knows which players are playing, and not on which team, it would be bound to find correlations between players that are not playing against each other. To explain, if Team A is playing against Team B in one game, and Team X is playing against Team Y in another, the NN may find a relationship between players on Team A and on Team B. This is despite the fact that they are not playing against each other, and that these games are independent.\\
@@ -76,8 +76,7 @@ The output of the NN is a ``fantasy game score'' for each player. The benefit of
     \label{fig:neural_network_full}
 \end{figure}
 
-Initially, this network was set to only predict the team that won or lost, and not the game scores of the players. This first prototype was thus not applicable for fantasy basketball, but was used to become familiar with TensorFlow and best practices. We experimented with different input features to see how they impacted the accuracy of the network. In the end, with these ordered positions, the network reached a 63\% prediction accuracy. %TODO Figure here of first sys
-We did not spend much time attempting to increase this value, as it was an aside from our main goal, predicting lineups.
+Initially, this network was set to only predict the team that won or lost, and not the game scores of the players. This first prototype was thus not applicable for fantasy basketball, but was used to become familiar with TensorFlow and best practices. We experimented with different input features to see how they impacted the accuracy of the network. In the end, with these ordered positions, the network reached a 63\% prediction accuracy. We did not spend much time attempting to increase this value, as it was an aside from our main goal, predicting lineups.
 
 
 \paragraph{System 3: Choosing Lineups}\mbox{}\\
@@ -118,7 +117,7 @@ This formula yielded around 60\% with random choices between the top seven playe
     \caption{Scores for best lineup and barely profitable lineup}
     \label{fig:80pRule}
 \end{figure}
-In order to increase our performance, we began to train the network. In doing so, we realized that one of the limitations of training and attempting to cross-validate the hyperparameters was the computational time. To remedy this, we rented a remote computer with an NVIDIA P4000 GPU, and changed our machine learning code to be GPU optimized by switching from TensorFlow to the GPU enabled version of TensorFlow. The service we used was called Paperspace, and it was chosen for its low hourly rates with no commitment requirement. We ran cross-validation on Paperspace, and were able to increase our performance metric to 82\% - just above the profitability line. Thus, we began testing in actual competitions; the results of doing so will be discussed in the implementation results section.
+In order to increase our performance, we began to train the network. In doing so, we realized that one of the limitations of training and attempting to cross-validate the hyperparameters was the computational time. To remedy this, we rented a remote computer with an NVIDIA P4000 GPU, and changed our machine learning code to be GPU optimized by switching from TensorFlow to the GPU enabled version of TensorFlow. The service we used was called Paperspace, and it was chosen for its low hourly rates with no commitment requirement. We ran cross-validation on Paperspace, and were able to increase our performance metric to 82.9\% - slightly above the profitability line. Thus, we began testing in actual competitions; the results of doing so will be discussed in the implementation results section.
 
 \subsection{Results and Discussion}
 There are two types of results that will be given in this report. The first are those related to how much data was scraped from our source, or generated, and the second is related to the success rate of the neural network.
@@ -138,12 +137,46 @@ To avoid losing significant amounts of input data due to constraints, we simplif
 \subsubsection{Implementation Results}
 As mentioned in the description of the NN in the implementation section, we tested many different system architectures. The final three-system architecture will be the only one discussed in this section, as it is the only one used to enter real competitions. For the results of the earlier architectures, please see our report from the previous term.
 
-Note that the provided results results are on the cross-validated version of the neural network, with two hidden layers, 128 hidden nodes per layer, and a learning rate of 0.01. Furthermore, all accuracy results were obtained by using 70\% of the input data to train the network, and 30\% to test.\\
+Note that the provided results results are on the cross-validated version of the neural network. The results of cross-validation, i.e. how the hyperparameters were selected, can be seen in Table \ref{tab:crossval}. The first ten rows show the best ten combinations of hyperparameters, whereas the bottom ten show the worst performing. One can see the importance of selecting hyperparameters by the significant difference in performance between the best set and worst set of hyperparameters.\\
+\begin{table}[]
+\centering
+\caption{Results of Cross-validation for Top 10 and Bottom 10}
+\label{tab:crossval}
+\begin{tabular}{llllll}
+\textbf{Batch Size} & \textbf{Hidden Layers} & \textbf{Learning Rate} & \textbf{Dropout} & \textbf{Train Performance} & \textbf{Test Performance} \\ \hline
+5000       & 64-64         & 0.01          & 0.25    & 82.15            & 78.34           \\
+10000      & 64-64         & 0.01          & 0.25    & 81.99            & 78.31           \\
+5000       & 128-64-128    & 0.001         & 0.25    & 80.13            & 78.23           \\
+5000       & 64-64         & 0.001         & 0.25    & 79.74            & 78.05           \\
+10000      & 64-64-64      & 0.01          & 0.25    & 81.96            & 77.80           \\
+5000       & 64-64-64      & 0.01          & 0.25    & 82.10            & 77.80           \\
+10000      & 64-64         & 0.001         & 0.25    & 78.84            & 77.79           \\
+10000      & 64-64         & 0.01          & 0.5     & 79.55            & 77.76           \\
+5000       & 128-64-128    & 0.01          & 0.5     & 80.48            & 77.73           \\
+...        & ...           & ...           & ...     & ...              & ...             \\
+10000      & 32-32-32      & 0.001         & 0.5     & 58.00            & 58.27           \\
+10000      & 64-64-64      & 0.1           & 0.5     & 56.68            & 56.73           \\
+5000       & 128-64-128    & 0.1           & 0.25    & 54.29            & 54.10           \\
+5000       & 64-64-64      & 0.1           & 0.25    & 54.29            & 54.10           \\
+10000      & 128-64-128    & 0.1           & 0.25    & 54.29            & 54.10           \\
+10000      & 128-64-128    & 0.1           & 0.5     & 54.29            & 54.10           \\
+10000      & 32-32-32      & 0.1           & 0.25    & 54.29            & 54.10           \\
+10000      & 64-64-64      & 0.1           & 0.25    & 54.29            & 54.10           \\
+5000       & 64-64         & 0.1           & 0.25    & 54.06            & 53.97           \\
+5000       & 128-64-128    & 0.1           & 0.5     & 54.08            & 53.79          
+\end{tabular}
+\end{table}
+Our final network  used some of the parameters of the best performing network from cross-validation, but, through manually adjusting some of these best performing results further, was slightly different. The final configuration had two hidden layers, with 128 and 64 hidden nodes in the first and second respectively, a learning rate of 0.01, and a dropout of 0.25 for the first layer, and 0.20 for the second layer. This configuration yielded a training and testing performance of 83.0\% and 82.9\%, respectively. Furthermore, all accuracy results were obtained by using 70\% of the input data to train the network, and 30\% to test.\\
+After selecting these hyperparameters, we further trained the system, and increased the amount of data we used (since more was available at this time). During training, we carefully measured the training and validation performances. One can see how the training and validation performances change with each epoch in Figure \ref{fig:train_val}, for one example network (not the optimal hyperparameters). Reported in this figure are also the corresponding performance percentages at certain positions, including the start, the last meaningful point before overfitting, and the end. The reason both the training and validation accuracies are reported is to detect overfitting. In the case of overfitting, the validation error will increase while the training error will decrease. This can be seen to occur around epoch 2000. Thus, this system would not be trained past 2000 epochs. The ability of the system to overfit indicates that the model is not the limitation in increasing the accuracy of the system.
 
-%TODO Flo to add meaningful data here
-\textit{Under construction: we will add data on training/cross-validating here}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/mea_accuracy}
+    \caption{Mean error versus epoch for sample (non-optimal) network}
+    \label{fig:train_val}
+\end{figure}
 
-After cross-validating the system, and entering the first lineups into competitions, we realized we had overlooked some potential issues. First, the database was not updated, meaning that the short-term scores of each player were actually scores from months ago. Second, we found that we were accidentally ignoring one or two games per night, due to a bug with the positional constraints in our code. Thus, our output was only predicting a lineup on a subset of the games each night. Third and finally, we found that many of our selected players did not end up playing each night, yielding zero points. This third issue proved the most challenging to tackle. Although we checked for injuries, we did not perform a more thorough check than this. Initially, we hoped that we could solve this with more checks in our code, but we quickly learned that this was not feasible. Ultimately, before submitting each lineup, it is an important step for the user to read recent news about the NBA player. Sometimes players do not play for personal issues, or because they were only temporarily playing in the spot of another player. This is both difficult and unnecessary to try to predict. Instead, we added an option for our system to ignore certain players, entered manually.
+After training the system, and reaching the maximum testing performance of 82.9\% (above the profitability line), we entered the system's first lineups into competitions. Upon doing this, we realized we had overlooked some potential issues. First, the database was not updated, meaning that the short-term scores of each player were actually scores from months ago. Second, we found that we were accidentally ignoring one or two games per night, due to a bug with the positional constraints in our code. Thus, our output was only predicting a lineup on a subset of the games each night. Third and finally, we found that many of our selected players did not end up playing each night, yielding zero points. This third issue proved the most challenging to tackle. Although we checked for injuries, we did not perform a more thorough check than this. Initially, we hoped that we could solve this with more checks in our code, but we quickly learned that this was not feasible. Ultimately, before submitting each lineup, it is an important step for the user to read recent news about the NBA player. Sometimes players do not play for personal issues, or because they were only temporarily playing in the spot of another player. This is both difficult and unnecessary to try to predict. Instead, we added an option for our system to ignore certain players, entered manually.
 
 After solving these issues, we continued entering competitions. To our surprise, the system was successful. Figure \ref{fig:win_record} shows a brief summary of each competition we participated in where all of our players played.
 \begin{figure}[ht]
@@ -161,7 +194,6 @@ One can see that we are overall profitable, but not reliably so, and on a small 
     \label{fig:win_record}
 \end{figure}
 
- %TODO highlight the players right here.
 This supports our hypothesis that our system would be able to make good predictions that were missed by others, thus giving it the potential to perform quite well in top-heavy competitions.
 
 It is also worth noting that, even in the competitions that the system does not succeed, it is still performing above average, always in the top 50th percentile. This is especially remarkable since almost all of the other competitors are marked as experienced. Figure \ref{fig:competitors} shows a sample of the winning and losing players for a competition, including their experience emblems.
